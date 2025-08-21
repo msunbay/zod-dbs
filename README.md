@@ -65,7 +65,7 @@ pnpm add -D zod-dbs-cli
 ### With connection string
 
 ```sh
-npx zod-dbs --connection "postgres://user:password@localhost:5432/dbname" --ssl --output-dir ./src/output
+npx zod-dbs --provider pg --connection "postgres://user:password@localhost:5432/dbname" --ssl --output-dir ./src/output
 ```
 
 ### With options
@@ -73,7 +73,7 @@ npx zod-dbs --connection "postgres://user:password@localhost:5432/dbname" --ssl 
 You can also specify options directly:
 
 ```sh
-npx zod-dbs --user postgres --password secret --host localhost --port 5432 --database mydb --ssl --output-dir ./src/output
+npx zod-dbs --provider pg --user postgres --password secret --host localhost --port 5432 --database mydb --ssl --output-dir ./src/output
 ```
 
 ### With environment variables
@@ -90,7 +90,7 @@ zod-dbs can read connection details from environment variables. Set the followin
 Then run:
 
 ```sh
-npx zod-dbs --output-dir ./src/output
+npx zod-dbs --provider pg --output-dir ./src/output
 ```
 
 #### Using .env files:
@@ -98,7 +98,7 @@ npx zod-dbs --output-dir ./src/output
 zod-dbs does not automatically load `.env` files, but you can use a package like `dotenv-cli` to load them before running zod-dbs. For example:
 
 ```sh
-dotenv -e .env npx zod-dbs --output-dir ./src/output
+dotenv -e .env npx zod-dbs --provider pg --output-dir ./src/output
 ```
 
 ### Exclude / Include Tables
@@ -130,6 +130,7 @@ Negative flags (`--no-*`) disable a feature that is enabled by default.
 
 | Option                                 | Description                                                                                       | Default         |
 | -------------------------------------- | ------------------------------------------------------------------------------------------------- | --------------- |
+| `--provider <string>`                  | DB connection provider (pg)                                                                       |                 |
 | `--connection-string <string>`         | DB connection string (overrides individual host/port/user/etc).                                   |                 |
 | `-o, --output-dir <path>`              | Output directory for generated files.                                                             | `./zod-schemas` |
 | `--clean-output`                       | Delete the output directory before generation.                                                    | `false`         |
