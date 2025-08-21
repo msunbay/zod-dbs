@@ -62,10 +62,6 @@ importers:
       zod-dbs-core:
         specifier: workspace:*
         version: link:../zod-dbs-core
-    devDependencies:
-      zod-dbs-pg:
-        specifier: workspace:*
-        version: link:../zod-dbs-pg
 
   packages/zod-dbs-cli:
     dependencies:
