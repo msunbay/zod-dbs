@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ZodDbsRawColumnInfo } from 'zod-dbs-core';
 
 import { createClient } from '../../../src/client.js';
 import { PostgreSqlConnector } from '../../../src/PostgreSqlConnector.js';
@@ -20,7 +19,7 @@ describe('PostgreSqlConnector', () => {
     // Setup mock client
     mockClient = {
       connect: vi.fn().mockResolvedValue(undefined),
-      query: vi.fn().mockResolvedValue({ rows: [] }),
+      query: vi.fn().mockResolvedValue([]),
       end: vi.fn().mockResolvedValue(undefined),
     };
 
@@ -54,7 +53,7 @@ describe('PostgreSqlConnector', () => {
   });
 
   it('should retrieve schema information and call the client with the correct query', async () => {
-    const mockData: ZodDbsRawColumnInfo[] = [
+    const mockData = [
       {
         tableName: 'users',
         name: 'id',
@@ -68,7 +67,7 @@ describe('PostgreSqlConnector', () => {
       },
     ];
 
-    mockClient.query.mockResolvedValue({ rows: mockData });
+    mockClient.query.mockResolvedValue(mockData);
 
     const config = {
       host: 'localhost',

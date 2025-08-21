@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { DatabaseConnector, ZodDbsRawColumnInfo } from 'zod-dbs-core';
+import { DatabaseConnector, ZodDbsColumnInfo } from 'zod-dbs-core';
 
 import rawColumns from './fixtures/raw-columns.json' with { type: 'json' };
 
@@ -29,8 +29,8 @@ export async function deleteOutputFiles(dir: string): Promise<void> {
 }
 
 class TestDbConnector extends DatabaseConnector {
-  protected fetchSchemaInfo(): Promise<ZodDbsRawColumnInfo[]> {
-    return Promise.resolve(rawColumns as ZodDbsRawColumnInfo[]);
+  protected fetchSchemaInfo(): Promise<ZodDbsColumnInfo[]> {
+    return Promise.resolve(rawColumns as ZodDbsColumnInfo[]);
   }
 }
 

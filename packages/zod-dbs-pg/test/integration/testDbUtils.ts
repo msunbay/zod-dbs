@@ -4,27 +4,43 @@ import {
   PostgreSqlContainer,
   StartedPostgreSqlContainer,
 } from '@testcontainers/postgresql';
-import { Client } from 'pg';
+import {
+  createConnectionString,
+  ZodDbsConnectorConfig,
+  ZodDbsDatabaseClient,
+} from 'zod-dbs-core';
 
 import { createClient } from '../../src/client.js';
 
 export interface TestDbContext {
   container: StartedPostgreSqlContainer;
-  client: Client;
+  client: ZodDbsDatabaseClient;
 }
 
-let _clientInstance: Client | null = null;
+let _clientInstance: ZodDbsDatabaseClient | null = null;
 
-export const getClient = (): Client => {
+export const getClient = (): ZodDbsDatabaseClient => {
   if (!_clientInstance) {
     throw new Error('Client has not been initialized. Call setupTestDb first.');
   }
   return _clientInstance;
 };
 
-export const getClientConnectionString = (): string => {
+export const getConnectionConfig = (): ZodDbsConnectorConfig => {
   const client = getClient();
-  return `postgres://${client.user}:${client.password}@${client.host}:${client.port}/${client.database}`;
+
+  return {
+    host: client.config.host,
+    port: client.config.port,
+    database: client.config.database,
+    user: client.config.user,
+    password: client.config.password,
+    schemaName: 'public',
+  };
+};
+
+export const getClientConnectionString = (): string => {
+  return createConnectionString(getConnectionConfig());
 };
 
 export const getCliPath = (): string => {
@@ -41,7 +57,7 @@ export async function setupTestDb(): Promise<TestDbContext> {
     .withExposedPorts(5432)
     .start();
 
-  const client = createClient({
+  const client = await createClient({
     host: container.getHost(),
     port: container.getPort(),
     database: container.getDatabase(),

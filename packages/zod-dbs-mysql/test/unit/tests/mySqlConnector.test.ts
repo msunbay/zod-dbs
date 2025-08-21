@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ZodDbsRawColumnInfo } from 'zod-dbs-core';
 
 import { createClient } from '../../../src/client.js';
 import { MySqlConnector } from '../../../src/MySqlConnector.js';
@@ -20,7 +19,7 @@ describe('MySqlConnector', () => {
     // Setup mock client
     mockClient = {
       connect: vi.fn().mockResolvedValue(undefined),
-      query: vi.fn().mockResolvedValue({ rows: [] }),
+      query: vi.fn().mockResolvedValue([]),
       end: vi.fn().mockResolvedValue(undefined),
     };
 
@@ -54,9 +53,10 @@ describe('MySqlConnector', () => {
   });
 
   it('should retrieve schema information and call the client with the correct query', async () => {
-    const mockData: ZodDbsRawColumnInfo[] = [
+    const mockData = [
       {
         tableName: 'users',
+        tableSchema: 'test',
         name: 'id',
         defaultValue: "nextval('users_id_seq'::regclass)",
         dataType: 'int4',
@@ -68,7 +68,7 @@ describe('MySqlConnector', () => {
       },
     ];
 
-    mockClient.query.mockResolvedValue({ rows: mockData });
+    mockClient.query.mockResolvedValue(mockData);
 
     const config = {
       host: 'localhost',
@@ -96,16 +96,15 @@ describe('MySqlConnector', () => {
               {
                 "dataType": "int4",
                 "defaultValue": "nextval('users_id_seq'::regclass)",
-                "description": undefined,
                 "isArray": false,
                 "isEnum": false,
                 "isNullable": false,
                 "isOptional": false,
-                "isSerial": true,
-                "isWritable": false,
+                "isSerial": false,
+                "isWritable": true,
                 "maxLen": undefined,
                 "name": "id",
-                "schemaName": "custom_schema",
+                "schemaName": "test",
                 "tableName": "users",
                 "tableType": "table",
                 "type": "int",

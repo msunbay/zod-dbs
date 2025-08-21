@@ -51,13 +51,13 @@ export interface ZodDbsRawColumnInfo {
   /** The name of the column */
   name: string;
   /** The default value expression for the column, if any */
-  defaultValue?: string | null;
+  defaultValue?: string;
   /** Whether the column allows NULL values */
   isNullable: boolean;
   /** Maximum length constraint for string or number columns */
-  maxLen?: number | null;
+  maxLen?: number;
   /** Minimum length constraint for string or number columns */
-  minLen?: number | null;
+  minLen?: number;
   /**
    * Data type of the column as defined in database.
    *
@@ -76,9 +76,9 @@ export interface ZodDbsRawColumnInfo {
   /** Name of the schema containing the table */
   schemaName: string;
   /** Column description/comment from the database */
-  description?: string | null;
+  description?: string;
   /** Check constraints applied to this column */
-  checkConstraints?: { checkClause: string }[] | null;
+  checkConstraints?: { checkClause: string }[];
   /** The type of table this column belongs to */
   tableType: ZodDbsTableType;
 }

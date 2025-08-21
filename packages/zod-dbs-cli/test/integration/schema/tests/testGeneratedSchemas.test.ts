@@ -66,8 +66,8 @@ describe('Generated Schema Integration', () => {
     );
 
     // Retrieve and validate the stored record
-    const result = await ctx.client.query(sql`SELECT * FROM users`);
-    const userRecord = result.rows[0];
+    const result = await ctx.client.query<any>(sql`SELECT * FROM users`);
+    const userRecord = result[0];
 
     // Parse the retrieved record with the read schema
     const user = UsersTableSchema.parse(userRecord);
@@ -97,8 +97,8 @@ describe('Generated Schema Integration', () => {
       parsedRecord.name,
     ]);
 
-    const result = await ctx.client.query(sql`SELECT * FROM users`);
-    const user = UsersTableSchema.parse(result.rows[0]);
+    const result = await ctx.client.query<any>(sql`SELECT * FROM users`);
+    const user = UsersTableSchema.parse(result[0]);
 
     expect(user).toMatchObject({
       id: 1,

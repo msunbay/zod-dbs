@@ -5,11 +5,11 @@ export const createConnectionString = (
 ): string => {
   const { host, port, database, user, password } = options;
 
-  if (!user || !password || !host || !port || !database) {
-    throw new Error(
-      'Incomplete connection configuration. Please provide all required fields.'
-    );
-  }
+  if (!user) throw new Error('User is required for connection string.');
+  if (!password) throw new Error('Password is required for connection string.');
+  if (!host) throw new Error('Host is required for connection string.');
+  if (!port) throw new Error('Port is required for connection string.');
+  if (!database) throw new Error('Database is required for connection string.');
 
   return `postgresql://${user}:${password}@${host}:${port}/${database}`;
 };

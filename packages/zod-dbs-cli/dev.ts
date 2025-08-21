@@ -25,7 +25,7 @@ const setup = async () => {
   });
 
   await main({
-    port: db.client.port,
+    port: db.client.config.port,
     zodVersion: '4-mini',
     moduleResolution: 'esm',
     defaultUnknown: true,

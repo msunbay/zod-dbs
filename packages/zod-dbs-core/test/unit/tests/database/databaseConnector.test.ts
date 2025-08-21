@@ -1,17 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type {
-  ZodDbsRawColumnInfo,
+  ZodDbsColumnInfo,
   ZodDbsTableType,
 } from '../../../../src/types.js';
 
 import { DatabaseConnector } from '../../../../src/database/DatabaseConnector.js';
 import { getEnumConstraints } from '../../../../src/database/enumConstraints.js';
-import {
-  getZodType,
-  isArrayType,
-  isSerialType,
-} from '../../../../src/database/typeMap.js';
 
 vi.mock('../../../../src/database/enumConstraints.js', () => ({
   getEnumConstraints: vi.fn(),
@@ -25,8 +20,8 @@ vi.mock('../../../../src/database/typeMap.js', () => ({
 
 // Helpers
 const createRaw = (
-  overrides: Partial<ZodDbsRawColumnInfo> = {}
-): ZodDbsRawColumnInfo => ({
+  overrides: Partial<ZodDbsColumnInfo> = {}
+): ZodDbsColumnInfo => ({
   tableName: 'users',
   name: 'id',
   defaultValue: undefined,
@@ -37,6 +32,10 @@ const createRaw = (
   checkConstraints: undefined,
   tableType: 'table' as ZodDbsTableType,
   schemaName: 'public',
+  type: 'int',
+  isEnum: false,
+  isArray: false,
+  isSerial: false,
   ...overrides,
 });
 
@@ -59,7 +58,7 @@ class TestConnector extends DatabaseConnector {
   }
 }
 
-const buildConnector = (rows: ZodDbsRawColumnInfo[]) => {
+const buildConnector = (rows: ZodDbsColumnInfo[]) => {
   const mockClient: MockClient = {
     connect: vi.fn().mockResolvedValue(undefined),
     query: vi.fn().mockResolvedValue(rows),
@@ -73,9 +72,6 @@ describe('DatabaseConnector', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(getEnumConstraints).mockReturnValue([]);
-    vi.mocked(getZodType).mockReturnValue('string');
-    vi.mocked(isArrayType).mockReturnValue(false);
-    vi.mocked(isSerialType).mockReturnValue(false);
   });
 
   it('retrieves and groups columns into tables', async () => {
@@ -155,25 +151,6 @@ describe('DatabaseConnector', () => {
     expect(schema.tables.map((t) => t.name)).toEqual(['user_profiles']);
   });
 
-  it('extracts enum constraints & sets isEnum', async () => {
-    vi.mocked(getEnumConstraints).mockReturnValue(['active', 'inactive']);
-
-    const rows = [
-      createRaw({
-        tableName: 'users',
-        name: 'status',
-        checkConstraints: [{ checkClause: "status IN ('active','inactive')" }],
-      }),
-    ];
-    const connector = buildConnector(rows);
-    const schema = await connector.getSchemaInformation({});
-
-    const col = schema.tables[0].columns[0];
-    expect(col.enumValues).toEqual(['active', 'inactive']);
-    expect(col.isEnum).toBe(true);
-    expect(getEnumConstraints).toHaveBeenCalled();
-  });
-
   it('applies onColumnModelCreated hook (async) before grouping', async () => {
     const rows = [createRaw({ name: 'id' })];
     const connector = buildConnector(rows);
@@ -196,20 +173,6 @@ describe('DatabaseConnector', () => {
       }),
     });
     expect(schema.tables[0].name).toBe('users_x');
-  });
-
-  it('sets type/array/serial flags using typeMap helpers', async () => {
-    vi.mocked(getZodType).mockReturnValue('int');
-    vi.mocked(isArrayType).mockReturnValue(true);
-    vi.mocked(isSerialType).mockReturnValue(true);
-
-    const rows = [createRaw({ name: 'vals', dataType: '_int4' })];
-    const connector = buildConnector(rows);
-    const schema = await connector.getSchemaInformation({});
-    const col = schema.tables[0].columns[0];
-    expect(col.type).toBe('int');
-    expect(col.isArray).toBe(true);
-    expect(col.isSerial).toBe(true);
   });
 
   it('returns empty tables list when no columns', async () => {

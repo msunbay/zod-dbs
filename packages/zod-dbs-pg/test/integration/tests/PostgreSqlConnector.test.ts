@@ -1,15 +1,19 @@
+import { ZodDbsConnectionConfig } from 'zod-dbs-core';
+
 import { PostgreSqlConnector } from '../../../src/PostgreSqlConnector.js';
 import {
-  getClientConnectionString,
+  getConnectionConfig,
   setupTestDb,
   teardownTestDb,
   TestDbContext,
 } from '../testDbUtils.js';
 
 let ctx: TestDbContext;
+let connectionOptions: ZodDbsConnectionConfig;
 
 beforeAll(async () => {
   ctx = await setupTestDb();
+  connectionOptions = getConnectionConfig();
 });
 
 afterAll(async () => {
@@ -19,21 +23,27 @@ afterAll(async () => {
 it('returns raw schema column information', async () => {
   const connector = new PostgreSqlConnector();
 
-  const info = await connector.fetchSchemaInfo({
-    connectionString: getClientConnectionString(),
-  });
+  const info = await connector.fetchSchemaInfo(connectionOptions);
 
   expect(info).toBeDefined();
   expect(info).toHaveLength(168);
+
+  // remove undefined keys
+  info.forEach((column) => {
+    (Object.keys(column) as (keyof typeof column)[]).forEach((key) => {
+      if (column[key] === undefined) {
+        delete column[key];
+      }
+    });
+  });
+
   expect(info).toMatchSnapshot('rawColumns');
 });
 
 it('returns schema models', async () => {
   const connector = new PostgreSqlConnector();
 
-  const info = await connector.getSchemaInformation({
-    connectionString: getClientConnectionString(),
-  });
+  const info = await connector.getSchemaInformation(connectionOptions);
 
   expect(info).toBeDefined();
   expect(info.tables).toBeDefined();

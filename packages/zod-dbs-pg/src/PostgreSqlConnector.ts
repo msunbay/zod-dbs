@@ -1,12 +1,31 @@
-import { DatabaseConnector, logDebug, sql } from 'zod-dbs-core';
+import { DatabaseConnector, getZodType, logDebug, sql } from 'zod-dbs-core';
 
 import type {
+  ZodDbsColumnInfo,
   ZodDbsConnectionConfig,
   ZodDbsConnectorConfig,
-  ZodDbsRawColumnInfo,
+  ZodDbsTableType,
 } from 'zod-dbs-core';
 
 import { createClient } from './client.js';
+import { getEnumConstraints } from './enumConstraints.js';
+import { isArrayType, isSerialType } from './utils.js';
+
+interface RawColumnInfo {
+  name: string;
+  defaultValue: string | null;
+  isNullable: boolean;
+  maxLen: number | null;
+  dataType: string;
+  tableName: string;
+  tableType: ZodDbsTableType;
+  description: string | null;
+  checkConstraints:
+    | {
+        checkClause: string;
+      }[]
+    | null;
+}
 
 /**
  * Default connector to interact with PostgreSQL database and retrieve schema information.
@@ -17,9 +36,49 @@ export class PostgreSqlConnector extends DatabaseConnector {
     return await createClient(options);
   }
 
+  protected createColumnInfo(
+    column: RawColumnInfo,
+    schemaName: string
+  ): ZodDbsColumnInfo {
+    const parsedColumn: ZodDbsColumnInfo = {
+      maxLen: column.maxLen ?? undefined,
+      isEnum: false,
+      isSerial: isSerialType(column.dataType, column.defaultValue),
+      isArray: isArrayType(column.dataType),
+      isWritable: true,
+      type: getZodType(column.dataType),
+      schemaName,
+      name: column.name,
+      isNullable: column.isNullable,
+      dataType: column.dataType,
+      tableName: column.tableName,
+      defaultValue: column.defaultValue ?? undefined,
+      description: column.description ?? undefined,
+      tableType: column.tableType,
+    };
+
+    if (column.checkConstraints) {
+      parsedColumn.enumValues = getEnumConstraints(
+        column.name,
+        column.checkConstraints.map((c) => c.checkClause)
+      );
+
+      logDebug(
+        `Extracted enum values for column '${column.tableName}.${column.name}': ${JSON.stringify(parsedColumn.enumValues)}`
+      );
+    }
+
+    parsedColumn.isWritable =
+      !parsedColumn.isSerial && parsedColumn.tableType === 'table';
+    parsedColumn.isOptional = parsedColumn.isNullable;
+    parsedColumn.isEnum = !!parsedColumn.enumValues?.length;
+
+    return parsedColumn;
+  }
+
   public override async fetchSchemaInfo(
     config: ZodDbsConnectorConfig
-  ): Promise<ZodDbsRawColumnInfo[]> {
+  ): Promise<ZodDbsColumnInfo[]> {
     const { schemaName = 'public' } = config;
 
     config.onProgress?.('connecting');
@@ -30,7 +89,7 @@ export class PostgreSqlConnector extends DatabaseConnector {
     logDebug(`Retrieving schema information for schema '${schemaName}'`);
 
     try {
-      const res = await client.query<ZodDbsRawColumnInfo[]>(
+      const res = await client.query<RawColumnInfo[]>(
         sql`
           SELECT
             c.relname AS "tableName",
@@ -75,7 +134,7 @@ export class PostgreSqlConnector extends DatabaseConnector {
 
       logDebug(`Retrieved ${res.length} columns from schema '${schemaName}'`);
 
-      return res.map((row) => ({ ...row, schemaName }));
+      return res.map((row) => this.createColumnInfo(row, schemaName));
     } finally {
       await client.end();
     }

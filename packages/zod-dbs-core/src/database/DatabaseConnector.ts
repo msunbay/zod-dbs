@@ -2,14 +2,11 @@ import type {
   ZodDbsColumnInfo,
   ZodDbsConnectorConfig,
   ZodDbsDbConnector,
-  ZodDbsRawColumnInfo,
   ZodDbsSchemaInfo,
   ZodDbsTableInfo,
 } from '../types.js';
 
 import { logDebug } from '../utils/debug.js';
-import { getEnumConstraints } from './enumConstraints.js';
-import { getZodType, isArrayType, isSerialType } from './typeMap.js';
 
 /**
  * Base class for database connectors.
@@ -17,43 +14,6 @@ import { getZodType, isArrayType, isSerialType } from './typeMap.js';
  * Should be extended by specific database connectors like PostgreSqlConnector.
  */
 export abstract class DatabaseConnector implements ZodDbsDbConnector {
-  protected async createColumnInfo(
-    column: ZodDbsRawColumnInfo,
-    schemaName: string
-  ): Promise<ZodDbsColumnInfo> {
-    const parsedColumn: ZodDbsColumnInfo = {
-      ...column,
-      schemaName,
-      maxLen: column.maxLen ?? undefined,
-      isEnum: false,
-      isSerial: false,
-      isArray: false,
-      isWritable: true,
-      type: 'any', // Default type, will be updated later
-    };
-
-    if (column.checkConstraints) {
-      parsedColumn.enumValues = getEnumConstraints(
-        column.name,
-        column.checkConstraints.map((c) => c.checkClause)
-      );
-
-      logDebug(
-        `Extracted enum values for column '${column.tableName}.${column.name}': ${JSON.stringify(parsedColumn.enumValues)}`
-      );
-    }
-
-    parsedColumn.type = getZodType(column);
-    parsedColumn.isArray = isArrayType(column);
-    parsedColumn.isSerial = isSerialType(column);
-    parsedColumn.isWritable =
-      !parsedColumn.isSerial && parsedColumn.tableType === 'table';
-    parsedColumn.isOptional = parsedColumn.isNullable;
-    parsedColumn.isEnum = !!parsedColumn.enumValues?.length;
-
-    return parsedColumn;
-  }
-
   protected async createSchemaInfo(
     tables: ZodDbsTableInfo[],
     config: ZodDbsConnectorConfig
@@ -77,12 +37,12 @@ export abstract class DatabaseConnector implements ZodDbsDbConnector {
 
   protected abstract fetchSchemaInfo(
     config: ZodDbsConnectorConfig
-  ): Promise<ZodDbsRawColumnInfo[]>;
+  ): Promise<ZodDbsColumnInfo[]>;
 
   protected filterColumns(
-    columns: ZodDbsRawColumnInfo[],
+    columns: ZodDbsColumnInfo[],
     config: ZodDbsConnectorConfig
-  ): ZodDbsRawColumnInfo[] {
+  ): ZodDbsColumnInfo[] {
     const { include, exclude } = config;
 
     if (!exclude && !include) return columns;
@@ -119,7 +79,7 @@ export abstract class DatabaseConnector implements ZodDbsDbConnector {
   }
 
   protected async createTables(
-    columns: ZodDbsRawColumnInfo[],
+    columns: ZodDbsColumnInfo[],
     config: ZodDbsConnectorConfig
   ): Promise<ZodDbsTableInfo[]> {
     const tablesMap = new Map<string, ZodDbsTableInfo>();
@@ -128,11 +88,10 @@ export abstract class DatabaseConnector implements ZodDbsDbConnector {
     for (const column of columns) {
       const key = `${schemaName}:${column.tableName}`;
       let table = tablesMap.get(key);
-
-      let parsedColumn = await this.createColumnInfo(column, schemaName);
+      let modifiedColumn = column;
 
       if (config.onColumnModelCreated) {
-        parsedColumn = await config.onColumnModelCreated(parsedColumn);
+        modifiedColumn = await config.onColumnModelCreated(column);
       }
 
       if (!table) {
@@ -146,7 +105,7 @@ export abstract class DatabaseConnector implements ZodDbsDbConnector {
         tablesMap.set(key, table);
       }
 
-      table.columns.push(parsedColumn);
+      table.columns.push(modifiedColumn);
     }
 
     let tables = Array.from(tablesMap.values());

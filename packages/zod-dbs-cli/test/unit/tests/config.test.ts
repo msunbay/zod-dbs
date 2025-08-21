@@ -104,7 +104,7 @@ describe.sequential('getConfiguration', () => {
       user: 'env-user',
       password: 'env-pass',
       database: 'env-db',
-      port: '6543',
+      port: 6543,
       ssl: true,
     });
 
@@ -123,7 +123,7 @@ describe.sequential('getConfiguration', () => {
       user: 'conf-user',
       password: 'conf-pass',
       database: 'conf-db',
-      port: '9999',
+      port: 9999,
       ssl: false,
       outputDir: './out',
     };
@@ -146,7 +146,7 @@ describe.sequential('getConfiguration', () => {
       user: 'env-user2',
       password: 'env-pass2',
       database: 'env-db2',
-      port: '7777',
+      port: 7777,
       ssl: true,
       outputDir: './out',
       schemaName: 'public',
@@ -166,7 +166,7 @@ describe.sequential('getConfiguration', () => {
       user: 'conf-user',
       password: 'conf-pass',
       database: 'conf-db',
-      port: '9999',
+      port: 9999,
       ssl: false,
       outputDir: './out',
     };
@@ -187,7 +187,7 @@ describe.sequential('getConfiguration', () => {
       user: 'conf-user',
       password: 'env-pass-partial',
       database: 'conf-db',
-      port: '9999',
+      port: 9999,
       ssl: false,
       outputDir: './out',
       schemaName: 'public',

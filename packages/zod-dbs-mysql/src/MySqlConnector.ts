@@ -1,15 +1,17 @@
-import { DatabaseConnector, logDebug, sql } from 'zod-dbs-core';
+import { DatabaseConnector, getZodType, logDebug, sql } from 'zod-dbs-core';
 
 import type {
+  ZodDbsColumnInfo,
   ZodDbsConnectionConfig,
   ZodDbsConnectorConfig,
-  ZodDbsRawColumnInfo,
 } from 'zod-dbs-core';
 
 import { createClient } from './client.js';
+import { parseEnumValues } from './utils.js';
 
 interface RawColumnInfo {
   tableName: string;
+  tableSchema: string;
   name: string;
   ordinalPosition: number;
   defaultValue: string | null;
@@ -20,8 +22,8 @@ interface RawColumnInfo {
   numericScale: number | null;
   columnType: string;
   columnKey: string;
-  extra: string;
-  description: string;
+  extra: string | null;
+  description: string | null;
 }
 
 /**
@@ -33,9 +35,37 @@ export class MySqlConnector extends DatabaseConnector {
     return createClient(options);
   };
 
+  protected createColumnInfo(column: RawColumnInfo): ZodDbsColumnInfo {
+    const parsedColumn: ZodDbsColumnInfo = {
+      maxLen: column.characterMaximumLength ?? undefined,
+      isEnum: false,
+      isSerial: false,
+      isArray: false,
+      isWritable: true,
+      type: getZodType(column.dataType),
+      schemaName: column.tableSchema,
+      tableType: 'table',
+      name: column.name,
+      isNullable: column.isNullable === 'YES',
+      dataType: column.dataType,
+      tableName: column.tableName,
+      defaultValue: column.defaultValue ?? undefined,
+    };
+
+    parsedColumn.isArray = column.dataType.toLowerCase().endsWith('[]');
+    parsedColumn.isSerial = column.extra?.includes('auto_increment') ?? false;
+    parsedColumn.isWritable = !parsedColumn.isSerial;
+    parsedColumn.isOptional = column.isNullable === 'YES';
+    parsedColumn.isEnum = column.dataType === 'enum';
+    if (parsedColumn.isEnum)
+      parsedColumn.enumValues = parseEnumValues(column.columnType);
+
+    return parsedColumn;
+  }
+
   public override async fetchSchemaInfo(
     config: ZodDbsConnectorConfig
-  ): Promise<ZodDbsRawColumnInfo[]> {
+  ): Promise<ZodDbsColumnInfo[]> {
     const { schemaName = 'public' } = config;
 
     config.onProgress?.('connecting');
@@ -76,6 +106,7 @@ export class MySqlConnector extends DatabaseConnector {
         sql`
           SELECT
             TABLE_NAME AS "tableName",
+            TABLE_SCHEMA AS "tableSchema",
             COLUMN_NAME AS "name",
             ORDINAL_POSITION AS "ordinalPosition",
             COLUMN_DEFAULT AS "defaultValue",
@@ -90,22 +121,12 @@ export class MySqlConnector extends DatabaseConnector {
             COLUMN_COMMENT AS "description"
           FROM information_schema.columns
           WHERE TABLE_SCHEMA = ?
+          ORDER BY TABLE_NAME, ORDINAL_POSITION
         `,
         [schemaName]
       );
 
-      return result.map(
-        (row): ZodDbsRawColumnInfo => ({
-          tableName: row.tableName,
-          name: row.name,
-          isNullable: row.isNullable === 'YES',
-          dataType: row.dataType,
-          defaultValue: row.defaultValue,
-          maxLen: row.characterMaximumLength ?? null,
-          schemaName,
-          tableType: 'table',
-        })
-      );
+      return result.map((column) => this.createColumnInfo(column));
     } finally {
       await client.end();
     }

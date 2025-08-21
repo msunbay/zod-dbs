@@ -26,6 +26,7 @@ exports[`CLI generates correct zod schemas with basic options > tables/users/sch
 
 import { z } from 'zod';
 
+export const USER_ROLES = ['admin', 'editor', 'viewer'] as const;
 
 /**
  * Base read schema for the "test.users" table.
@@ -35,7 +36,7 @@ export const UsersTableBaseSchema = z.object({
      /**
       * dataType: int
       */
-    id: z.any(),
+    id: z.number(),
      /**
       * dataType: varchar
       */
@@ -59,13 +60,10 @@ export const UsersTableBaseSchema = z.object({
       */
     created_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
      /**
-      * dataType: json
+      * dataType: enum
+      * defaultValue: viewer
       */
-    roles: z.any().nullable().transform((value) => value ?? undefined).optional(),
-     /**
-      * dataType: json
-      */
-    dates: z.any().nullable().transform((value) => value ?? undefined).optional(),
+    roles: z.enum(USER_ROLES).nullable().transform((value) => value ?? undefined).optional(),
 });
 
 /**
@@ -86,7 +84,6 @@ export const transformUserBaseRecord = (data: UserBaseRecord): {
     profile?: UserBaseRecord['profile'],
     createdAt?: UserBaseRecord['created_at'],
     roles?: UserBaseRecord['roles'],
-    dates?: UserBaseRecord['dates'],
 } => ({
     id: data.id,
     name: data.name,
@@ -95,7 +92,6 @@ export const transformUserBaseRecord = (data: UserBaseRecord): {
     profile: data.profile,
     createdAt: data.created_at,
     roles: data.roles,
-    dates: data.dates,
 });
 
 /**
@@ -107,10 +103,6 @@ export const UsersTableSchema = UsersTableBaseSchema.transform(transformUserBase
  * Base insert/write schema for the "test.users" table (no casing transforms).
  */
 export const UsersTableInsertBaseSchema = z.object({
-     /**
-      * dataType: int
-      */
-    id: z.any(),
      /**
       * dataType: varchar
       */
@@ -134,13 +126,10 @@ export const UsersTableInsertBaseSchema = z.object({
       */
     createdAt: z.date().nullable().optional(),
      /**
-      * dataType: json
+      * dataType: enum
+      * defaultValue: viewer
       */
-    roles: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
-     /**
-      * dataType: json
-      */
-    dates: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
+    roles: z.enum(USER_ROLES).nullable().optional(),
 });
 
 /**
@@ -160,23 +149,19 @@ export type UserUpdateBaseRecord = Partial<UserInsertBaseRecord>;
  * Maps app cased properties to database fields.
  */
 export const transformUserInsertBaseRecord = (data: UserInsertBaseRecord): {
-    id: UserInsertBaseRecord['id'],
     name: UserInsertBaseRecord['name'],
     email?: UserInsertBaseRecord['email'],
     status?: UserInsertBaseRecord['status'],
     profile?: UserInsertBaseRecord['profile'],
     created_at?: UserInsertBaseRecord['createdAt'],
     roles?: UserInsertBaseRecord['roles'],
-    dates?: UserInsertBaseRecord['dates'],
 } => ({
-    id: data.id,
     name: data.name,
     email: data.email,
     status: data.status,
     profile: data.profile,
     created_at: data.createdAt,
     roles: data.roles,
-    dates: data.dates,
 });
 
 /**
@@ -184,23 +169,19 @@ export const transformUserInsertBaseRecord = (data: UserInsertBaseRecord): {
  * Maps app cased properties to database fields.
  */
 export const transformUserUpdateBaseRecord = (data: UserUpdateBaseRecord): {
-    id: UserUpdateBaseRecord['id'],
     name: UserUpdateBaseRecord['name'],
     email?: UserUpdateBaseRecord['email'],
     status?: UserUpdateBaseRecord['status'],
     profile?: UserUpdateBaseRecord['profile'],
     created_at?: UserUpdateBaseRecord['createdAt'],
     roles?: UserUpdateBaseRecord['roles'],
-    dates?: UserUpdateBaseRecord['dates'],
 } => ({
-    id: data.id,
     name: data.name,
     email: data.email,
     status: data.status,
     profile: data.profile,
     created_at: data.createdAt,
     roles: data.roles,
-    dates: data.dates,
 });
 
 /**
@@ -241,18 +222,12 @@ export interface UserRecord {
     /**
     */
     roles?: TableReadRecord['roles'];
-    /**
-    */
-    dates?: TableReadRecord['dates'];
 }
 
 /**
  * Insert record (casing transformed) for the "test.users" table.
  */
 export interface UserInsertRecord {
-    /**
-    */
-    id: TableInsertRecord['id'];
     /**
     * @maxLen: 100
     */
@@ -274,11 +249,10 @@ export interface UserInsertRecord {
     */
     createdAt?: TableInsertRecord['createdAt'];
     /**
+    * @maxLen: 6
+    * @default: viewer
     */
     roles?: TableInsertRecord['roles'];
-    /**
-    */
-    dates?: TableInsertRecord['dates'];
 }
 
 /**
@@ -286,6 +260,7 @@ export interface UserInsertRecord {
  */
 export type UserUpdateRecord = Partial<UserInsertRecord>;
 
+export type UserRole = (typeof USER_ROLES)[number];
 "
 `;
 
