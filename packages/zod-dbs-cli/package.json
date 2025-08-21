@@ -16,6 +16,13 @@
   },
   "author": "Magnus Solvåg",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/msolvaag/zod-dbs.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "dist"
   ],

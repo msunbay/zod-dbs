@@ -55,9 +55,9 @@ zod-dbs automates this process by generating type-safe validation schemas direct
 ## Installation
 
 ```sh
-npm install --save-dev zod-dbs
+npm install --save-dev zod-dbs-cli
 # or
-pnpm add -D zod-dbs
+pnpm add -D zod-dbs-cli
 ```
 
 ## Usage
@@ -166,7 +166,7 @@ In addition to CLI options, you can use configuration files to set your options.
 **zod-dbs.config.ts:**
 
 ```typescript
-import type { ZodDbsConfig } from 'zod-dbs';
+import type { ZodDbsConfig } from 'zod-dbs-cli';
 
 const config: ZodDbsConfig = {
   connectionString: 'postgresql://user:password@localhost:5432/mydb',

@@ -15,9 +15,6 @@ import { maskConnectionString } from './utils/mask.js';
 import { createProgressHandler } from './utils/progress.js';
 import { getAppVersion } from './utils/version.js';
 
-/**
- * Main entrypoint: connects to Postgres, cleans output, generates Zod schemas for all tables, and writes an index file.
- */
 export const main = async (overrides?: Partial<ZodDbsConfig>) => {
   const config = await getConfiguration(overrides);
   const appVersion = await getAppVersion();
@@ -29,6 +26,7 @@ export const main = async (overrides?: Partial<ZodDbsConfig>) => {
     '--provider <name>',
     'Database provider to use (e.g. pg, mysql, sqlite, mssql, mongodb)'
   );
+
   program.option(
     '-o,--output-dir <path>',
     'Output directory for generated schemas'
