@@ -13,9 +13,9 @@ import { createClient } from './client.js';
  * Supports postgresql version 9.3 and above.
  */
 export class PostgreSqlConnector extends DatabaseConnector {
-  createClient = (options: ZodDbsConnectionConfig) => {
-    return createClient(options);
-  };
+  async createClient(options: ZodDbsConnectionConfig) {
+    return await createClient(options);
+  }
 
   public override async fetchSchemaInfo(
     config: ZodDbsConnectorConfig
@@ -23,14 +23,14 @@ export class PostgreSqlConnector extends DatabaseConnector {
     const { schemaName = 'public' } = config;
 
     config.onProgress?.('connecting');
-    const client = this.createClient(config);
+    const client = await this.createClient(config);
     await client.connect();
 
     config.onProgress?.('fetchingSchema');
     logDebug(`Retrieving schema information for schema '${schemaName}'`);
 
     try {
-      const res = await client.query<ZodDbsRawColumnInfo>(
+      const res = await client.query<ZodDbsRawColumnInfo[]>(
         sql`
           SELECT
             c.relname AS "tableName",
@@ -73,11 +73,9 @@ export class PostgreSqlConnector extends DatabaseConnector {
         [schemaName]
       );
 
-      logDebug(
-        `Retrieved ${res.rows.length} columns from schema '${schemaName}'`
-      );
+      logDebug(`Retrieved ${res.length} columns from schema '${schemaName}'`);
 
-      return res.rows.map((row) => ({ ...row, schemaName }));
+      return res.map((row) => ({ ...row, schemaName }));
     } finally {
       await client.end();
     }

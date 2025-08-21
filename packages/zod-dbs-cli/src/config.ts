@@ -10,7 +10,8 @@ function getEnvOverrides(): Partial<ZodDbsConnectionConfig> {
   if (process.env.ZOD_DBS_PASSWORD)
     overrides.password = process.env.ZOD_DBS_PASSWORD;
   if (process.env.ZOD_DBS_DB) overrides.database = process.env.ZOD_DBS_DB;
-  if (process.env.ZOD_DBS_PORT) overrides.port = process.env.ZOD_DBS_PORT;
+  if (process.env.ZOD_DBS_PORT)
+    overrides.port = parseInt(process.env.ZOD_DBS_PORT);
   if (process.env.ZOD_DBS_SSL !== undefined)
     overrides.ssl = process.env.ZOD_DBS_SSL === 'true';
   return overrides;

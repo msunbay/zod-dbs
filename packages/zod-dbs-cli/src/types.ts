@@ -1,1 +1,1 @@
-export type ZodDbsConnector = 'pg' | 'mysql' | 'sqlite' | 'mssql' | 'mongodb';
+export type ZodDbsProvider = 'pg' | 'mysql' | 'sqlite' | 'mssql' | 'mongodb';

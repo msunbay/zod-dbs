@@ -25,14 +25,13 @@ export const generateZodSchemas = async (
     ...config,
   };
 
-  const { connectionString, outputDir, schemaName, cleanOutput, onProgress } =
-    generateConfig;
+  const { outputDir, schemaName, cleanOutput, onProgress } = generateConfig;
 
   if (cleanOutput) {
     clearTablesDirectory(outputDir);
   }
 
-  logDebug(`Connecting to Postgres database at ${connectionString}`);
+  logDebug(`Connecting to database`);
 
   const schema = await dbConnector.getSchemaInformation(config);
 

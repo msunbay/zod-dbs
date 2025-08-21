@@ -27,6 +27,9 @@
   "files": [
     "dist"
   ],
+  "devDependencies": {
+    "@testcontainers/mysql": "^11.5.1"
+  },
   "dependencies": {
     "chalk": "^5.4.1",
     "commander": "^14.0.0",
@@ -35,6 +38,7 @@
     "ora": "^8.2.0",
     "zod-dbs": "workspace:*",
     "zod-dbs-core": "workspace:*",
-    "zod-dbs-pg": "workspace:*"
+    "zod-dbs-pg": "workspace:*",
+    "zod-dbs-mysql": "workspace:*"
   }
 }

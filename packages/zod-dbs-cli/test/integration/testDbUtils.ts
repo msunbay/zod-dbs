@@ -1,45 +1,62 @@
 import fs from 'fs/promises';
 import path from 'path';
+import { MySqlContainer } from '@testcontainers/mysql';
+import { PostgreSqlContainer } from '@testcontainers/postgresql';
 import {
-  PostgreSqlContainer,
-  StartedPostgreSqlContainer,
-} from '@testcontainers/postgresql';
-import { Client, createClient } from 'zod-dbs-pg';
+  createConnectionString,
+  ZodDbsConnectorConfig,
+  ZodDbsDatabaseClient,
+} from 'zod-dbs-core';
+import { createClient as createMysqlClient } from 'zod-dbs-mysql';
+import { createClient as createPostgreSqlClient } from 'zod-dbs-pg';
+
+import { ZodDbsProvider } from '../../src/types.js';
 
 export interface TestDbContext {
-  container: StartedPostgreSqlContainer;
-  client: Client;
+  container: { stop(): Promise<unknown> };
+  client: ZodDbsDatabaseClient;
 }
 
-let _clientInstance: Client | null = null;
+let _clientInstance: ZodDbsDatabaseClient | null = null;
 
-export const getClient = (): Client => {
+export const getClient = (): ZodDbsDatabaseClient => {
   if (!_clientInstance) {
     throw new Error('Client has not been initialized. Call setupTestDb first.');
   }
   return _clientInstance;
 };
 
-export const getClientConnectionString = (): string => {
+export const getConnectionConfig = (): ZodDbsConnectorConfig => {
   const client = getClient();
-  return `postgres://${client.user}:${client.password}@${client.host}:${client.port}/${client.database}`;
+
+  return {
+    host: client.config.host,
+    port: client.config.port,
+    database: client.config.database,
+    user: client.config.user,
+    password: client.config.password,
+    schemaName: 'test',
+  };
+};
+
+export const getClientConnectionString = (): string => {
+  return createConnectionString(getConnectionConfig());
 };
 
 export const getCliPath = (): string => {
   return path.resolve(import.meta.dirname, '../../index.js');
 };
 
-export async function setupTestDb(): Promise<TestDbContext> {
-  const schemaPath = path.resolve(import.meta.dirname, './schema.sql');
+export async function setupPostgreSql(): Promise<TestDbContext> {
+  const schemaPath = path.resolve(import.meta.dirname, './schema-pg.sql');
 
   const container = await new PostgreSqlContainer('postgres')
     .withDatabase('postgres')
     .withUsername('postgres')
     .withPassword('postgres')
-    .withExposedPorts(5432)
     .start();
 
-  const client = createClient({
+  const client = await createPostgreSqlClient({
     host: container.getHost(),
     port: container.getPort(),
     database: container.getDatabase(),
@@ -47,15 +64,52 @@ export async function setupTestDb(): Promise<TestDbContext> {
     password: container.getPassword(),
   });
 
+  _clientInstance = client;
+
   await client.connect();
 
   // Create schema
   const schemaSql = await fs.readFile(schemaPath, 'utf8');
   await client.query(schemaSql);
 
+  return { container, client };
+}
+
+export async function setupMysql(): Promise<TestDbContext> {
+  const schemaPath = path.resolve(import.meta.dirname, './schema-mysql.sql');
+
+  const container = await new MySqlContainer('mysql')
+    .withDatabase('test')
+    .withUsername('test')
+    .withRootPassword('test')
+    .start();
+
+  const client = await createMysqlClient({
+    host: container.getHost(),
+    port: container.getPort(),
+    database: container.getDatabase(),
+    user: container.getUsername(),
+    password: container.getRootPassword(),
+  });
+
   _clientInstance = client;
 
+  await client.connect();
+
+  // Create schema
+  const schemaSql = await fs.readFile(schemaPath, 'utf8');
+  await client.query(schemaSql);
+
   return { container, client };
+}
+
+export async function setupTestDb(
+  db: ZodDbsProvider = 'pg'
+): Promise<TestDbContext> {
+  if (db === 'pg') return setupPostgreSql();
+  if (db === 'mysql') return setupMysql();
+
+  throw new Error(`Unsupported database provider: ${db}`);
 }
 
 export async function teardownTestDb(ctx: TestDbContext) {

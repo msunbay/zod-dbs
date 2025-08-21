@@ -11,12 +11,6 @@ import { logDebug } from '../utils/debug.js';
 import { getEnumConstraints } from './enumConstraints.js';
 import { getZodType, isArrayType, isSerialType } from './typeMap.js';
 
-export interface DatabaseClient {
-  connect: () => Promise<void>;
-  query: (query: string, params?: any[]) => Promise<any>;
-  end: () => Promise<void>;
-}
-
 /**
  * Base class for database connectors.
  * Provides common functionality for fetching schema information and processing columns.

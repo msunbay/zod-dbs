@@ -228,12 +228,19 @@ export interface ZodDbsHooks {
 
 export interface ZodDbsSslConfig extends Record<string, any> {}
 
+export interface ZodDbsDatabaseClient {
+  connect: () => Promise<void>;
+  query: <T>(query: string, params?: any[]) => Promise<T>;
+  end: () => Promise<void>;
+  config: ZodDbsConnectionConfig;
+}
+
 /**
  * Configuration for PostgreSQL database connection.
  */
 export interface ZodDbsConnectionConfig {
   /** Database port (default: 5432) */
-  port?: string | number;
+  port?: number;
   /** Database host (default: localhost) */
   host?: string;
   /** Database name to connect to */
@@ -242,8 +249,6 @@ export interface ZodDbsConnectionConfig {
   user?: string;
   /** Password for authentication */
   password?: string;
-  /** Complete connection string (overrides individual connection params) */
-  connectionString?: string;
   /** Whether to use SSL connection */
   ssl?: boolean | ZodDbsSslConfig;
 }

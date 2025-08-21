@@ -4,6 +4,7 @@ import {
   createConnectionString,
   enableDebug,
   logDebug,
+  parseConnectionString,
   toError,
   ZodDbsConfig,
 } from 'zod-dbs-core';
@@ -115,8 +116,13 @@ export const main = async (overrides?: Partial<ZodDbsConfig>) => {
   const options = program.opts();
   const spinner = createProgressHandler(options.silent);
 
+  const connectionConfig = options.connectionString
+    ? parseConnectionString(options.connectionString)
+    : options;
+
   const cliConfig: ZodDbsConfig = {
     ...config,
+    ...connectionConfig,
     ...options,
     onProgress: spinner.onProgress,
   };

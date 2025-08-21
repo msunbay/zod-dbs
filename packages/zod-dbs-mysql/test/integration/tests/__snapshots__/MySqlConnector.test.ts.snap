@@ -1,0 +1,66 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`returns raw schema column information > rawColumns 1`] = `
+[
+  {
+    "dataType": "timestamp",
+    "defaultValue": "CURRENT_TIMESTAMP",
+    "isNullable": true,
+    "maxLen": null,
+    "name": "created_at",
+    "schemaName": "test",
+    "tableName": "users",
+    "tableType": "table",
+  },
+  {
+    "dataType": "varchar",
+    "defaultValue": null,
+    "isNullable": true,
+    "maxLen": 255,
+    "name": "email",
+    "schemaName": "test",
+    "tableName": "users",
+    "tableType": "table",
+  },
+  {
+    "dataType": "bigint",
+    "defaultValue": null,
+    "isNullable": false,
+    "maxLen": null,
+    "name": "id",
+    "schemaName": "test",
+    "tableName": "users",
+    "tableType": "table",
+  },
+  {
+    "dataType": "varchar",
+    "defaultValue": null,
+    "isNullable": false,
+    "maxLen": 100,
+    "name": "name",
+    "schemaName": "test",
+    "tableName": "users",
+    "tableType": "table",
+  },
+  {
+    "dataType": "json",
+    "defaultValue": null,
+    "isNullable": true,
+    "maxLen": null,
+    "name": "profile",
+    "schemaName": "test",
+    "tableName": "users",
+    "tableType": "table",
+  },
+  {
+    "dataType": "varchar",
+    "defaultValue": "active",
+    "isNullable": true,
+    "maxLen": 20,
+    "name": "status",
+    "schemaName": "test",
+    "tableName": "users",
+    "tableType": "table",
+  },
+]
+`;
