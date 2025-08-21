@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'vitest';
 
 import type {
-  ZodPgColumnInfo,
-  ZodPgConfig,
-  ZodPgTableInfo,
+  ZodDbsColumnInfo,
+  ZodDbsConfig,
+  ZodDbsTableInfo,
 } from '../../../../src/types.js';
 
 import { DefaultRenderer } from '../../../../src/generate/renderers/DefaultRenderer.js';
 
 // Helpers
-const column = (overrides: Partial<ZodPgColumnInfo>): ZodPgColumnInfo => ({
+const column = (overrides: Partial<ZodDbsColumnInfo>): ZodDbsColumnInfo => ({
   name: 'col',
   dataType: 'text',
   type: 'string',
@@ -24,14 +24,14 @@ const column = (overrides: Partial<ZodPgColumnInfo>): ZodPgColumnInfo => ({
   ...overrides,
 });
 
-const table = (cols: ZodPgColumnInfo[]): ZodPgTableInfo => ({
+const table = (cols: ZodDbsColumnInfo[]): ZodDbsTableInfo => ({
   type: 'table',
   name: 'users',
   schemaName: 'public',
   columns: cols,
 });
 
-const baseConfig: ZodPgConfig = {
+const baseConfig: ZodDbsConfig = {
   outputDir: '/tmp/ignore',
   fieldNameCasing: 'camelCase',
   objectNameCasing: 'PascalCase',
@@ -231,7 +231,7 @@ describe('DefaultRenderer', () => {
       isWritable: false,
     });
 
-    const tbl: ZodPgTableInfo = {
+    const tbl: ZodDbsTableInfo = {
       type: 'table',
       name: 'users',
       schemaName: 'public',

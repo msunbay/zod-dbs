@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type {
-  ZodPgColumnInfo,
-  ZodPgRawColumnInfo,
-  ZodPgTableInfo,
-  ZodPgTableType,
+  ZodDbsColumnInfo,
+  ZodDbsRawColumnInfo,
+  ZodDbsTableInfo,
+  ZodDbsTableType,
 } from '../../../../src/types.js';
 
 import { getEnumConstraints } from '../../../../src/database/enumConstraints.js';
@@ -48,8 +48,8 @@ vi.mock('../../../../src/database/client.js', () => ({
 
 // Helpers
 const createRaw = (
-  overrides: Partial<ZodPgRawColumnInfo> = {}
-): ZodPgRawColumnInfo => ({
+  overrides: Partial<ZodDbsRawColumnInfo> = {}
+): ZodDbsRawColumnInfo => ({
   tableName: 'users',
   name: 'id',
   defaultValue: undefined,
@@ -58,7 +58,7 @@ const createRaw = (
   maxLen: undefined,
   description: undefined,
   checkConstraints: undefined,
-  tableType: 'table' as ZodPgTableType,
+  tableType: 'table' as ZodDbsTableType,
   schemaName: 'public',
   ...overrides,
 });
@@ -68,7 +68,7 @@ interface MockClient {
   end: ReturnType<typeof vi.fn>;
 }
 
-const buildConnector = (rows: ZodPgRawColumnInfo[], options: any = {}) => {
+const buildConnector = (rows: ZodDbsRawColumnInfo[], options: any = {}) => {
   const connector = new PostgreSqlConnector(options) as PostgreSqlConnector & {
     __mockClient?: MockClient;
   };
@@ -199,7 +199,7 @@ describe('PostgreSqlConnector', () => {
   it('applies onColumnModelCreated hook (async) before grouping', async () => {
     const rows = [createRaw({ name: 'id' })];
     const connector = buildConnector(rows, {
-      onColumnModelCreated: async (c: ZodPgColumnInfo) => ({
+      onColumnModelCreated: async (c: ZodDbsColumnInfo) => ({
         ...c,
         type: 'int',
       }),
@@ -213,7 +213,7 @@ describe('PostgreSqlConnector', () => {
   it('applies onTableModelCreated hook (async) after grouping', async () => {
     const rows = [createRaw({ tableName: 'users' })];
     const connector = buildConnector(rows, {
-      onTableModelCreated: async (t: ZodPgTableInfo) => ({
+      onTableModelCreated: async (t: ZodDbsTableInfo) => ({
         ...t,
         name: `${t.name}_x`,
       }),

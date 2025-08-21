@@ -15,7 +15,7 @@ export default defineConfig({
         test: {
           name: 'integration:cli',
           environment: 'node',
-          include: ['test/integration/tests/cli/**/*.test.ts'],
+          include: ['packages/zod-dbs-cli/test/integration/tests/**/*.test.ts'],
           globals: true,
           hookTimeout: 60000,
           testTimeout: 20000,

@@ -1,4 +1,4 @@
-import type { ZodPgTableInfo } from '../../../../src/types.js';
+import type { ZodDbsTableInfo } from '../../../../src/types.js';
 
 import {
   formatEnumConstantName,
@@ -11,10 +11,10 @@ import {
 } from '../../../../src/generate/format.js';
 
 describe('format', () => {
-  // Helper function to create a mock ZodPgTableInfo
+  // Helper function to create a mock ZodDbsTableInfo
   const createMockTableInfo = (
-    overrides: Partial<ZodPgTableInfo> = {}
-  ): ZodPgTableInfo => ({
+    overrides: Partial<ZodDbsTableInfo> = {}
+  ): ZodDbsTableInfo => ({
     type: 'table' as const,
     name: 'users',
     schemaName: 'public',

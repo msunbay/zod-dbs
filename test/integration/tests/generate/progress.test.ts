@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import type { ZodPgProgress } from '../../../../src/types.js';
+import type { ZodDbsProgress } from '../../../../src/types.js';
 
 import { generateZodSchemas } from '../../../../src/generateZodSchemas.js';
 import {
@@ -27,7 +27,7 @@ afterAll(async () => {
 
 describe('progress callback', () => {
   it('calls onProgress callback with correct status updates', async () => {
-    const progressEvents: { status: ZodPgProgress; args?: unknown }[] = [];
+    const progressEvents: { status: ZodDbsProgress; args?: unknown }[] = [];
     const outputDir = getOutputDir('generate', 'progress', 'progress-tracking');
 
     await generateZodSchemas({
@@ -35,7 +35,7 @@ describe('progress callback', () => {
       moduleResolution: 'esm',
       outputDir,
       include: ['users', 'posts'],
-      onProgress: (status: ZodPgProgress, args?: unknown) => {
+      onProgress: (status: ZodDbsProgress, args?: unknown) => {
         progressEvents.push({ status, args });
       },
     });

@@ -1,0 +1,29 @@
+{
+  "name": "zod-dbs-cli",
+  "version": "1.0.0",
+  "description": "Opinionated Zod schema generator for databases",
+  "main": "./dist/index.js",
+  "type": "module",
+  "bin": {
+    "zod-dbs": "index.js"
+  },
+  "scripts": {
+    "build": "rm -rf ./dist && tsc --project tsconfig.build.json",
+    "test:integration": "vitest --project integration run"
+  },
+  "author": "Magnus Solvåg",
+  "license": "ISC",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "commander": "^14.0.0",
+    "cosmiconfig": "^9.0.0",
+    "mustache": "^4.2.0",
+    "ora": "^8.2.0",
+    "zod-dbs": "workspace:*",
+    "zod-dbs-core": "workspace:*",
+    "zod-dbs-pg": "workspace:*"
+  }
+}

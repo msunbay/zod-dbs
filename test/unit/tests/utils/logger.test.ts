@@ -39,10 +39,10 @@ describe('logger utilities', () => {
 
   describe('logAppName', () => {
     it('should log app name with magenta color and newlines', () => {
-      logAppName('zod-pg v1.0.0');
+      logAppName('zod-dbs v1.0.0');
 
       expect(mockConsoleInfo).toHaveBeenCalledWith(
-        'magenta(\nzod-pg v1.0.0\n)'
+        'magenta(\nzod-dbs v1.0.0\n)'
       );
     });
   });

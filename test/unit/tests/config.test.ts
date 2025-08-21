@@ -27,7 +27,7 @@ describe.sequential('getConfiguration', () => {
     const config = await getConfiguration();
 
     expect(config).toEqual(DEFAULT_CONFIGURATION);
-    expect(cosmiconfig).toHaveBeenCalledWith('zod-pg');
+    expect(cosmiconfig).toHaveBeenCalledWith('zod-dbs');
   });
 
   it('should return merged config when configuration file is found (merging defaults for missing connection fields)', async () => {

@@ -5,4 +5,5 @@ node_modules/
 
 zod-schemas/
 test/integration/tests/*/output/
+**/test/integration/output/
 coverage/

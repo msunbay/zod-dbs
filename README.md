@@ -1,18 +1,16 @@
-# zod-pg
+# zod-dbs
 
-![npm version](https://img.shields.io/npm/v/zod-pg?style=flat-square)
-![license](https://img.shields.io/npm/l/zod-pg?style=flat-square)
-![downloads](https://img.shields.io/npm/dm/zod-pg?style=flat-square)
+![npm version](https://img.shields.io/npm/v/zod-dbs?style=flat-square)
+![license](https://img.shields.io/npm/l/zod-dbs?style=flat-square)
+![downloads](https://img.shields.io/npm/dm/zod-dbs?style=flat-square)
 
-**zod-pg** is a code generation tool that creates [Zod](https://github.com/colinhacks/zod) schemas and TypeScript types from your PostgreSQL database schema. It generates validation schemas that match your database structure, helping keep your TypeScript types synchronized with your database schema.
-
-zod-pg supports PostgreSQL's type system including arrays, enums, and custom types, and generates validation schemas with TypeScript integration.
+**zod-dbs** is a code generation tool that creates [Zod](https://github.com/colinhacks/zod) schemas and TypeScript types from your database schema. It generates validation schemas that match your database structure, helping keep your TypeScript types synchronized with your database schema.
 
 ## Table of Contents
 
 - [Key Features](#key-features)
 - [Requirements](#requirements)
-- [Why zod-pg?](#why-zod-pg)
+- [Why zod-dbs?](#why-zod-dbs)
 - [Installation](#installation)
 - [Usage](#usage)
   - [With connection string](#with-connection-string)
@@ -35,10 +33,10 @@ zod-pg supports PostgreSQL's type system including arrays, enums, and custom typ
 
 ## Key Features
 
-- **Database-First Development** – Generate schemas directly from your PostgreSQL database.
+- **Database-First Development** – Generate Zod schemas directly from your database schema.
 - **Multiple Schema Types** – Separate read, insert, and update schemas for clearer intent.
 - **Multiple Zod Versions** – Generate for Zod v3, v4, or the lightweight v4-mini build.
-- **PostgreSQL Coverage** – Arrays, enums, custom types, materialized views, foreign tables.
+- **Db Coverage** – Arrays, enums, custom types, materialized views, foreign tables.
 - **Type Detection** – Detects serial, enum, array, and nullable characteristics automatically.
 - **Customization** – Hooks, casing transformations, singularization control.
 - **Organized Output** – Predictable file structure (constants, types, per-table schemas).
@@ -46,21 +44,20 @@ zod-pg supports PostgreSQL's type system including arrays, enums, and custom typ
 
 ## Requirements
 
-- **PostgreSQL 9.3+**
 - **Node.js 20+**
 
-## Why zod-pg?
+## Why zod-dbs?
 
 Manually writing and maintaining TypeScript types and Zod schemas for database tables is time-consuming and error-prone.
 
-zod-pg automates this process by generating type-safe validation schemas directly from your PostgreSQL database schema. This approach ensures your validation logic stays synchronized with your database structure, eliminating the manual work of writing and updating schemas when your database changes. Whether you're building APIs that need request validation, working with complex PostgreSQL features like arrays and enums, or maintaining type safety across your entire stack, zod-pg bridges the gap between your database and TypeScript application.
+zod-dbs automates this process by generating type-safe validation schemas directly from your database schema. This approach ensures your validation logic stays synchronized with your database structure, eliminating the manual work of writing and updating schemas when your database changes. Whether you're building APIs that need request validation, working with complex features like arrays and enums, or maintaining type safety across your entire stack, zod-dbs bridges the gap between your database and TypeScript application.
 
 ## Installation
 
 ```sh
-npm install --save-dev zod-pg
+npm install --save-dev zod-dbs
 # or
-pnpm add -D zod-pg
+pnpm add -D zod-dbs
 ```
 
 ## Usage
@@ -68,7 +65,7 @@ pnpm add -D zod-pg
 ### With connection string
 
 ```sh
-npx zod-pg --connection "postgres://user:password@localhost:5432/dbname" --ssl --output-dir ./src/output
+npx zod-dbs --connection "postgres://user:password@localhost:5432/dbname" --ssl --output-dir ./src/output
 ```
 
 ### With options
@@ -76,12 +73,12 @@ npx zod-pg --connection "postgres://user:password@localhost:5432/dbname" --ssl -
 You can also specify options directly:
 
 ```sh
-npx zod-pg --user postgres --password secret --host localhost --port 5432 --database mydb --ssl --output-dir ./src/output
+npx zod-dbs --user postgres --password secret --host localhost --port 5432 --database mydb --ssl --output-dir ./src/output
 ```
 
 ### With environment variables
 
-zod-pg can read connection details from environment variables. Set the following variables:
+zod-dbs can read connection details from environment variables. Set the following variables:
 
 - `POSTGRES_USER`
 - `POSTGRES_PASSWORD`
@@ -93,15 +90,15 @@ zod-pg can read connection details from environment variables. Set the following
 Then run:
 
 ```sh
-npx zod-pg --output-dir ./src/output
+npx zod-dbs --output-dir ./src/output
 ```
 
 #### Using .env files:
 
-zod-pg does not automatically load `.env` files, but you can use a package like `dotenv-cli` to load them before running zod-pg. For example:
+zod-dbs does not automatically load `.env` files, but you can use a package like `dotenv-cli` to load them before running zod-dbs. For example:
 
 ```sh
-dotenv -e .env npx zod-pg --output-dir ./src/output
+dotenv -e .env npx zod-dbs --output-dir ./src/output
 ```
 
 ### Exclude / Include Tables
@@ -109,13 +106,13 @@ dotenv -e .env npx zod-pg --output-dir ./src/output
 You can exclude specific tables from schema generation using the `--exclude` option with a regex pattern. For example, to exclude all tables starting with "temp":
 
 ```sh
-npx zod-pg --exclude '^temp_' --output-dir ./src/output
+npx zod-dbs --exclude '^temp_' --output-dir ./src/output
 ```
 
 To include only specific tables, use the `--include` option with a regex pattern. For example, to include only tables starting with "user" or "account:
 
 ```sh
-npx zod-pg --include '^(user|account)' --output-dir ./src/output
+npx zod-dbs --include '^(user|account)' --output-dir ./src/output
 ```
 
 Note that if you use both `--exclude` and `--include` options together, the `--include` option is applied first, then the `--exclude` option is applied to the included tables.
@@ -126,14 +123,14 @@ All CLI options are optional. Sensible defaults are applied (e.g. output default
 
 - CLI flags (highest precedence)
 - Environment variables (connection fields)
-- Config file (`zod-pg.config.{js,ts,json}`)
+- Config file (`zod-dbs.config.{js,ts,json}`)
 - Built-in defaults
 
 Negative flags (`--no-*`) disable a feature that is enabled by default.
 
 | Option                                 | Description                                                                                       | Default         |
 | -------------------------------------- | ------------------------------------------------------------------------------------------------- | --------------- |
-| `--connection-string <string>`         | PostgreSQL connection string (overrides individual host/port/user/etc).                           |                 |
+| `--connection-string <string>`         | DB connection string (overrides individual host/port/user/etc).                                   |                 |
 | `-o, --output-dir <path>`              | Output directory for generated files.                                                             | `./zod-schemas` |
 | `--clean-output`                       | Delete the output directory before generation.                                                    | `false`         |
 | `--no-coerce-dates`                    | Disable using `z.coerce.date()` for date columns in read schemas (coercion enabled by default).   | `false`         |
@@ -150,11 +147,11 @@ Negative flags (`--no-*`) disable a feature that is enabled by default.
 | `--module-resolution <type>`           | Module resolution: `commonjs` or `esm`.                                                           | `commonjs`      |
 | `--zod-version <version>`              | Target Zod variant: `3`, `4`, or `4-mini`.                                                        | `3`             |
 | `--schema-name <name>`                 | Database schema to introspect.                                                                    | `public`        |
-| `--host <host>`                        | PostgreSQL host (ignored if connection string provided).                                          | `localhost`     |
-| `--port <number>`                      | PostgreSQL port (ignored if connection string provided).                                          | `5432`          |
-| `--user <user>`                        | PostgreSQL user (ignored if connection string provided).                                          | `postgres`      |
-| `--password <password>`                | PostgreSQL password (ignored if connection string provided).                                      |                 |
-| `--database <name>`                    | PostgreSQL database name (ignored if connection string provided).                                 | `postgres`      |
+| `--host <host>`                        | DB host (ignored if connection string provided).                                                  | `localhost`     |
+| `--port <number>`                      | DB port (ignored if connection string provided).                                                  | `5432`          |
+| `--user <user>`                        | DB user (ignored if connection string provided).                                                  | `postgres`      |
+| `--password <password>`                | DB password (ignored if connection string provided).                                              |                 |
+| `--database <name>`                    | DB name (ignored if connection string provided).                                                  | `postgres`      |
 | `--ssl`                                | Use SSL for connection.                                                                           | `false`         |
 | `--silent`                             | Suppress console output (still writes files).                                                     | `false`         |
 | `--debug`                              | Enable verbose debug logging.                                                                     | `false`         |
@@ -162,16 +159,16 @@ Negative flags (`--no-*`) disable a feature that is enabled by default.
 
 ## Configuration File
 
-In addition to CLI options, you can use configuration files to set your options. zod-pg uses [cosmiconfig](https://github.com/davidtheclark/cosmiconfig).
+In addition to CLI options, you can use configuration files to set your options. zod-dbs uses [cosmiconfig](https://github.com/davidtheclark/cosmiconfig).
 
 ### Example Configuration File
 
-**zod-pg.config.ts:**
+**zod-dbs.config.ts:**
 
 ```typescript
-import type { ZodPgConfig } from 'zod-pg';
+import type { ZodDbsConfig } from 'zod-dbs';
 
-const config: ZodPgConfig = {
+const config: ZodDbsConfig = {
   connectionString: 'postgresql://user:password@localhost:5432/mydb',
   ssl: false,
   outputDir: './src/generated',
@@ -189,7 +186,7 @@ const config: ZodPgConfig = {
 export default config;
 ```
 
-**zod-pg.config.js:**
+**zod-dbs.config.js:**
 
 ```javascript
 module.exports = {
@@ -238,7 +235,7 @@ export interface UserInsertRecord {
 export type UserUpdateRecord = Partial<UserInsertRecord>;
 ```
 
-Since reading and writing are two different operations, zod-pg generates separate schemas for reads, inserts and updates. The `UsersTableInsertSchema` is used for creating new records, while the `UsersTableUpdateSchema` is a partial version of the insert schema, allowing you to update only specific fields.
+Since reading and writing are two different operations, zod-dbs generates separate schemas for reads, inserts and updates. The `UsersTableInsertSchema` is used for creating new records, while the `UsersTableUpdateSchema` is a partial version of the insert schema, allowing you to update only specific fields.
 
 ### The Read Schemas
 
@@ -256,12 +253,12 @@ Since reading and writing are two different operations, zod-pg generates separat
 
 ### Casing
 
-zod-pg supports different casing styles for generated schemas and types. By default zod-pg uses `PascalCase` for object names and `camelCase` for properties. You can specify the desired casing for field names and object names using the `--field-name-casing` and `--object-name-casing` options.
+zod-dbs supports different casing styles for generated schemas and types. By default zod-dbs uses `PascalCase` for object names and `camelCase` for properties. You can specify the desired casing for field names and object names using the `--field-name-casing` and `--object-name-casing` options.
 The `--no-case-transform` option disables the automatic casing transformation for field names, which means that the generated schemas will use the original database column names as-is without any transformation.
 
 ### Singularization
 
-By default zod-pg converts plural table / view names into singular, PascalCase identifiers when generating TypeScript record types, insert/update record types, enum names, and related constants / transform helpers. This keeps generated symbols concise and aligned with typical TypeScript naming conventions.
+By default zod-dbs converts plural table / view names into singular, PascalCase identifiers when generating TypeScript record types, insert/update record types, enum names, and related constants / transform helpers. This keeps generated symbols concise and aligned with typical TypeScript naming conventions.
 
 Example:
 
@@ -274,7 +271,7 @@ Example:
 If you would prefer the generated identifiers to preserve the original (often plural / snake_case) names, disable singularization with the CLI flag:
 
 ```
-npx zod-pg --no-singularize
+npx zod-dbs --no-singularize
 ```
 
 Or in a config file:
@@ -290,7 +287,7 @@ When disabled, names are still cased according to your casing settings, but the 
 
 ## Customizing Generated Models with Hooks
 
-zod-pg provides hooks to customize the generated models during generation. These hooks allow you to add custom validation, transformations, or modifications to your schemas.
+zod-dbs provides hooks to customize the generated models during generation. These hooks allow you to add custom validation, transformations, or modifications to your schemas.
 
 ### Available Hooks
 
@@ -342,19 +339,19 @@ onTableInfoCreated: (table) => {
 
 ## JSON Schema Support
 
-zod-pg cannot determine the structure of JSON fields in your database. To use Zod schemas for JSON fields, you can use the `--json-schema-import-location` option.
-When this option is provided, zod-pg will import Zod schemas from the specified location for JSON fields in your database.
+zod-dbs cannot determine the structure of JSON fields in your database. To use Zod schemas for JSON fields, you can use the `--json-schema-import-location` option.
+When this option is provided, zod-dbs will import Zod schemas from the specified location for JSON fields in your database.
 
 ### Setting up JSON Schema Integration
 
 Say you have a "user" table with a JSON field called "profile", and you want to use a Zod schema for that JSON field.
 
-**Step 1: Run zod-pg with JSON schema import location**
+**Step 1: Run zod-dbs with JSON schema import location**
 
 Start by running, e.g.,
 
 ```sh
-npx zod-pg --json-schema-import-location '../../json' --output-dir ./schema/generated
+npx zod-dbs --json-schema-import-location '../../json' --output-dir ./schema/generated
 ```
 
 **Step 2: Generated schema imports your JSON schemas**

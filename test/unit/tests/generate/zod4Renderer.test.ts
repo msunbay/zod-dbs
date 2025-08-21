@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
 import type {
-  ZodPgColumnInfo,
-  ZodPgConfig,
-  ZodPgTableInfo,
+  ZodDbsColumnInfo,
+  ZodDbsConfig,
+  ZodDbsTableInfo,
 } from '../../../../src/types.js';
 
 import { Zod4Renderer } from '../../../../src/generate/renderers/Zod4Renderer.js';
 
-const column = (overrides: Partial<ZodPgColumnInfo>): ZodPgColumnInfo => ({
+const column = (overrides: Partial<ZodDbsColumnInfo>): ZodDbsColumnInfo => ({
   name: 'col',
   dataType: 'text',
   type: 'string',
@@ -22,13 +22,13 @@ const column = (overrides: Partial<ZodPgColumnInfo>): ZodPgColumnInfo => ({
   tableType: 'table',
   ...overrides,
 });
-const table = (cols: ZodPgColumnInfo[]): ZodPgTableInfo => ({
+const table = (cols: ZodDbsColumnInfo[]): ZodDbsTableInfo => ({
   type: 'table',
   name: 'users',
   schemaName: 'public',
   columns: cols,
 });
-const config: ZodPgConfig = {
+const config: ZodDbsConfig = {
   outputDir: '/tmp/ignore',
   fieldNameCasing: 'camelCase',
   objectNameCasing: 'PascalCase',
