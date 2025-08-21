@@ -4,7 +4,11 @@ export const getDbConnector = async (provider: ZodDbsProvider) => {
   const name = `zod-dbs-${provider}`;
 
   try {
-    const connector = await import(name);
+    let connector = await import(name);
+
+    if (connector.default) {
+      connector = connector.default;
+    }
 
     if (connector.createConnector()) {
       return connector.createConnector();
