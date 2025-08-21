@@ -9,17 +9,11 @@ importers:
   .:
     devDependencies:
       '@ianvs/prettier-plugin-sort-imports':
-        specifier: ^4.5.1
+        specifier: ^4.6.2
         version: 4.6.2(prettier@3.6.2)
-      '@testcontainers/postgresql':
-        specifier: ^11.2.1
-        version: 11.5.1
       '@types/debug':
         specifier: ^4.1.12
         version: 4.1.12
-      '@types/lodash':
-        specifier: ^4.17.20
-        version: 4.17.20
       '@types/mustache':
         specifier: ^4.2.6
         version: 4.2.6
@@ -32,23 +26,20 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^3.2.4
         version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@20.19.11)(yaml@2.8.1))
-      dotenv-cli:
-        specifier: ^8.0.0
-        version: 8.0.0
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
       testcontainers:
-        specifier: ^11.2.1
+        specifier: ^11.5.1
         version: 11.5.1
       typescript:
-        specifier: ^5.8.3
+        specifier: ^5.9.2
         version: 5.9.2
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.11)(yaml@2.8.1)
       zod:
-        specifier: ^4.0.14
+        specifier: ^4.0.17
         version: 4.0.17
 
   packages/zod-dbs:
@@ -96,6 +87,9 @@ importers:
       '@testcontainers/mysql':
         specifier: ^11.5.1
         version: 11.5.1
+      '@testcontainers/postgresql':
+        specifier: ^11.5.1
+        version: 11.5.1
 
   packages/zod-dbs-core:
     dependencies:
@@ -122,6 +116,9 @@ importers:
         specifier: workspace:*
         version: link:../zod-dbs-core
     devDependencies:
+      '@testcontainers/postgresql':
+        specifier: ^11.5.1
+        version: 11.5.1
       '@types/pg':
         specifier: ^8.15.4
         version: 8.15.5
@@ -544,9 +541,6 @@ packages:
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
 
-  '@types/lodash@4.17.20':
-    resolution: {integrity: sha512-H3MHACvFUEiujabxhaI/ImO6gUrd8oOurg7LQtS7mbwIXA/cUqWrvBsaeJ23aZEPk1TAYkurjfMbSELfoCXlGA==}
-
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
 
@@ -837,18 +831,6 @@ packages:
     resolution: {integrity: sha512-R+rgrSRTRdU5mH14PZTCPZtW/zw3HDWNTS/1ZAQpL/5Upe/ye5K9WQkIysu4wBoiMwKynsz0a8qWuGsHgEvSAA==}
     engines: {node: '>= 8.0'}
 
-  dotenv-cli@8.0.0:
-    resolution: {integrity: sha512-aLqYbK7xKOiTMIRf1lDPbI+Y+Ip/wo5k3eyp6ePysVaSqbyxjyK3dK35BTxG+rmd7djf5q2UPs4noPNH+cj0Qw==}
-    hasBin: true
-
-  dotenv-expand@10.0.0:
-    resolution: {integrity: sha512-GopVGCpVS1UKH75VKHGuQFqS1Gusej0z4FyQkPdwjil2gNIv+LNsqBlboOzpJFZKVT95GkCyWJbBSdFEFUWI2A==}
-    engines: {node: '>=12'}
-
-  dotenv@16.6.1:
-    resolution: {integrity: sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow==}
-    engines: {node: '>=12'}
-
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
@@ -1089,9 +1071,6 @@ packages:
   minimatch@9.0.5:
     resolution: {integrity: sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==}
     engines: {node: '>=16 || 14 >=14.17'}
-
-  minimist@1.2.8:
-    resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
 
   minipass@7.1.2:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
@@ -1903,8 +1882,6 @@ snapshots:
 
   '@types/estree@1.0.8': {}
 
-  '@types/lodash@4.17.20': {}
-
   '@types/ms@2.1.0': {}
 
   '@types/mustache@4.2.6': {}
@@ -2224,17 +2201,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  dotenv-cli@8.0.0:
-    dependencies:
-      cross-spawn: 7.0.6
-      dotenv: 16.6.1
-      dotenv-expand: 10.0.0
-      minimist: 1.2.8
-
-  dotenv-expand@10.0.0: {}
-
-  dotenv@16.6.1: {}
-
   eastasianwidth@0.2.0: {}
 
   emoji-regex@10.4.0: {}
@@ -2455,8 +2421,6 @@ snapshots:
   minimatch@9.0.5:
     dependencies:
       brace-expansion: 2.0.2
-
-  minimist@1.2.8: {}
 
   minipass@7.1.2: {}
 

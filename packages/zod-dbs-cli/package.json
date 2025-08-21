@@ -1,6 +1,6 @@
 {
   "name": "zod-dbs-cli",
-  "version": "1.0.3",
+  "version": "1.0.4-beta.1",
   "description": "Opinionated Zod schema generator for databases",
   "main": "./dist/index.js",
   "type": "module",
@@ -28,7 +28,10 @@
     "dist"
   ],
   "devDependencies": {
-    "@testcontainers/mysql": "^11.5.1"
+    "@testcontainers/mysql": "^11.5.1",
+    "@testcontainers/postgresql": "^11.5.1",
+    "zod-dbs-pg": "workspace:*",
+    "zod-dbs-mysql": "workspace:*"
   },
   "dependencies": {
     "chalk": "^5.4.1",
@@ -37,8 +40,6 @@
     "mustache": "^4.2.0",
     "ora": "^8.2.0",
     "zod-dbs": "workspace:*",
-    "zod-dbs-core": "workspace:*",
-    "zod-dbs-pg": "workspace:*",
-    "zod-dbs-mysql": "workspace:*"
+    "zod-dbs-core": "workspace:*"
   }
 }
