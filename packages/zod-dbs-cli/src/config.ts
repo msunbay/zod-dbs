@@ -5,14 +5,14 @@ import { ZodDbsConfig, ZodDbsConnectionConfig } from 'zod-dbs-core';
 // Build an overrides object containing only values explicitly supplied via env vars.
 function getEnvOverrides(): Partial<ZodDbsConnectionConfig> {
   const overrides: Partial<ZodDbsConnectionConfig> = {};
-  if (process.env.POSTGRES_HOST) overrides.host = process.env.POSTGRES_HOST;
-  if (process.env.POSTGRES_USER) overrides.user = process.env.POSTGRES_USER;
-  if (process.env.POSTGRES_PASSWORD)
-    overrides.password = process.env.POSTGRES_PASSWORD;
-  if (process.env.POSTGRES_DB) overrides.database = process.env.POSTGRES_DB;
-  if (process.env.POSTGRES_PORT) overrides.port = process.env.POSTGRES_PORT;
-  if (process.env.POSTGRES_SSL !== undefined)
-    overrides.ssl = process.env.POSTGRES_SSL === 'true';
+  if (process.env.ZOD_DBS_HOST) overrides.host = process.env.ZOD_DBS_HOST;
+  if (process.env.ZOD_DBS_USER) overrides.user = process.env.ZOD_DBS_USER;
+  if (process.env.ZOD_DBS_PASSWORD)
+    overrides.password = process.env.ZOD_DBS_PASSWORD;
+  if (process.env.ZOD_DBS_DB) overrides.database = process.env.ZOD_DBS_DB;
+  if (process.env.ZOD_DBS_PORT) overrides.port = process.env.ZOD_DBS_PORT;
+  if (process.env.ZOD_DBS_SSL !== undefined)
+    overrides.ssl = process.env.ZOD_DBS_SSL === 'true';
   return overrides;
 }
 

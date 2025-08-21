@@ -24,7 +24,7 @@ afterAll(async () => {
 });
 
 it('CLI works with --no-case-transform option', async () => {
-  const outputDir = getOutputDir('cli', 'noCaseTransform');
+  const outputDir = getOutputDir('noCaseTransform');
   const connectionString = getClientConnectionString();
 
   execSync(

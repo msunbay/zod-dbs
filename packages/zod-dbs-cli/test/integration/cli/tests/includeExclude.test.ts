@@ -24,7 +24,7 @@ afterAll(async () => {
 
 it('CLI works with --exclude option', async () => {
   const connectionString = getClientConnectionString();
-  const outputDir = getOutputDir('cli', 'includeExclude', 'exclude');
+  const outputDir = getOutputDir('includeExclude', 'exclude');
 
   execSync(
     `node ${cliPath} --provider pg --connection-string "${connectionString}" --output-dir "${outputDir}" --exclude posts --silent --module-resolution esm`,
@@ -41,7 +41,7 @@ it('CLI works with --exclude option', async () => {
 
 it('CLI works with --include option', async () => {
   const connectionString = getClientConnectionString();
-  const outputDir = getOutputDir('cli', 'includeExclude', 'include');
+  const outputDir = getOutputDir('includeExclude', 'include');
 
   execSync(
     `node ${cliPath} --provider pg --connection-string "${connectionString}" --output-dir "${outputDir}" --include ^users$ --silent --module-resolution esm`,

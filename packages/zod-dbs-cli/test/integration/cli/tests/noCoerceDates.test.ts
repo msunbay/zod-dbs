@@ -24,7 +24,7 @@ afterAll(async () => {
 });
 
 it('CLI works with --no-coerce-dates option', async () => {
-  const outputDir = getOutputDir('cli', 'noCoerceDates');
+  const outputDir = getOutputDir('noCoerceDates');
   const connectionString = getClientConnectionString();
 
   execSync(

@@ -1,12 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
-import {
-  DatabaseConnector,
-  ZodDbsConnectionConfig,
-  ZodDbsConnectorConfig,
-  ZodDbsRawColumnInfo,
-} from 'zod-dbs-core';
-import { DatabaseClient } from 'zod-dbs-core/dist/database/DatabaseConnector.js';
+import { DatabaseConnector, ZodDbsRawColumnInfo } from 'zod-dbs-core';
 
 import rawColumns from './fixtures/raw-columns.json' with { type: 'json' };
 
@@ -35,13 +29,7 @@ export async function deleteOutputFiles(dir: string): Promise<void> {
 }
 
 class TestDbConnector extends DatabaseConnector {
-  protected createClient(options: ZodDbsConnectionConfig): DatabaseClient {
-    throw new Error('Method not implemented.');
-  }
-
-  protected fetchSchemaInfo(
-    config: ZodDbsConnectorConfig
-  ): Promise<ZodDbsRawColumnInfo[]> {
+  protected fetchSchemaInfo(): Promise<ZodDbsRawColumnInfo[]> {
     return Promise.resolve(rawColumns as ZodDbsRawColumnInfo[]);
   }
 }

@@ -25,7 +25,7 @@ afterAll(async () => {
 
 it('CLI works with --no-stringify-json option', async () => {
   const connectionString = getClientConnectionString();
-  const outputDir = getOutputDir('cli', 'noStringifyJson');
+  const outputDir = getOutputDir('noStringifyJson');
 
   execSync(
     `node ${cliPath} --provider pg --connection-string "${connectionString}" --output-dir "${outputDir}" --no-stringify-json --silent --include "^posts$" --module-resolution esm`,

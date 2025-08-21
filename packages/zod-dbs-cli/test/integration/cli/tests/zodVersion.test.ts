@@ -25,7 +25,7 @@ afterAll(async () => {
 
 it('CLI works with --zod-version option', async () => {
   const connectionString = getClientConnectionString();
-  const outputDir = getOutputDir('cli', 'zodVersion', 'zod-version-4');
+  const outputDir = getOutputDir('zodVersion', 'zod-version-4');
 
   execSync(
     `node ${cliPath} --provider pg --connection-string "${connectionString}" --output-dir "${outputDir}" --zod-version 4 --silent --include orders --module-resolution esm`,

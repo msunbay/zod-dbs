@@ -32,6 +32,7 @@ describe('clean output option', () => {
     await generateZodSchemas(connector, {
       outputDir: outputDir,
       cleanOutput: true,
+      moduleResolution: 'esm',
       include: ['users'],
     });
 
@@ -66,6 +67,7 @@ describe('clean output option', () => {
     await generateZodSchemas(connector, {
       outputDir,
       cleanOutput: false,
+      moduleResolution: 'esm',
       include: ['users'],
     });
 

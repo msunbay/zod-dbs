@@ -26,7 +26,7 @@ afterAll(async () => {
 
 it('CLI generates correct zod schemas with basic options', async () => {
   const connectionString = getClientConnectionString();
-  const outputDir = getOutputDir('cli', 'basic');
+  const outputDir = getOutputDir('basic');
 
   execSync(
     `node ${cliPath} --provider pg --connection-string "${connectionString}" --output-dir "${outputDir}" --silent --module-resolution esm --schema-name public`,

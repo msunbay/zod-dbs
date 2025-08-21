@@ -23,7 +23,7 @@ afterAll(async () => {
 });
 
 it('CLI works with connection parameters instead of connection string', async () => {
-  const outputDir = getOutputDir('cli', 'connectionParams');
+  const outputDir = getOutputDir('connectionParams');
 
   // Use the same connection details as the test database
   const connectionString = getClientConnectionString();

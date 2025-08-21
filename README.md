@@ -80,12 +80,12 @@ npx zod-dbs --provider pg --user postgres --password secret --host localhost --p
 
 zod-dbs can read connection details from environment variables. Set the following variables:
 
-- `POSTGRES_USER`
-- `POSTGRES_PASSWORD`
-- `POSTGRES_HOST`
-- `POSTGRES_PORT`
-- `POSTGRES_DB`
-- `POSTGRES_SSL` (optional, defaults to `false`)
+- `ZOD_DBS_USER`
+- `ZOD_DBS_PASSWORD`
+- `ZOD_DBS_HOST`
+- `ZOD_DBS_PORT`
+- `ZOD_DBS_DB`
+- `ZOD_DBS_SSL` (optional, defaults to `false`)
 
 Then run:
 

@@ -89,12 +89,12 @@ describe.sequential('getConfiguration', () => {
 
   it('applies environment variable overrides for defaults (no config file)', async () => {
     mockExplorer.search.mockResolvedValue(null);
-    process.env.POSTGRES_HOST = 'env-host';
-    process.env.POSTGRES_USER = 'env-user';
-    process.env.POSTGRES_PASSWORD = 'env-pass';
-    process.env.POSTGRES_DB = 'env-db';
-    process.env.POSTGRES_PORT = '6543';
-    process.env.POSTGRES_SSL = 'true';
+    process.env.ZOD_DBS_HOST = 'env-host';
+    process.env.ZOD_DBS_USER = 'env-user';
+    process.env.ZOD_DBS_PASSWORD = 'env-pass';
+    process.env.ZOD_DBS_DB = 'env-db';
+    process.env.ZOD_DBS_PORT = '6543';
+    process.env.ZOD_DBS_SSL = 'true';
 
     const config = await getConfiguration();
 
@@ -109,12 +109,12 @@ describe.sequential('getConfiguration', () => {
     });
 
     // cleanup
-    delete process.env.POSTGRES_HOST;
-    delete process.env.POSTGRES_USER;
-    delete process.env.POSTGRES_PASSWORD;
-    delete process.env.POSTGRES_DB;
-    delete process.env.POSTGRES_PORT;
-    delete process.env.POSTGRES_SSL;
+    delete process.env.ZOD_DBS_HOST;
+    delete process.env.ZOD_DBS_USER;
+    delete process.env.ZOD_DBS_PASSWORD;
+    delete process.env.ZOD_DBS_DB;
+    delete process.env.ZOD_DBS_PORT;
+    delete process.env.ZOD_DBS_SSL;
   });
 
   it('environment variables override config file values', async () => {
@@ -131,12 +131,12 @@ describe.sequential('getConfiguration', () => {
       config: mockConfig,
       filepath: '/x',
     });
-    process.env.POSTGRES_HOST = 'env-host2';
-    process.env.POSTGRES_USER = 'env-user2';
-    process.env.POSTGRES_PASSWORD = 'env-pass2';
-    process.env.POSTGRES_DB = 'env-db2';
-    process.env.POSTGRES_PORT = '7777';
-    process.env.POSTGRES_SSL = 'true';
+    process.env.ZOD_DBS_HOST = 'env-host2';
+    process.env.ZOD_DBS_USER = 'env-user2';
+    process.env.ZOD_DBS_PASSWORD = 'env-pass2';
+    process.env.ZOD_DBS_DB = 'env-db2';
+    process.env.ZOD_DBS_PORT = '7777';
+    process.env.ZOD_DBS_SSL = 'true';
 
     const config = await getConfiguration();
 
@@ -152,12 +152,12 @@ describe.sequential('getConfiguration', () => {
       schemaName: 'public',
     });
 
-    delete process.env.POSTGRES_HOST;
-    delete process.env.POSTGRES_USER;
-    delete process.env.POSTGRES_PASSWORD;
-    delete process.env.POSTGRES_DB;
-    delete process.env.POSTGRES_PORT;
-    delete process.env.POSTGRES_SSL;
+    delete process.env.ZOD_DBS_HOST;
+    delete process.env.ZOD_DBS_USER;
+    delete process.env.ZOD_DBS_PASSWORD;
+    delete process.env.ZOD_DBS_DB;
+    delete process.env.ZOD_DBS_PORT;
+    delete process.env.ZOD_DBS_SSL;
   });
 
   it('environment variables override only provided fields and retain others from config', async () => {
@@ -176,8 +176,8 @@ describe.sequential('getConfiguration', () => {
     });
 
     // Only override host & password via env
-    process.env.POSTGRES_HOST = 'env-host-partial';
-    process.env.POSTGRES_PASSWORD = 'env-pass-partial';
+    process.env.ZOD_DBS_HOST = 'env-host-partial';
+    process.env.ZOD_DBS_PASSWORD = 'env-pass-partial';
 
     const config = await getConfiguration();
 
@@ -193,7 +193,7 @@ describe.sequential('getConfiguration', () => {
       schemaName: 'public',
     });
 
-    delete process.env.POSTGRES_HOST;
-    delete process.env.POSTGRES_PASSWORD;
+    delete process.env.ZOD_DBS_HOST;
+    delete process.env.ZOD_DBS_PASSWORD;
   });
 });

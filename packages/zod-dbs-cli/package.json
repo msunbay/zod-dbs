@@ -12,7 +12,8 @@
     "test:unit": "vitest --project unit run",
     "test:integration": "pnpm run test:integration:cli && pnpm run test:integration:schema",
     "test:integration:cli": "vitest --project integration:cli run",
-    "test:integration:schema": "vitest --project integration:schema run"
+    "test:integration:schema": "vitest --project integration:schema run",
+    "test:types": "tsc --noEmit"
   },
   "author": "Magnus Solvåg",
   "license": "ISC",

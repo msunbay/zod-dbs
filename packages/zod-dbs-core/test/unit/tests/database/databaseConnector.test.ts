@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type {
-  ZodDbsHooks,
   ZodDbsRawColumnInfo,
   ZodDbsTableType,
 } from '../../../../src/types.js';

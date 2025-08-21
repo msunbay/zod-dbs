@@ -16,7 +16,7 @@ import {
 let ctx: TestDbContext;
 
 const cliPath = getCliPath();
-const outputDir = getOutputDir('cli', 'cleanOutput');
+const outputDir = getOutputDir('cleanOutput');
 
 beforeAll(async () => {
   ctx = await setupTestDb();

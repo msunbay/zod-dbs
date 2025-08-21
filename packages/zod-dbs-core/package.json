@@ -7,7 +7,8 @@
   "scripts": {
     "build": "rm -rf ./dist && tsc --project tsconfig.build.json",
     "test": "pnpm run test:unit",
-    "test:unit": "vitest --project unit run"
+    "test:unit": "vitest --project unit run",
+    "test:types": "tsc --noEmit"
   },
   "author": "msolvaag",
   "license": "ISC",
