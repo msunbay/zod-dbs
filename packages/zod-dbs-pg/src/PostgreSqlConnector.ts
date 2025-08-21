@@ -1,8 +1,8 @@
 import { DatabaseConnector, logDebug, sql } from 'zod-dbs-core';
 
 import type {
-  ZodDbsConfig,
   ZodDbsConnectionConfig,
+  ZodDbsConnectorConfig,
   ZodDbsRawColumnInfo,
 } from 'zod-dbs-core';
 
@@ -13,20 +13,20 @@ import { createClient } from './client.js';
  * Supports postgresql version 9.3 and above.
  */
 export class PostgreSqlConnector extends DatabaseConnector {
-  protected override createClient = (options: ZodDbsConnectionConfig) => {
+  createClient = (options: ZodDbsConnectionConfig) => {
     return createClient(options);
   };
 
-  protected override async fetchSchemaInfo(
-    config: ZodDbsConfig
+  public override async fetchSchemaInfo(
+    config: ZodDbsConnectorConfig
   ): Promise<ZodDbsRawColumnInfo[]> {
     const { schemaName = 'public' } = config;
 
-    this.options.onProgress?.('connecting');
+    config.onProgress?.('connecting');
     const client = this.createClient(config);
     await client.connect();
 
-    this.options.onProgress?.('fetchingSchema');
+    config.onProgress?.('fetchingSchema');
     logDebug(`Retrieving schema information for schema '${schemaName}'`);
 
     try {
@@ -77,10 +77,7 @@ export class PostgreSqlConnector extends DatabaseConnector {
         `Retrieved ${res.rows.length} columns from schema '${schemaName}'`
       );
 
-      return res.rows.map((row) => ({
-        ...row,
-        schemaName,
-      }));
+      return res.rows.map((row) => ({ ...row, schemaName }));
     } finally {
       await client.end();
     }

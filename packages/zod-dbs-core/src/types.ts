@@ -51,15 +51,15 @@ export interface ZodDbsRawColumnInfo {
   /** The name of the column */
   name: string;
   /** The default value expression for the column, if any */
-  defaultValue?: string;
+  defaultValue?: string | null;
   /** Whether the column allows NULL values */
   isNullable: boolean;
   /** Maximum length constraint for string or number columns */
-  maxLen?: number;
+  maxLen?: number | null;
   /** Minimum length constraint for string or number columns */
-  minLen?: number;
+  minLen?: number | null;
   /**
-   * PostgreSQL type name from pg_type.typname. This is the actual type name used internally by PostgreSQL.
+   * Data type of the column as defined in database.
    *
    * Examples:
    * - Built-in types: 'varchar', 'int4', 'text', 'bool', 'timestamp', 'timestamptz', 'jsonb', 'uuid'
@@ -76,9 +76,9 @@ export interface ZodDbsRawColumnInfo {
   /** Name of the schema containing the table */
   schemaName: string;
   /** Column description/comment from the database */
-  description?: string;
+  description?: string | null;
   /** Check constraints applied to this column */
-  checkConstraints?: { checkClause: string }[];
+  checkConstraints?: { checkClause: string }[] | null;
   /** The type of table this column belongs to */
   tableType: ZodDbsTableType;
 }
@@ -248,7 +248,9 @@ export interface ZodDbsConnectionConfig {
   ssl?: boolean | ZodDbsSslConfig;
 }
 
-export interface ZodDbsConnectorConfig extends ZodDbsConnectionConfig {
+export interface ZodDbsConnectorConfig
+  extends ZodDbsConnectionConfig,
+    ZodDbsHooks {
   /** Database schema name to process (default: 'public') */
   schemaName?: string;
   /** Regex pattern(s) to include only specific tables */
@@ -261,7 +263,7 @@ export interface ZodDbsConnectorConfig extends ZodDbsConnectionConfig {
  * Main configuration interface for zod-dbs schema generation.
  * This interface defines all available options for customizing the generation process.
  */
-export interface ZodDbsConfig extends ZodDbsHooks, ZodDbsConnectorConfig {
+export interface ZodDbsConfig extends ZodDbsConnectorConfig {
   /** Whether to clean the output directory before generation */
   cleanOutput?: boolean;
   /** Regex pattern(s) to include only specific tables */

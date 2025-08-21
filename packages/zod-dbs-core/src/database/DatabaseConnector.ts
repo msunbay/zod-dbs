@@ -1,9 +1,7 @@
 import type {
   ZodDbsColumnInfo,
-  ZodDbsConnectionConfig,
   ZodDbsConnectorConfig,
   ZodDbsDbConnector,
-  ZodDbsHooks,
   ZodDbsRawColumnInfo,
   ZodDbsSchemaInfo,
   ZodDbsTableInfo,
@@ -25,16 +23,6 @@ export interface DatabaseClient {
  * Should be extended by specific database connectors like PostgreSqlConnector.
  */
 export abstract class DatabaseConnector implements ZodDbsDbConnector {
-  protected options: ZodDbsHooks;
-
-  constructor(options: ZodDbsHooks = {}) {
-    this.options = options;
-  }
-
-  protected abstract createClient(
-    options: ZodDbsConnectionConfig
-  ): DatabaseClient;
-
   protected async createColumnInfo(
     column: ZodDbsRawColumnInfo,
     schemaName: string
@@ -69,24 +57,21 @@ export abstract class DatabaseConnector implements ZodDbsDbConnector {
     parsedColumn.isOptional = parsedColumn.isNullable;
     parsedColumn.isEnum = !!parsedColumn.enumValues?.length;
 
-    if (this.options.onColumnModelCreated) {
-      return this.options.onColumnModelCreated(parsedColumn);
-    }
-
     return parsedColumn;
   }
 
   protected async createSchemaInfo(
     tables: ZodDbsTableInfo[],
-    schemaName: string
+    config: ZodDbsConnectorConfig
   ): Promise<ZodDbsSchemaInfo> {
+    const { schemaName = 'public' } = config;
     const result: ZodDbsSchemaInfo = { name: schemaName, tables };
 
-    if (this.options.onTableModelCreated) {
+    if (config.onTableModelCreated) {
       const modifiedTables = [];
 
       for (const table of tables) {
-        const modifiedTable = await this.options.onTableModelCreated(table);
+        const modifiedTable = await config.onTableModelCreated(table);
         modifiedTables.push(modifiedTable);
       }
 
@@ -141,15 +126,20 @@ export abstract class DatabaseConnector implements ZodDbsDbConnector {
 
   protected async createTables(
     columns: ZodDbsRawColumnInfo[],
-    schemaName: string
+    config: ZodDbsConnectorConfig
   ): Promise<ZodDbsTableInfo[]> {
     const tablesMap = new Map<string, ZodDbsTableInfo>();
+    const { schemaName = 'public' } = config;
 
     for (const column of columns) {
       const key = `${schemaName}:${column.tableName}`;
       let table = tablesMap.get(key);
 
-      const parsedColumn = await this.createColumnInfo(column, schemaName);
+      let parsedColumn = await this.createColumnInfo(column, schemaName);
+
+      if (config.onColumnModelCreated) {
+        parsedColumn = await config.onColumnModelCreated(parsedColumn);
+      }
 
       if (!table) {
         table = {
@@ -181,12 +171,10 @@ export abstract class DatabaseConnector implements ZodDbsDbConnector {
   async getSchemaInformation(
     config: ZodDbsConnectorConfig
   ): Promise<ZodDbsSchemaInfo> {
-    const { schemaName = 'public' } = config;
-
     const columns = await this.fetchSchemaInfo(config);
     const filteredColumns = this.filterColumns(columns, config);
-    const tables = await this.createTables(filteredColumns, schemaName);
+    const tables = await this.createTables(filteredColumns, config);
 
-    return await this.createSchemaInfo(tables, schemaName);
+    return await this.createSchemaInfo(tables, config);
   }
 }

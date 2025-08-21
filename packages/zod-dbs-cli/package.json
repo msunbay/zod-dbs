@@ -9,7 +9,10 @@
   },
   "scripts": {
     "build": "rm -rf ./dist && tsc --project tsconfig.build.json",
-    "test:integration": "vitest --project integration run"
+    "test:unit": "vitest --project unit run",
+    "test:integration": "pnpm run test:integration:cli && pnpm run test:integration:schema",
+    "test:integration:cli": "vitest --project integration:cli run",
+    "test:integration:schema": "vitest --project integration:schema run"
   },
   "author": "Magnus Solvåg",
   "license": "ISC",

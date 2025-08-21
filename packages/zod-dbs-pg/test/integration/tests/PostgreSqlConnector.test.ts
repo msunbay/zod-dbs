@@ -16,7 +16,19 @@ afterAll(async () => {
   await teardownTestDb(ctx);
 });
 
-it('returns schema information', async () => {
+it('returns raw schema column information', async () => {
+  const connector = new PostgreSqlConnector();
+
+  const info = await connector.fetchSchemaInfo({
+    connectionString: getClientConnectionString(),
+  });
+
+  expect(info).toBeDefined();
+  expect(info).toHaveLength(168);
+  expect(info).toMatchSnapshot('rawColumns');
+});
+
+it('returns schema models', async () => {
   const connector = new PostgreSqlConnector();
 
   const info = await connector.getSchemaInformation({

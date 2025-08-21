@@ -1,0 +1,2106 @@
+[
+    {
+        "checkConstraints": null,
+        "dataType": "int8",
+        "defaultValue": "nextval('audit_logs_id_seq'::regclass)",
+        "description": "Primary key for audit logs table",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "id",
+        "schemaName": "public",
+        "tableName": "audit_logs",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": null,
+        "description": "ID of the user who performed the action",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "user_id",
+        "schemaName": "public",
+        "tableName": "audit_logs",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": "Type of action performed",
+        "isNullable": false,
+        "maxLen": 50,
+        "name": "action",
+        "schemaName": "public",
+        "tableName": "audit_logs",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": "Name of the table affected",
+        "isNullable": true,
+        "maxLen": 50,
+        "name": "table_name",
+        "schemaName": "public",
+        "tableName": "audit_logs",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": null,
+        "description": "ID of the record affected",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "record_id",
+        "schemaName": "public",
+        "tableName": "audit_logs",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "jsonb",
+        "defaultValue": null,
+        "description": "Previous values before the change",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "old_values",
+        "schemaName": "public",
+        "tableName": "audit_logs",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "jsonb",
+        "defaultValue": null,
+        "description": "New values after the change",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "new_values",
+        "schemaName": "public",
+        "tableName": "audit_logs",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "timestamptz",
+        "defaultValue": "now()",
+        "description": "Timestamp when the action was performed",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "created_at",
+        "schemaName": "public",
+        "tableName": "audit_logs",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": "nextval('categories_id_seq'::regclass)",
+        "description": "Primary key for categories table",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "id",
+        "schemaName": "public",
+        "tableName": "categories",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": "Name of the category",
+        "isNullable": false,
+        "maxLen": 100,
+        "name": "name",
+        "schemaName": "public",
+        "tableName": "categories",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "text",
+        "defaultValue": null,
+        "description": "Description of the category",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "description",
+        "schemaName": "public",
+        "tableName": "categories",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": "Hex color code for the category",
+        "isNullable": true,
+        "maxLen": 7,
+        "name": "color",
+        "schemaName": "public",
+        "tableName": "categories",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "timestamptz",
+        "defaultValue": "now()",
+        "description": "Timestamp when the category was created",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "created_at",
+        "schemaName": "public",
+        "tableName": "categories",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": "nextval('comments_id_seq'::regclass)",
+        "description": "Primary key for comments table",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "id",
+        "schemaName": "public",
+        "tableName": "comments",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": null,
+        "description": "ID of the post this comment belongs to",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "post_id",
+        "schemaName": "public",
+        "tableName": "comments",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": null,
+        "description": "ID of the user who wrote the comment",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "user_id",
+        "schemaName": "public",
+        "tableName": "comments",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": null,
+        "description": "ID of the parent comment for nested comments",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "parent_id",
+        "schemaName": "public",
+        "tableName": "comments",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "text",
+        "defaultValue": null,
+        "description": "Content of the comment",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "content",
+        "schemaName": "public",
+        "tableName": "comments",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "bool",
+        "defaultValue": "false",
+        "description": "Whether the comment has been approved by moderators",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "is_approved",
+        "schemaName": "public",
+        "tableName": "comments",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "timestamptz",
+        "defaultValue": "now()",
+        "description": "Timestamp when the comment was created",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "created_at",
+        "schemaName": "public",
+        "tableName": "comments",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "timestamptz",
+        "defaultValue": "now()",
+        "description": "Timestamp when the comment was last updated",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "updated_at",
+        "schemaName": "public",
+        "tableName": "comments",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": "nextval('constraint_variations_id_seq'::regclass)",
+        "description": "Primary key for constraint variations table",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "id",
+        "schemaName": "public",
+        "tableName": "constraint_variations",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": [
+            {
+                "checkClause": "CHECK (((animal)::text = ANY ((ARRAY['cat'::character varying, 'dog'::character varying, 'bird'::character varying, 'fish'::character varying])::text[])))"
+            }
+        ],
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": "Type of animal",
+        "isNullable": true,
+        "maxLen": 20,
+        "name": "animal",
+        "schemaName": "public",
+        "tableName": "constraint_variations",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": [
+            {
+                "checkClause": "CHECK ((fruit = ANY (ARRAY['apple'::text, 'banana'::text, 'orange'::text, 'grape'::text])))"
+            }
+        ],
+        "dataType": "text",
+        "defaultValue": null,
+        "description": "Type of fruit",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "fruit",
+        "schemaName": "public",
+        "tableName": "constraint_variations",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": [
+            {
+                "checkClause": "CHECK (((vehicle)::text = ANY (ARRAY['car'::text, 'truck'::text, 'motorcycle'::text, 'bicycle'::text])))"
+            }
+        ],
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": "Type of vehicle",
+        "isNullable": true,
+        "maxLen": 15,
+        "name": "vehicle",
+        "schemaName": "public",
+        "tableName": "constraint_variations",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": [
+            {
+                "checkClause": "CHECK ((language = ANY (ARRAY['en'::bpchar, 'es'::bpchar, 'fr'::bpchar, 'de'::bpchar, 'it'::bpchar])))"
+            }
+        ],
+        "dataType": "bpchar",
+        "defaultValue": null,
+        "description": "Language code",
+        "isNullable": true,
+        "maxLen": 2,
+        "name": "language",
+        "schemaName": "public",
+        "tableName": "constraint_variations",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": [
+            {
+                "checkClause": "CHECK (((rating >= 1) AND (rating <= 5)))"
+            }
+        ],
+        "dataType": "int2",
+        "defaultValue": null,
+        "description": "Rating score (1-5)",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "rating",
+        "schemaName": "public",
+        "tableName": "constraint_variations",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": [
+            {
+                "checkClause": "CHECK ((active_status = ANY (ARRAY[true, false])))"
+            }
+        ],
+        "dataType": "bool",
+        "defaultValue": null,
+        "description": "Whether the item is active",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "active_status",
+        "schemaName": "public",
+        "tableName": "constraint_variations",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "timestamptz",
+        "defaultValue": "now()",
+        "description": "Timestamp when record was created",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "created_at",
+        "schemaName": "public",
+        "tableName": "constraint_variations",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": "nextval('enum_tests_id_seq'::regclass)",
+        "description": "Primary key for enum tests table",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "id",
+        "schemaName": "public",
+        "tableName": "enum_tests",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": [
+            {
+                "checkClause": "CHECK (((priority)::text = ANY ((ARRAY['low'::character varying, 'medium'::character varying, 'high'::character varying, 'critical'::character varying])::text[])))"
+            }
+        ],
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": "Task priority level",
+        "isNullable": true,
+        "maxLen": 10,
+        "name": "priority",
+        "schemaName": "public",
+        "tableName": "enum_tests",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": [
+            {
+                "checkClause": "CHECK (((color)::text = ANY ((ARRAY['red'::character varying, 'green'::character varying, 'blue'::character varying, 'yellow'::character varying])::text[])))"
+            }
+        ],
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": "Color selection",
+        "isNullable": true,
+        "maxLen": 20,
+        "name": "color",
+        "schemaName": "public",
+        "tableName": "enum_tests",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": [
+            {
+                "checkClause": "CHECK ((size = ANY (ARRAY['xs'::text, 's'::text, 'm'::text, 'l'::text, 'xl'::text, 'xxl'::text])))"
+            }
+        ],
+        "dataType": "text",
+        "defaultValue": null,
+        "description": "Size option",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "size",
+        "schemaName": "public",
+        "tableName": "enum_tests",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": [
+            {
+                "checkClause": "CHECK ((grade = ANY (ARRAY['A'::bpchar, 'B'::bpchar, 'C'::bpchar, 'D'::bpchar, 'F'::bpchar])))"
+            }
+        ],
+        "dataType": "bpchar",
+        "defaultValue": null,
+        "description": "Letter grade",
+        "isNullable": true,
+        "maxLen": 1,
+        "name": "grade",
+        "schemaName": "public",
+        "tableName": "enum_tests",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": [
+            {
+                "checkClause": "CHECK (((category)::text = ANY ((ARRAY['electronics'::character varying, 'clothing'::character varying, 'books'::character varying, 'home-garden'::character varying])::text[])))"
+            }
+        ],
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": "Product category",
+        "isNullable": true,
+        "maxLen": 30,
+        "name": "category",
+        "schemaName": "public",
+        "tableName": "enum_tests",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": [
+            {
+                "checkClause": "CHECK ((mood = ANY (ARRAY['happy'::text, 'sad'::text, 'angry'::text, 'excited'::text, 'calm'::text])))"
+            }
+        ],
+        "dataType": "text",
+        "defaultValue": null,
+        "description": "Current mood state",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "mood",
+        "schemaName": "public",
+        "tableName": "enum_tests",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": [
+            {
+                "checkClause": "CHECK (((direction)::text = ANY ((ARRAY['north'::character varying, 'south'::character varying, 'east'::character varying, 'west'::character varying])::text[])))"
+            }
+        ],
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": "Compass direction",
+        "isNullable": true,
+        "maxLen": 10,
+        "name": "direction",
+        "schemaName": "public",
+        "tableName": "enum_tests",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": [
+            {
+                "checkClause": "CHECK ((weather_condition = ANY (ARRAY['sunny'::text, 'cloudy'::text, 'rainy'::text, 'snowy'::text, 'foggy'::text])))"
+            }
+        ],
+        "dataType": "text",
+        "defaultValue": null,
+        "description": "Current weather condition",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "weather_condition",
+        "schemaName": "public",
+        "tableName": "enum_tests",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": [
+            {
+                "checkClause": "CHECK (((task_status)::text = ANY ((ARRAY['todo'::character varying, 'in-progress'::character varying, 'done'::character varying, 'cancelled'::character varying])::text[])))"
+            }
+        ],
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": "Status of the task",
+        "isNullable": true,
+        "maxLen": 20,
+        "name": "task_status",
+        "schemaName": "public",
+        "tableName": "enum_tests",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": [
+            {
+                "checkClause": "CHECK ((difficulty = ANY (ARRAY[1, 2, 3, 4, 5])))"
+            }
+        ],
+        "dataType": "int4",
+        "defaultValue": null,
+        "description": "Difficulty level (1-5)",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "difficulty",
+        "schemaName": "public",
+        "tableName": "enum_tests",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": [
+            {
+                "checkClause": "CHECK (((weekday)::text = ANY ((ARRAY['monday'::character varying, 'tuesday'::character varying, 'wednesday'::character varying, 'thursday'::character varying, 'friday'::character varying, 'saturday'::character varying, 'sunday'::character varying])::text[])))"
+            }
+        ],
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": "Day of the week",
+        "isNullable": true,
+        "maxLen": 10,
+        "name": "weekday",
+        "schemaName": "public",
+        "tableName": "enum_tests",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": [
+            {
+                "checkClause": "CHECK ((payment_method = ANY (ARRAY['cash'::text, 'credit-card'::text, 'debit-card'::text, 'paypal'::text, 'bank-transfer'::text])))"
+            }
+        ],
+        "dataType": "text",
+        "defaultValue": null,
+        "description": "Payment method used",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "payment_method",
+        "schemaName": "public",
+        "tableName": "enum_tests",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "timestamptz",
+        "defaultValue": "now()",
+        "description": "Timestamp when record was created",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "created_at",
+        "schemaName": "public",
+        "tableName": "enum_tests",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "uuid",
+        "defaultValue": "gen_random_uuid()",
+        "description": "Primary key for files table",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "id",
+        "schemaName": "public",
+        "tableName": "files",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": "Original filename",
+        "isNullable": false,
+        "maxLen": 255,
+        "name": "filename",
+        "schemaName": "public",
+        "tableName": "files",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "text",
+        "defaultValue": null,
+        "description": "Path to the file",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "file_path",
+        "schemaName": "public",
+        "tableName": "files",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int8",
+        "defaultValue": null,
+        "description": "Size of the file in bytes",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "file_size",
+        "schemaName": "public",
+        "tableName": "files",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": "MIME type of the file",
+        "isNullable": true,
+        "maxLen": 100,
+        "name": "mime_type",
+        "schemaName": "public",
+        "tableName": "files",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "bpchar",
+        "defaultValue": null,
+        "description": "SHA-256 checksum of the file",
+        "isNullable": true,
+        "maxLen": 64,
+        "name": "checksum",
+        "schemaName": "public",
+        "tableName": "files",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "bytea",
+        "defaultValue": null,
+        "description": "Binary data of the file",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "binary_data",
+        "schemaName": "public",
+        "tableName": "files",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "bool",
+        "defaultValue": "false",
+        "description": "Whether the file is encrypted",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "is_encrypted",
+        "schemaName": "public",
+        "tableName": "files",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "timestamptz",
+        "defaultValue": "now()",
+        "description": "Timestamp when file was uploaded",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "upload_time",
+        "schemaName": "public",
+        "tableName": "files",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "timestamptz",
+        "defaultValue": null,
+        "description": "Expiry date of the file",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "expiry_date",
+        "schemaName": "public",
+        "tableName": "files",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "jsonb",
+        "defaultValue": null,
+        "description": "File metadata in JSON format",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "metadata",
+        "schemaName": "public",
+        "tableName": "files",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "_text",
+        "defaultValue": null,
+        "description": "Array of file tags",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "tags",
+        "schemaName": "public",
+        "tableName": "files",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": "0",
+        "description": "Number of times file was accessed",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "access_count",
+        "schemaName": "public",
+        "tableName": "files",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": "nextval('geographic_data_id_seq'::regclass)",
+        "description": "Primary key for geographic data table",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "id",
+        "schemaName": "public",
+        "tableName": "geographic_data",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": "Name of the location",
+        "isNullable": false,
+        "maxLen": 255,
+        "name": "location_name",
+        "schemaName": "public",
+        "tableName": "geographic_data",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "point",
+        "defaultValue": null,
+        "description": "Geographic coordinates",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "coordinates",
+        "schemaName": "public",
+        "tableName": "geographic_data",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "polygon",
+        "defaultValue": null,
+        "description": "Geographic boundary as polygon",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "boundary",
+        "schemaName": "public",
+        "tableName": "geographic_data",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "circle",
+        "defaultValue": null,
+        "description": "Area represented as circle",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "area_circle",
+        "schemaName": "public",
+        "tableName": "geographic_data",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "float4",
+        "defaultValue": null,
+        "description": "Elevation above sea level",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "elevation",
+        "schemaName": "public",
+        "tableName": "geographic_data",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": "Timezone of the location",
+        "isNullable": true,
+        "maxLen": 50,
+        "name": "timezone",
+        "schemaName": "public",
+        "tableName": "geographic_data",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "bpchar",
+        "defaultValue": null,
+        "description": "ISO country code",
+        "isNullable": true,
+        "maxLen": 2,
+        "name": "country_code",
+        "schemaName": "public",
+        "tableName": "geographic_data",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "_text",
+        "defaultValue": null,
+        "description": "Array of postal codes",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "postal_codes",
+        "schemaName": "public",
+        "tableName": "geographic_data",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": null,
+        "description": "Population count",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "population",
+        "schemaName": "public",
+        "tableName": "geographic_data",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "date",
+        "defaultValue": null,
+        "description": "Date when location was established",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "established_date",
+        "schemaName": "public",
+        "tableName": "geographic_data",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "timestamptz",
+        "defaultValue": "now()",
+        "description": "Timestamp when data was last updated",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "last_updated",
+        "schemaName": "public",
+        "tableName": "geographic_data",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": null,
+        "description": "ID of the product",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "product_id",
+        "schemaName": "public",
+        "tableName": "inventory",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": "0",
+        "description": "Current stock quantity",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "stock_quantity",
+        "schemaName": "public",
+        "tableName": "inventory",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": "0",
+        "description": "Quantity reserved for orders",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "reserved_quantity",
+        "schemaName": "public",
+        "tableName": "inventory",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int2",
+        "defaultValue": "10",
+        "description": "Minimum stock level before reorder",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "reorder_level",
+        "schemaName": "public",
+        "tableName": "inventory",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "date",
+        "defaultValue": null,
+        "description": "Date when last restocked",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "last_restocked",
+        "schemaName": "public",
+        "tableName": "inventory",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "jsonb",
+        "defaultValue": null,
+        "description": "Supplier information in JSON format",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "supplier_info",
+        "schemaName": "public",
+        "tableName": "inventory",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "_text",
+        "defaultValue": null,
+        "description": "Array of warehouse locations",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "warehouse_locations",
+        "schemaName": "public",
+        "tableName": "inventory",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "timestamptz",
+        "defaultValue": "now()",
+        "description": "Timestamp when inventory was last updated",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "updated_at",
+        "schemaName": "public",
+        "tableName": "inventory",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": null,
+        "description": null,
+        "isNullable": true,
+        "maxLen": null,
+        "name": "user_id",
+        "schemaName": "public",
+        "tableName": "mv_user_posts",
+        "tableType": "materialized_view"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": null,
+        "isNullable": true,
+        "maxLen": 100,
+        "name": "user_name",
+        "schemaName": "public",
+        "tableName": "mv_user_posts",
+        "tableType": "materialized_view"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": null,
+        "description": null,
+        "isNullable": true,
+        "maxLen": null,
+        "name": "post_id",
+        "schemaName": "public",
+        "tableName": "mv_user_posts",
+        "tableType": "materialized_view"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "text",
+        "defaultValue": null,
+        "description": null,
+        "isNullable": true,
+        "maxLen": null,
+        "name": "post_title",
+        "schemaName": "public",
+        "tableName": "mv_user_posts",
+        "tableType": "materialized_view"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "text",
+        "defaultValue": null,
+        "description": null,
+        "isNullable": true,
+        "maxLen": null,
+        "name": "post_content",
+        "schemaName": "public",
+        "tableName": "mv_user_posts",
+        "tableType": "materialized_view"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int8",
+        "defaultValue": "nextval('network_logs_id_seq'::regclass)",
+        "description": "Primary key for network logs table",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "id",
+        "schemaName": "public",
+        "tableName": "network_logs",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "inet",
+        "defaultValue": null,
+        "description": "IP address of the request",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "ip_address",
+        "schemaName": "public",
+        "tableName": "network_logs",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4range",
+        "defaultValue": null,
+        "description": "Port range used",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "port_range",
+        "schemaName": "public",
+        "tableName": "network_logs",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "macaddr",
+        "defaultValue": null,
+        "description": "MAC address of the device",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "mac_address",
+        "schemaName": "public",
+        "tableName": "network_logs",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "timestamptz",
+        "defaultValue": "now()",
+        "description": "Timestamp of the request",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "request_time",
+        "schemaName": "public",
+        "tableName": "network_logs",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "interval",
+        "defaultValue": null,
+        "description": "Response time duration",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "response_time",
+        "schemaName": "public",
+        "tableName": "network_logs",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int8",
+        "defaultValue": "0",
+        "description": "Number of bytes sent",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "bytes_sent",
+        "schemaName": "public",
+        "tableName": "network_logs",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int8",
+        "defaultValue": "0",
+        "description": "Number of bytes received",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "bytes_received",
+        "schemaName": "public",
+        "tableName": "network_logs",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": "Network protocol used",
+        "isNullable": true,
+        "maxLen": 10,
+        "name": "protocol",
+        "schemaName": "public",
+        "tableName": "network_logs",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int2",
+        "defaultValue": null,
+        "description": "HTTP status code",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "status_code",
+        "schemaName": "public",
+        "tableName": "network_logs",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "text",
+        "defaultValue": null,
+        "description": "User agent string",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "user_agent",
+        "schemaName": "public",
+        "tableName": "network_logs",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "jsonb",
+        "defaultValue": null,
+        "description": "Request headers in JSON format",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "headers",
+        "schemaName": "public",
+        "tableName": "network_logs",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int8",
+        "defaultValue": "nextval('order_items_id_seq'::regclass)",
+        "description": "Primary key for order items table",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "id",
+        "schemaName": "public",
+        "tableName": "order_items",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int8",
+        "defaultValue": null,
+        "description": "ID of the order this item belongs to",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "order_id",
+        "schemaName": "public",
+        "tableName": "order_items",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": null,
+        "description": "ID of the product",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "product_id",
+        "schemaName": "public",
+        "tableName": "order_items",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": [
+            {
+                "checkClause": "CHECK ((quantity > 0))"
+            }
+        ],
+        "dataType": "int2",
+        "defaultValue": null,
+        "description": "Quantity of the product ordered",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "quantity",
+        "schemaName": "public",
+        "tableName": "order_items",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "numeric",
+        "defaultValue": null,
+        "description": "Price per unit",
+        "isNullable": false,
+        "maxLen": 655362,
+        "name": "unit_price",
+        "schemaName": "public",
+        "tableName": "order_items",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "numeric",
+        "defaultValue": "0",
+        "description": "Discount percentage applied",
+        "isNullable": true,
+        "maxLen": 327682,
+        "name": "discount_percent",
+        "schemaName": "public",
+        "tableName": "order_items",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "numeric",
+        "defaultValue": "(((quantity)::numeric * unit_price) * ((1)::numeric - (discount_percent / (100)::numeric)))",
+        "description": "Calculated line total",
+        "isNullable": true,
+        "maxLen": 786434,
+        "name": "line_total",
+        "schemaName": "public",
+        "tableName": "order_items",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int8",
+        "defaultValue": "nextval('orders_id_seq'::regclass)",
+        "description": "Primary key for orders table",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "id",
+        "schemaName": "public",
+        "tableName": "orders",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": "Unique order number",
+        "isNullable": false,
+        "maxLen": 20,
+        "name": "order_number",
+        "schemaName": "public",
+        "tableName": "orders",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": null,
+        "description": "ID of the user who placed the order",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "user_id",
+        "schemaName": "public",
+        "tableName": "orders",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "order_status",
+        "defaultValue": "'pending'::order_status",
+        "description": "Current status of the order",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "status",
+        "schemaName": "public",
+        "tableName": "orders",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "money",
+        "defaultValue": null,
+        "description": "Total order amount",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "total_amount",
+        "schemaName": "public",
+        "tableName": "orders",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "money",
+        "defaultValue": "0",
+        "description": "Tax amount for the order",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "tax_amount",
+        "schemaName": "public",
+        "tableName": "orders",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "money",
+        "defaultValue": "0",
+        "description": "Shipping cost for the order",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "shipping_cost",
+        "schemaName": "public",
+        "tableName": "orders",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "date",
+        "defaultValue": "CURRENT_DATE",
+        "description": "Date when order was placed",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "order_date",
+        "schemaName": "public",
+        "tableName": "orders",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "date",
+        "defaultValue": null,
+        "description": "Date when order was shipped",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "shipped_date",
+        "schemaName": "public",
+        "tableName": "orders",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "time",
+        "defaultValue": null,
+        "description": "Expected delivery time",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "delivery_time",
+        "schemaName": "public",
+        "tableName": "orders",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "_text",
+        "defaultValue": null,
+        "description": "Array of order notes",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "notes",
+        "schemaName": "public",
+        "tableName": "orders",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "jsonb",
+        "defaultValue": null,
+        "description": "Additional order metadata",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "metadata",
+        "schemaName": "public",
+        "tableName": "orders",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "timestamptz",
+        "defaultValue": "now()",
+        "description": "Timestamp when order was created",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "created_at",
+        "schemaName": "public",
+        "tableName": "orders",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": null,
+        "description": "ID of the post",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "post_id",
+        "schemaName": "public",
+        "tableName": "post_categories",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": null,
+        "description": "ID of the category",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "category_id",
+        "schemaName": "public",
+        "tableName": "post_categories",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": "nextval('posts_id_seq'::regclass)",
+        "description": null,
+        "isNullable": false,
+        "maxLen": null,
+        "name": "id",
+        "schemaName": "public",
+        "tableName": "posts",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": null,
+        "description": null,
+        "isNullable": true,
+        "maxLen": null,
+        "name": "user_id",
+        "schemaName": "public",
+        "tableName": "posts",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "text",
+        "defaultValue": null,
+        "description": null,
+        "isNullable": false,
+        "maxLen": null,
+        "name": "title",
+        "schemaName": "public",
+        "tableName": "posts",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "text",
+        "defaultValue": null,
+        "description": null,
+        "isNullable": true,
+        "maxLen": null,
+        "name": "content",
+        "schemaName": "public",
+        "tableName": "posts",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "bool",
+        "defaultValue": "false",
+        "description": null,
+        "isNullable": true,
+        "maxLen": null,
+        "name": "published",
+        "schemaName": "public",
+        "tableName": "posts",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": [
+            {
+                "checkClause": "CHECK (((status)::text = ANY ((ARRAY['draft'::character varying, 'published'::character varying, 'archived'::character varying])::text[])))"
+            }
+        ],
+        "dataType": "varchar",
+        "defaultValue": "'draft'::character varying",
+        "description": null,
+        "isNullable": true,
+        "maxLen": 20,
+        "name": "status",
+        "schemaName": "public",
+        "tableName": "posts",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": "0",
+        "description": "Number of views for the post",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "views",
+        "schemaName": "public",
+        "tableName": "posts",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "_text",
+        "defaultValue": null,
+        "description": "Array of tags associated with the post",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "tags",
+        "schemaName": "public",
+        "tableName": "posts",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "jsonb",
+        "defaultValue": null,
+        "description": "Additional metadata for the post",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "metadata",
+        "schemaName": "public",
+        "tableName": "posts",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "timestamptz",
+        "defaultValue": null,
+        "description": "Timestamp when the post was published",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "published_at",
+        "schemaName": "public",
+        "tableName": "posts",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "timestamptz",
+        "defaultValue": "now()",
+        "description": "Timestamp when the post was last updated",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "updated_at",
+        "schemaName": "public",
+        "tableName": "posts",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": "nextval('products_id_seq'::regclass)",
+        "description": "Primary key for products table",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "id",
+        "schemaName": "public",
+        "tableName": "products",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": "Product name",
+        "isNullable": false,
+        "maxLen": 255,
+        "name": "name",
+        "schemaName": "public",
+        "tableName": "products",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": "Stock keeping unit identifier",
+        "isNullable": false,
+        "maxLen": 50,
+        "name": "sku",
+        "schemaName": "public",
+        "tableName": "products",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "numeric",
+        "defaultValue": null,
+        "description": "Product price with 2 decimal precision",
+        "isNullable": false,
+        "maxLen": 655362,
+        "name": "price",
+        "schemaName": "public",
+        "tableName": "products",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "numeric",
+        "defaultValue": null,
+        "description": "Product cost with 2 decimal precision",
+        "isNullable": true,
+        "maxLen": 655362,
+        "name": "cost",
+        "schemaName": "public",
+        "tableName": "products",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "float4",
+        "defaultValue": null,
+        "description": "Product weight in kilograms",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "weight",
+        "schemaName": "public",
+        "tableName": "products",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "point",
+        "defaultValue": null,
+        "description": "Product dimensions as geometric point",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "dimensions",
+        "schemaName": "public",
+        "tableName": "products",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "bool",
+        "defaultValue": "true",
+        "description": "Whether the product is active",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "is_active",
+        "schemaName": "public",
+        "tableName": "products",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "bpchar",
+        "defaultValue": null,
+        "description": "Product barcode (13 characters)",
+        "isNullable": true,
+        "maxLen": 13,
+        "name": "barcode",
+        "schemaName": "public",
+        "tableName": "products",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "text",
+        "defaultValue": null,
+        "description": "Product description",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "description",
+        "schemaName": "public",
+        "tableName": "products",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "timestamptz",
+        "defaultValue": "now()",
+        "description": "Timestamp when product was created",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "created_at",
+        "schemaName": "public",
+        "tableName": "products",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int8",
+        "defaultValue": "nextval('time_series_id_seq'::regclass)",
+        "description": "Primary key for time series table",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "id",
+        "schemaName": "public",
+        "tableName": "time_series",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": "Identifier of the sensor",
+        "isNullable": false,
+        "maxLen": 50,
+        "name": "sensor_id",
+        "schemaName": "public",
+        "tableName": "time_series",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "timestamptz",
+        "defaultValue": null,
+        "description": "Timestamp of the reading",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "timestamp",
+        "schemaName": "public",
+        "tableName": "time_series",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "numeric",
+        "defaultValue": null,
+        "description": "Temperature reading",
+        "isNullable": true,
+        "maxLen": 327682,
+        "name": "temperature",
+        "schemaName": "public",
+        "tableName": "time_series",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "numeric",
+        "defaultValue": null,
+        "description": "Humidity reading",
+        "isNullable": true,
+        "maxLen": 327682,
+        "name": "humidity",
+        "schemaName": "public",
+        "tableName": "time_series",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "numeric",
+        "defaultValue": null,
+        "description": "Pressure reading",
+        "isNullable": true,
+        "maxLen": 458754,
+        "name": "pressure",
+        "schemaName": "public",
+        "tableName": "time_series",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "_numeric",
+        "defaultValue": null,
+        "description": "Array of numeric readings",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "readings",
+        "schemaName": "public",
+        "tableName": "time_series",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "bool",
+        "defaultValue": "false",
+        "description": "Whether an anomaly was detected",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "anomaly_detected",
+        "schemaName": "public",
+        "tableName": "time_series",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": [
+            {
+                "checkClause": "CHECK (((data_quality >= 1) AND (data_quality <= 10)))"
+            }
+        ],
+        "dataType": "int2",
+        "defaultValue": null,
+        "description": "Data quality score (1-10)",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "data_quality",
+        "schemaName": "public",
+        "tableName": "time_series",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "timestamptz",
+        "defaultValue": "now()",
+        "description": "Timestamp when record was created",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "created_at",
+        "schemaName": "public",
+        "tableName": "time_series",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "uuid",
+        "defaultValue": "gen_random_uuid()",
+        "description": "Primary key for user sessions table",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "id",
+        "schemaName": "public",
+        "tableName": "user_sessions",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": null,
+        "description": "ID of the user this session belongs to",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "user_id",
+        "schemaName": "public",
+        "tableName": "user_sessions",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": "Hashed session token",
+        "isNullable": false,
+        "maxLen": 255,
+        "name": "token_hash",
+        "schemaName": "public",
+        "tableName": "user_sessions",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "timestamptz",
+        "defaultValue": null,
+        "description": "Timestamp when the session expires",
+        "isNullable": false,
+        "maxLen": null,
+        "name": "expires_at",
+        "schemaName": "public",
+        "tableName": "user_sessions",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "timestamptz",
+        "defaultValue": "now()",
+        "description": "Timestamp when the session was created",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "created_at",
+        "schemaName": "public",
+        "tableName": "user_sessions",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "timestamptz",
+        "defaultValue": "now()",
+        "description": "Timestamp when the session was last used",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "last_used_at",
+        "schemaName": "public",
+        "tableName": "user_sessions",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "inet",
+        "defaultValue": null,
+        "description": "IP address of the client",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "ip_address",
+        "schemaName": "public",
+        "tableName": "user_sessions",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "text",
+        "defaultValue": null,
+        "description": "User agent string of the client",
+        "isNullable": true,
+        "maxLen": null,
+        "name": "user_agent",
+        "schemaName": "public",
+        "tableName": "user_sessions",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": "nextval('users_id_seq'::regclass)",
+        "description": null,
+        "isNullable": false,
+        "maxLen": null,
+        "name": "id",
+        "schemaName": "public",
+        "tableName": "users",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": null,
+        "isNullable": false,
+        "maxLen": 100,
+        "name": "name",
+        "schemaName": "public",
+        "tableName": "users",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": null,
+        "isNullable": true,
+        "maxLen": 255,
+        "name": "email",
+        "schemaName": "public",
+        "tableName": "users",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "varchar",
+        "defaultValue": "'active'::character varying",
+        "description": null,
+        "isNullable": true,
+        "maxLen": 20,
+        "name": "status",
+        "schemaName": "public",
+        "tableName": "users",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "jsonb",
+        "defaultValue": null,
+        "description": null,
+        "isNullable": true,
+        "maxLen": null,
+        "name": "profile",
+        "schemaName": "public",
+        "tableName": "users",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "timestamptz",
+        "defaultValue": "now()",
+        "description": null,
+        "isNullable": true,
+        "maxLen": null,
+        "name": "created_at",
+        "schemaName": "public",
+        "tableName": "users",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": [
+            {
+                "checkClause": "CHECK ((roles <@ ARRAY['admin'::text, 'editor'::text, 'viewer'::text]))"
+            }
+        ],
+        "dataType": "_text",
+        "defaultValue": null,
+        "description": null,
+        "isNullable": true,
+        "maxLen": null,
+        "name": "roles",
+        "schemaName": "public",
+        "tableName": "users",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "_timestamp",
+        "defaultValue": null,
+        "description": null,
+        "isNullable": true,
+        "maxLen": null,
+        "name": "dates",
+        "schemaName": "public",
+        "tableName": "users",
+        "tableType": "table"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": null,
+        "description": null,
+        "isNullable": true,
+        "maxLen": null,
+        "name": "user_id",
+        "schemaName": "public",
+        "tableName": "view_user_posts",
+        "tableType": "view"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "varchar",
+        "defaultValue": null,
+        "description": null,
+        "isNullable": true,
+        "maxLen": 100,
+        "name": "user_name",
+        "schemaName": "public",
+        "tableName": "view_user_posts",
+        "tableType": "view"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "int4",
+        "defaultValue": null,
+        "description": null,
+        "isNullable": true,
+        "maxLen": null,
+        "name": "post_id",
+        "schemaName": "public",
+        "tableName": "view_user_posts",
+        "tableType": "view"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "text",
+        "defaultValue": null,
+        "description": null,
+        "isNullable": true,
+        "maxLen": null,
+        "name": "post_title",
+        "schemaName": "public",
+        "tableName": "view_user_posts",
+        "tableType": "view"
+    },
+    {
+        "checkConstraints": null,
+        "dataType": "text",
+        "defaultValue": null,
+        "description": null,
+        "isNullable": true,
+        "maxLen": null,
+        "name": "post_content",
+        "schemaName": "public",
+        "tableName": "view_user_posts",
+        "tableType": "view"
+    }
+]
