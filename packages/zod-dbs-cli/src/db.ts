@@ -6,11 +6,13 @@ export const getDbConnector = async (provider: ZodDbsProvider) => {
   try {
     let connector = await import(name);
 
+    console.log(`Using database provider: ${provider}`, { connector });
+
     if (connector.default) {
       connector = connector.default;
     }
 
-    if (connector.createConnector()) {
+    if (connector.createConnector) {
       return connector.createConnector();
     }
   } catch (error) {
