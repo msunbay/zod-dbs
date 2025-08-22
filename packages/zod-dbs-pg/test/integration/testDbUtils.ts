@@ -4,11 +4,7 @@ import {
   PostgreSqlContainer,
   StartedPostgreSqlContainer,
 } from '@testcontainers/postgresql';
-import {
-  createConnectionString,
-  ZodDbsConnectorConfig,
-  ZodDbsDatabaseClient,
-} from 'zod-dbs-core';
+import { ZodDbsConnectorConfig, ZodDbsDatabaseClient } from 'zod-dbs-core';
 
 import { createClient } from '../../src/client.js';
 
@@ -37,10 +33,6 @@ export const getConnectionConfig = (): ZodDbsConnectorConfig => {
     password: client.config.password,
     schemaName: 'public',
   };
-};
-
-export const getClientConnectionString = (): string => {
-  return createConnectionString(getConnectionConfig());
 };
 
 export const getCliPath = (): string => {

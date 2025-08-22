@@ -4,7 +4,7 @@ import ora from 'ora';
 import type { ZodDbsProgress } from 'zod-dbs-core';
 
 const PROGRESS_STATUS: Record<ZodDbsProgress, string> = {
-  connecting: 'Connecting to Postgres database...',
+  connecting: 'Connecting to database...',
   fetchingSchema: 'Fetching schema information...',
   generating: 'Generating {{total}} Zod schemas...',
   done: 'Zod schemas generated successfully.',

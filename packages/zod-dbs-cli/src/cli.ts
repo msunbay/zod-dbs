@@ -1,33 +1,34 @@
 import { Option, program } from 'commander';
 import { generateZodSchemas } from 'zod-dbs';
 import {
-  createConnectionString,
   enableDebug,
   logDebug,
   parseConnectionString,
   toError,
-  ZodDbsConfig,
 } from 'zod-dbs-core';
+
+import type { ZodDbsCliConfig, ZodDbsCliOptions } from './types.js';
 
 import { getConfiguration } from './config.js';
 import { loadProvider } from './provider.js';
-import { ZodDbsCliConfig } from './types.js';
 import { logAppName, logError, logSetting } from './utils/logger.js';
-import { maskConnectionString } from './utils/mask.js';
 import { createProgressHandler } from './utils/progress.js';
 import { getAppVersion } from './utils/version.js';
 
-export const runCli = async (overrides?: Partial<ZodDbsConfig>) => {
-  const config = await getConfiguration(overrides);
+export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
+  const config = await getConfiguration(cliOptions);
   const appVersion = await getAppVersion();
+  const appName = cliOptions.appName || 'zod-dbs';
 
-  program.name('zod-dbs');
+  program.name(appName);
   program.description('Generates Zod schemas from database schema.');
 
-  program.option(
-    '--provider <name>',
-    'Database provider to use (e.g. pg, mysql, sqlite, mssql, mongodb)'
-  );
+  if (!cliOptions.overrides?.provider) {
+    program.option(
+      '--provider <name>',
+      'Database provider to use (e.g. pg, mysql, sqlite, mssql, mongodb)'
+    );
+  }
 
   program.option(
     '-o,--output-dir <path>',
@@ -131,7 +132,7 @@ export const runCli = async (overrides?: Partial<ZodDbsConfig>) => {
   logDebug('CLI configuration:', cliConfig);
 
   if (!cliConfig.silent) {
-    logAppName(`zod-dbs CLI v${appVersion}`);
+    logAppName(`${appName} CLI v${appVersion}`);
     logSettings(cliConfig);
     console.log();
   }
@@ -169,10 +170,11 @@ const logSettings = (cliConfig: ZodDbsCliConfig) => {
     logSetting('module', cliConfig.moduleResolution);
   if (cliConfig.zodVersion) logSetting('zod-version', cliConfig.zodVersion);
 
-  logSetting(
-    'connection-string',
-    maskConnectionString(createConnectionString(cliConfig))
-  );
+  if (cliConfig.host) logSetting('host', cliConfig.host);
+  if (cliConfig.port) logSetting('port', cliConfig.port.toString());
+  if (cliConfig.database) logSetting('database', cliConfig.database);
+  if (cliConfig.user) logSetting('user', cliConfig.user);
+  if (cliConfig.password) logSetting('password', '******');
   logSetting('ssl', cliConfig.ssl ? 'true' : 'false');
   if (cliConfig.schemaName) logSetting('schema-name', cliConfig.schemaName);
 

@@ -189,18 +189,19 @@ import type { ZodDbsCliConfig } from 'zod-dbs-cli';
 
 const config: ZodDbsCliConfig = {
   provider: 'pg',
-  connectionString: 'postgresql://user:password@localhost:5432/mydb',
-  ssl: false,
+
+  user: 'postgres',
+  password: 'secret',
+  host: 'localhost',
+  port: 5432,
+  database: 'mydb',
+
   outputDir: './src/generated',
-  moduleResolution: 'esm',
-  cleanOutput: true,
   include: ['users', 'posts'],
   exclude: ['^temp_'],
   zodVersion: '4',
-  stringifyDates: false,
+  stringifyDates: true,
   defaultEmptyArray: true,
-  fieldNameCasing: 'camelCase',
-  objectNameCasing: 'PascalCase',
 };
 
 export default config;
@@ -210,13 +211,15 @@ export default config;
 
 ```javascript
 module.exports = {
-  user: 'postgres',
+  provider: 'mysql',
+
+  user: 'user',
   database: 'mydb',
   password: 'secret',
   host: 'localhost',
-  port: 5432,
-  schemaName: 'public',
-  ssl: false,
+  port: 3306,
+  schemaName: 'mydb',
+
   outputDir: './src/generated',
 };
 ```

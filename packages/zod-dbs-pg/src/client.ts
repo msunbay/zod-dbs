@@ -1,15 +1,15 @@
 import { Client } from 'pg';
-import {
-  createConnectionString,
-  ZodDbsConnectionConfig,
-  ZodDbsDatabaseClient,
-} from 'zod-dbs-core';
+import { ZodDbsConnectionConfig, ZodDbsDatabaseClient } from 'zod-dbs-core';
 
 export const createClient = async (
   options: ZodDbsConnectionConfig
 ): Promise<ZodDbsDatabaseClient> => {
   const client = new Client({
-    connectionString: createConnectionString(options),
+    user: options.user,
+    password: options.password,
+    host: options.host,
+    port: options.port,
+    database: options.database,
     ssl: options.ssl,
     application_name: 'zod-dbs-pg',
   });
@@ -32,6 +32,7 @@ export const createClient = async (
       user: client.user,
       password: client.password,
       ssl: client.ssl,
+      protocol: 'postgresql',
     },
   } satisfies ZodDbsDatabaseClient;
 };

@@ -1,5 +1,5 @@
 /**
- * Represents the overall schema information for a PostgreSQL database schema.
+ * Represents the overall schema information for a database schema.
  */
 export interface ZodDbsSchemaInfo {
   /** The name of the database schema (e.g., 'public') */
@@ -23,7 +23,7 @@ export interface ZodDbsTable {
 }
 
 /**
- * Enum representing the different types of PostgreSQL relations that can be processed.
+ * Enum representing the different types of relations that can be processed.
  */
 export type ZodDbsTableType =
   | 'table' // Regular table
@@ -173,7 +173,7 @@ export type ZodDbsCasing =
 export type ZodDbsFieldCasing = ZodDbsCasing | 'passthrough';
 
 /**
- * Mapped Zod column types that PostgreSQL types are converted to.
+ * Mapped Zod column types.
  */
 export type ZodDbsColumnType =
   | 'email' // String with email validation
@@ -229,9 +229,10 @@ export interface ZodDbsDatabaseClient {
 }
 
 /**
- * Configuration for PostgreSQL database connection.
+ * Configuration for database connection.
  */
 export interface ZodDbsConnectionConfig {
+  protocol?: string; // e.g., 'postgresql', 'mysql', etc.
   /** Database port (default: 5432) */
   port?: number;
   /** Database host (default: localhost) */

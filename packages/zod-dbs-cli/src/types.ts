@@ -19,3 +19,8 @@ export interface ZodDbsCliConfig extends ZodDbsConfig {
    */
   renderer?: ZodDbsRenderer;
 }
+
+export interface ZodDbsCliOptions {
+  overrides?: Partial<ZodDbsCliConfig>;
+  appName?: string;
+}

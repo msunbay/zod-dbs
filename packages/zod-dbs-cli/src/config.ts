@@ -2,7 +2,7 @@ import { cosmiconfig } from 'cosmiconfig';
 import { DEFAULT_CONFIGURATION } from 'zod-dbs';
 import { ZodDbsConnectionConfig } from 'zod-dbs-core';
 
-import { ZodDbsCliConfig } from './types.js';
+import { ZodDbsCliConfig, ZodDbsCliOptions } from './types.js';
 
 // Build an overrides object containing only values explicitly supplied via env vars.
 function getEnvOverrides(): Partial<ZodDbsConnectionConfig> {
@@ -19,10 +19,11 @@ function getEnvOverrides(): Partial<ZodDbsConnectionConfig> {
   return overrides;
 }
 
-export const getConfiguration = async (
-  overrides: Partial<ZodDbsCliConfig> = {}
-): Promise<ZodDbsCliConfig> => {
-  const explorer = cosmiconfig('zod-dbs');
+export const getConfiguration = async ({
+  appName = 'zod-dbs',
+  overrides,
+}: ZodDbsCliOptions = {}): Promise<ZodDbsCliConfig> => {
+  const explorer = cosmiconfig(appName);
   const result = await explorer.search();
   const envOverrides = getEnvOverrides();
 

@@ -61,9 +61,7 @@ describe('progress utilities', () => {
 
       handler.onProgress('connecting');
 
-      expect(mockStart).toHaveBeenCalledWith(
-        'Connecting to Postgres database...'
-      );
+      expect(mockStart).toHaveBeenCalledWith('Connecting to database...');
     });
 
     it('should start spinner with generating status and template args', () => {

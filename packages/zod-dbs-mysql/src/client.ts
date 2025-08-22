@@ -29,6 +29,7 @@ export const createClient = async (
       database: client.config.database,
       user: client.config.user,
       password: client.config.password,
+      protocol: 'mysql',
     },
   };
 };

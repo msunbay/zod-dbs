@@ -36,6 +36,7 @@ export const getConnectionConfig = (): ZodDbsConnectorConfig => {
     user: client.config.user,
     password: client.config.password,
     schemaName: 'test',
+    protocol: client.config.protocol || 'postgresql',
   };
 };
 
