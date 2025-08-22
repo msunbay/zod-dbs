@@ -1,23 +1,25 @@
 import { describe, expect, it } from 'vitest';
-import { ZodDbsColumnInfo, ZodDbsConfig, ZodDbsTableInfo } from 'zod-dbs-core';
+import { ZodDbsColumn, ZodDbsConfig, ZodDbsTable } from 'zod-dbs-core';
 
 import { Zod4Renderer } from '../../../../src/renderers/Zod4Renderer.js';
 
-const column = (overrides: Partial<ZodDbsColumnInfo>): ZodDbsColumnInfo => ({
+const column = (overrides: Partial<ZodDbsColumn>): ZodDbsColumn => ({
   name: 'col',
   dataType: 'text',
-  type: 'string',
   isEnum: false,
   isSerial: false,
   isArray: false,
   isNullable: false,
   isWritable: true,
+  isReadOptional: false,
+  isWriteOptional: false,
   tableName: 'users',
   schemaName: 'public',
   tableType: 'table',
+  type: 'string',
   ...overrides,
 });
-const table = (cols: ZodDbsColumnInfo[]): ZodDbsTableInfo => ({
+const table = (cols: ZodDbsColumn[]): ZodDbsTable => ({
   type: 'table',
   name: 'users',
   schemaName: 'public',
@@ -76,7 +78,8 @@ describe('Zod4Renderer', () => {
         dataType: 'timestamptz',
         isArray: true,
         isNullable: true,
-        isOptional: true,
+        isReadOptional: true,
+        isWriteOptional: true,
       }),
     ]);
     const out = await new Zod4Renderer().renderSchemaFile(tbl, {
@@ -100,7 +103,7 @@ describe('Zod4Renderer', () => {
       column({
         name: 'nickname',
         type: 'string',
-        isOptional: true,
+        isReadOptional: true,
         isNullable: false,
       }),
     ]);

@@ -1,5 +1,5 @@
 import pluralize from 'pluralize';
-import { ZodDbsCasing, ZodDbsFieldCasing, ZodDbsTableInfo } from 'zod-dbs-core';
+import { ZodDbsCasing, ZodDbsFieldCasing, ZodDbsTable } from 'zod-dbs-core';
 
 import {
   convertCaseFormat,
@@ -29,21 +29,21 @@ const getOperationSuffix = (type: Operation): string => {
   }
 };
 
-export const getSchemaPrefix = (tableInfo: ZodDbsTableInfo): string => {
-  switch (tableInfo.type) {
+export const getSchemaPrefix = (table: ZodDbsTable): string => {
+  switch (table.type) {
     case 'table':
     case 'foreign_table':
       return 'Table';
     case 'materialized_view':
       // If the table name starts with a known materialized view prefix, return an empty string
       // to avoid adding 'Mv' prefix unnecessarily.
-      return MVIEW_PREFIXES.some((prefix) => tableInfo.name.startsWith(prefix))
+      return MVIEW_PREFIXES.some((prefix) => table.name.startsWith(prefix))
         ? ''
         : 'Mv';
     case 'view':
       // If the table name starts with a known view prefix, return an empty string
       // to avoid adding 'View' prefix unnecessarily.
-      return VIEW_PREFIXES.some((prefix) => tableInfo.name.startsWith(prefix))
+      return VIEW_PREFIXES.some((prefix) => table.name.startsWith(prefix))
         ? ''
         : 'View';
     default:
@@ -52,57 +52,57 @@ export const getSchemaPrefix = (tableInfo: ZodDbsTableInfo): string => {
 };
 
 export const formatRecordTransformName = ({
-  tableInfo,
+  table,
   operation: type,
   singularize = true,
   casing = 'camelCase',
   suffix = 'BaseRecord',
 }: {
-  tableInfo: ZodDbsTableInfo;
+  table: ZodDbsTable;
   operation: Operation;
   casing?: ZodDbsFieldCasing;
   singularize?: boolean;
   suffix?: string;
 }): string => {
   const tableName = singularize
-    ? singularPascalCase(tableInfo.name)
-    : pascalCase(tableInfo.name);
+    ? singularPascalCase(table.name)
+    : pascalCase(table.name);
 
   const name = `transform${tableName}${getOperationSuffix(type)}${suffix}`;
   return convertCaseFormat(name, casing);
 };
 
 export const formatTableSchemaName = ({
-  tableInfo,
+  table,
   operation: type,
   casing = 'PascalCase',
   suffix = 'Schema',
 }: {
-  tableInfo: ZodDbsTableInfo;
+  table: ZodDbsTable;
   operation: Operation;
   casing?: ZodDbsCasing;
   suffix?: string;
 }): string => {
-  const name = `${pascalCase(tableInfo.name)}${getSchemaPrefix(tableInfo)}${getOperationSuffix(type)}${suffix}`;
+  const name = `${pascalCase(table.name)}${getSchemaPrefix(table)}${getOperationSuffix(type)}${suffix}`;
   return convertCaseFormat(name, casing);
 };
 
 export const formatTableRecordName = ({
-  tableInfo,
+  table,
   operation,
   singularize = true,
   casing = 'PascalCase',
   suffix = 'Record',
 }: {
-  tableInfo: ZodDbsTableInfo;
+  table: ZodDbsTable;
   operation: Operation;
   casing?: ZodDbsCasing;
   singularize?: boolean;
   suffix?: string;
 }): string => {
   const tableName = singularize
-    ? singularPascalCase(tableInfo.name)
-    : pascalCase(tableInfo.name);
+    ? singularPascalCase(table.name)
+    : pascalCase(table.name);
 
   const name = `${tableName}${getOperationSuffix(operation)}${suffix}`;
   return convertCaseFormat(name, casing);

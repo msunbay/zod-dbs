@@ -5,14 +5,13 @@ export interface ZodDbsSchemaInfo {
   /** The name of the database schema (e.g., 'public') */
   name: string;
   /** Array of all tables found in the schema */
-  tables: ZodDbsTableInfo[];
+  tables: ZodDbsTable[];
 }
 
 /**
- * Represents basic information about a PostgreSQL table, view, or other relation.
- * This is the raw data structure before any processing or model creation.
+ * Represents information about a table, view, or other relation.
  */
-export interface ZodDbsTableInfo {
+export interface ZodDbsTable {
   /** The type of relation (table, view, materialized view, etc.) */
   type: ZodDbsTableType;
   /** The name of the table/relation */
@@ -20,7 +19,7 @@ export interface ZodDbsTableInfo {
   /** The schema name where this table resides */
   schemaName: string;
   /** Array of all columns in this table */
-  columns: ZodDbsColumnInfo[];
+  columns: ZodDbsColumn[];
 }
 
 /**
@@ -44,10 +43,9 @@ export type ZodDbsTransform =
   | 'nonnegative';
 
 /**
- * Raw column information directly from PostgreSQL system catalogs.
- * This interface represents the unprocessed data about a database column.
+ * This interface represents data about a database column returned by a provider.
  */
-export interface ZodDbsRawColumnInfo {
+export interface ZodDbsColumnInfo {
   /** The name of the column */
   name: string;
   /** The default value expression for the column, if any */
@@ -60,15 +58,7 @@ export interface ZodDbsRawColumnInfo {
   minLen?: number;
   /**
    * Data type of the column as defined in database.
-   *
-   * Examples:
-   * - Built-in types: 'varchar', 'int4', 'text', 'bool', 'timestamp', 'timestamptz', 'jsonb', 'uuid'
-   * - Array types: '_text' (text[]), '_int4' (integer[]), '_varchar' (varchar[])
-   * - Serial types: 'int4' with serial default, 'int8' with bigserial default
-   * - Custom types: User-defined enum names, composite types, domain types
-   *
    * This value is used by the type mapping system to determine the appropriate Zod schema type.
-   * Array types are detected by the leading underscore prefix.
    */
   dataType: string;
   /** Name of the table this column belongs to */
@@ -77,38 +67,8 @@ export interface ZodDbsRawColumnInfo {
   schemaName: string;
   /** Column description/comment from the database */
   description?: string;
-  /** Check constraints applied to this column */
-  checkConstraints?: { checkClause: string }[];
   /** The type of table this column belongs to */
   tableType: ZodDbsTableType;
-}
-
-/**
- * Enhanced column information with additional metadata derived from the raw column data.
- * This extends the raw column info with processed information about types and characteristics.
- */
-export interface ZodDbsColumnInfo extends ZodDbsRawColumnInfo {
-  /**
-   * The mapped Zod type derived from the PostgreSQL dataType.
-   *
-   * This represents the high-level category that the PostgreSQL type maps to in the Zod schema system.
-   * The type mapping logic analyzes the `dataType` field and converts it to one of these standardized types.
-   *
-   * Examples of mapping:
-   * - 'varchar', 'text', 'bpchar' → 'string'
-   * - 'int4', 'int8', 'smallint' → 'int'
-   * - 'numeric', 'decimal', 'real' → 'number'
-   * - 'bool' → 'boolean'
-   * - 'timestamp', 'timestamptz', 'date' → 'date'
-   * - 'uuid' → 'uuid'
-   * - 'jsonb', 'json' → 'json'
-   * - Email-like varchar columns → 'email' (if detected)
-   * - URL-like varchar columns → 'url' (if detected)
-   * - Unknown/unsupported types → 'any'
-   *
-   * This mapped type is used to generate the appropriate Zod schema (e.g., z.string(), z.number(), z.date()).
-   */
-  type: ZodDbsColumnType;
   /** If isEnum is true, contains the possible enum values */
   enumValues?: string[];
   /** Whether this column represents an enumeration type */
@@ -117,11 +77,6 @@ export interface ZodDbsColumnInfo extends ZodDbsRawColumnInfo {
   isSerial: boolean;
   /** Whether this column is an array type */
   isArray: boolean;
-  /**
-   * Whether the field is optional in the Zod schema
-   * Defaults to the same as isNullable.
-   */
-  isOptional?: boolean;
   /**
    * Whether this column should be included in insert/update schemas.
    * Typically false for serial columns, primary keys, or other read-only columns.
@@ -136,6 +91,29 @@ export interface ZodDbsColumnInfo extends ZodDbsRawColumnInfo {
    * If isDeprecated is true, this provides the reason for deprecation.
    */
   isDeprecatedReason?: string;
+}
+
+export interface ZodDbsColumn extends ZodDbsColumnInfo {
+  /**
+   * Whether this column should be included in insert/update schemas.
+   * Typically false for serial columns, primary keys, or other read-only columns.
+   */
+  isWritable: boolean;
+  /**
+   * Whether the field is optional in the Zod read schemas.
+   * Defaults to true if the column is nullable.
+   */
+  isReadOptional: boolean;
+  /**
+   * Whether the field is optional in the Zod write schemas.
+   * Defaults to true if the column is nullable or has a default value.
+   */
+  isWriteOptional: boolean;
+  /**
+   * The mapped Zod type ( usually derived from the dataType ).
+   * This type is used to render the appropriate Zod schema (e.g., z.string(), z.number(), z.date()).
+   */
+  type: ZodDbsColumnType;
   /**
    * Additional transforms applied to the column.
    * These are used provide rendering hints the Zod type during rendering the write schema.
@@ -176,7 +154,7 @@ export interface ZodDbsRenderer {
    * Renders the TypeScript code for the generated Zod schemas and types for a given table.
    */
   renderSchemaFile: (
-    table: ZodDbsTableInfo,
+    table: ZodDbsTable,
     config: ZodDbsConfig
   ) => string | Promise<string>;
 }
@@ -229,16 +207,16 @@ export interface ZodDbsHooks {
    * Allows customization of individual column properties and Zod types.
    */
   onColumnModelCreated?: (
-    column: ZodDbsColumnInfo
-  ) => ZodDbsColumnInfo | Promise<ZodDbsColumnInfo>;
+    column: ZodDbsColumn
+  ) => ZodDbsColumn | Promise<ZodDbsColumn>;
 
   /**
    * Hook called for each table after information is fetched from the database and columns are processed.
    * Allows customization of the entire table model.
    */
   onTableModelCreated?: (
-    table: ZodDbsTableInfo
-  ) => ZodDbsTableInfo | Promise<ZodDbsTableInfo>;
+    table: ZodDbsTable
+  ) => ZodDbsTable | Promise<ZodDbsTable>;
 }
 
 export interface ZodDbsSslConfig extends Record<string, any> {}

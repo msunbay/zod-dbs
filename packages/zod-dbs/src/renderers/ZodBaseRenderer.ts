@@ -1,9 +1,9 @@
 import type {
-  ZodDbsColumnInfo,
+  ZodDbsColumn,
   ZodDbsColumnType,
   ZodDbsConfig,
   ZodDbsRenderer,
-  ZodDbsTableInfo,
+  ZodDbsTable,
 } from 'zod-dbs-core';
 import type {
   ZodDbsColumnBaseRenderModel,
@@ -123,13 +123,13 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
       zodType = `${zodType}.nullable()`;
     }
 
-    if (column.isOptional || column.isNullable) {
+    if (column.isReadOptional || column.isNullable) {
       if (column.isArray && config.defaultEmptyArray)
         zodType = `${zodType}.transform((value) => value ?? [])`;
       else if (config.defaultNullsToUndefined)
         zodType = `${zodType}.transform((value) => value ?? undefined)`;
 
-      if (column.isOptional) {
+      if (column.isReadOptional) {
         zodType = `${zodType}.optional()`;
       }
     }
@@ -214,7 +214,7 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
       }
     }
 
-    if (column.isOptional) {
+    if (column.isWriteOptional) {
       zodType = `${zodType}.optional()`;
     }
 
@@ -222,10 +222,11 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
   }
 
   protected createColumnModel(
-    column: ZodDbsColumnInfo,
+    column: ZodDbsColumn,
     config: ZodDbsConfig
   ): ZodDbsColumnRenderModel {
     const baseModel = {
+      isOptional: column.isReadOptional,
       propertyName: convertCaseFormat(column.name, config.fieldNameCasing),
       enumConstantName: formatEnumConstantName({
         tableName: column.tableName,
@@ -267,16 +268,21 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
   protected createWritableColumns(
     columns: ZodDbsColumnRenderModel[]
   ): ZodDbsColumnRenderModel[] {
-    return columns.filter((column) => column.isWritable);
+    return columns
+      .filter((column) => column.isWritable)
+      .map((column) => ({
+        ...column,
+        isOptional: column.isWriteOptional,
+      }));
   }
 
   protected async createTableModel(
-    tableInfo: ZodDbsTableInfo,
+    table: ZodDbsTable,
     config: ZodDbsConfig
   ): Promise<ZodDbsTableRenderModel> {
     const readableColumns: ZodDbsColumnRenderModel[] = [];
 
-    for (const column of tableInfo.columns) {
+    for (const column of table.columns) {
       let model = this.createColumnModel(column, config);
 
       if (this.options.onColumnModelCreated) {
@@ -332,93 +338,93 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
       });
 
     const tableModel: ZodDbsTableRenderModel = {
-      type: tableInfo.type,
-      tableName: tableInfo.name,
-      schemaName: tableInfo.schemaName,
+      type: table.type,
+      tableName: table.name,
+      schemaName: table.schemaName,
       tableSingularName: formatSingularString(
-        tableInfo.name,
+        table.name,
         config.objectNameCasing
       ),
       tableReadBaseSchemaName: formatTableSchemaName({
-        tableInfo,
+        table,
         operation: 'read',
         casing: config.objectNameCasing,
         suffix: 'BaseSchema',
       }),
       tableInsertBaseSchemaName: formatTableSchemaName({
-        tableInfo,
+        table,
         operation: 'insert',
         casing: config.objectNameCasing,
         suffix: 'BaseSchema',
       }),
       tableReadTransformName: formatRecordTransformName({
-        tableInfo,
+        table,
         operation: 'read',
         casing: config.fieldNameCasing,
         singularize: config.singularization,
       }),
       tableInsertTransformName: formatRecordTransformName({
-        tableInfo,
+        table,
         operation: 'insert',
         casing: config.fieldNameCasing,
         singularize: config.singularization,
       }),
       tableUpdateTransformName: formatRecordTransformName({
-        tableInfo,
+        table,
         operation: 'update',
         casing: config.fieldNameCasing,
         singularize: config.singularization,
       }),
       tableReadSchemaName: formatTableSchemaName({
-        tableInfo,
+        table,
         operation: 'read',
         casing: config.objectNameCasing,
       }),
       tableInsertSchemaName: formatTableSchemaName({
-        tableInfo,
+        table,
         operation: 'insert',
         casing: config.objectNameCasing,
       }),
       tableUpdateSchemaName: formatTableSchemaName({
-        tableInfo,
+        table,
         operation: 'update',
         casing: config.objectNameCasing,
       }),
       tableInsertRecordName: formatTableRecordName({
-        tableInfo,
+        table,
         operation: 'insert',
         casing: config.objectNameCasing,
         singularize: config.singularization,
       }),
       tableReadBaseRecordName: formatTableRecordName({
-        tableInfo,
+        table,
         operation: 'read',
         casing: config.objectNameCasing,
         singularize: config.singularization,
         suffix: 'BaseRecord',
       }),
       tableInsertBaseRecordName: formatTableRecordName({
-        tableInfo,
+        table,
         operation: 'insert',
         casing: config.objectNameCasing,
         singularize: config.singularization,
         suffix: 'BaseRecord',
       }),
       tableUpdateBaseRecordName: formatTableRecordName({
-        tableInfo,
+        table,
         operation: 'update',
         casing: config.objectNameCasing,
         singularize: config.singularization,
         suffix: 'BaseRecord',
       }),
       tableReadRecordName: formatTableRecordName({
-        tableInfo,
+        table,
         operation: 'read',
         singularize: config.singularization,
         casing: config.objectNameCasing,
       }),
       tableUpdateRecordName: formatTableRecordName({
-        tableInfo,
+        table,
         operation: 'update',
         singularize: config.singularization,
         casing: config.objectNameCasing,
@@ -429,7 +435,7 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
       readableColumns,
       writableColumns,
       enums,
-      isWritable: writableColumns.length > 0,
+      isWritable: table.type === 'table' && writableColumns.length > 0,
     };
 
     if (this.options.onTableModelCreated) {
@@ -447,7 +453,7 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
   }
 
   public async renderSchemaFile(
-    table: ZodDbsTableInfo,
+    table: ZodDbsTable,
     config: ZodDbsConfig
   ): Promise<string> {
     const templateName = this.getSchemaTemplateName(config);

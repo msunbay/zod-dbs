@@ -1,4 +1,4 @@
-import { getZodType, logDebug, sql, ZodDbsBaseProvider } from 'zod-dbs-core';
+import { logDebug, sql, ZodDbsBaseProvider } from 'zod-dbs-core';
 
 import type {
   ZodDbsColumnInfo,
@@ -45,11 +45,9 @@ export class MySqlProvider extends ZodDbsBaseProvider {
   protected createColumnInfo(column: RawColumnInfo): ZodDbsColumnInfo {
     const parsedColumn: ZodDbsColumnInfo = {
       maxLen: column.characterMaximumLength ?? undefined,
-      isEnum: false,
-      isSerial: false,
+      isEnum: column.dataType === 'enum',
+      isSerial: column.extra?.includes('auto_increment') ?? false,
       isArray: false,
-      isWritable: true,
-      type: getZodType(column.dataType),
       schemaName: column.tableSchema,
       tableType: 'table',
       name: column.name,
@@ -60,11 +58,6 @@ export class MySqlProvider extends ZodDbsBaseProvider {
       description: column.description ?? undefined,
     };
 
-    parsedColumn.isArray = column.dataType.toLowerCase().endsWith('[]');
-    parsedColumn.isSerial = column.extra?.includes('auto_increment') ?? false;
-    parsedColumn.isWritable = !parsedColumn.isSerial;
-    parsedColumn.isOptional = column.isNullable === 'YES';
-    parsedColumn.isEnum = column.dataType === 'enum';
     if (parsedColumn.isEnum)
       parsedColumn.enumValues = parseEnumValues(column.columnType);
 

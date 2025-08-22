@@ -1746,7 +1746,7 @@ export const FilesTableInsertBaseSchema = z.object({
       * dataType: uuid
       * defaultValue: gen_random_uuid()
       */
-    id: z.string().uuid(),
+    id: z.string().uuid().optional(),
      /**
       * dataType: varchar
       */
@@ -1817,7 +1817,7 @@ export type FileUpdateBaseRecord = Partial<FileInsertBaseRecord>;
  * Maps app cased properties to database fields.
  */
 export const transformFileInsertBaseRecord = (data: FileInsertBaseRecord): {
-    id: FileInsertBaseRecord['id'],
+    id?: FileInsertBaseRecord['id'],
     filename: FileInsertBaseRecord['filename'],
     file_path: FileInsertBaseRecord['filePath'],
     file_size: FileInsertBaseRecord['fileSize'],
@@ -1851,7 +1851,7 @@ export const transformFileInsertBaseRecord = (data: FileInsertBaseRecord): {
  * Maps app cased properties to database fields.
  */
 export const transformFileUpdateBaseRecord = (data: FileUpdateBaseRecord): {
-    id: FileUpdateBaseRecord['id'],
+    id?: FileUpdateBaseRecord['id'],
     filename: FileUpdateBaseRecord['filename'],
     file_path: FileUpdateBaseRecord['filePath'],
     file_size: FileUpdateBaseRecord['fileSize'],
@@ -1959,7 +1959,7 @@ export interface FileInsertRecord {
     * Primary key for files table
     * @default: gen_random_uuid()
     */
-    id: TableInsertRecord['id'];
+    id?: TableInsertRecord['id'];
     /**
     * Original filename
     * @maxLen: 255
@@ -2515,7 +2515,7 @@ export const InventoryTableInsertBaseSchema = z.object({
       * dataType: int4
       * defaultValue: 0
       */
-    stockQuantity: z.number().int(),
+    stockQuantity: z.number().int().optional(),
      /**
       * dataType: int4
       * defaultValue: 0
@@ -2563,7 +2563,7 @@ export type InventoryUpdateBaseRecord = Partial<InventoryInsertBaseRecord>;
  */
 export const transformInventoryInsertBaseRecord = (data: InventoryInsertBaseRecord): {
     product_id: InventoryInsertBaseRecord['productId'],
-    stock_quantity: InventoryInsertBaseRecord['stockQuantity'],
+    stock_quantity?: InventoryInsertBaseRecord['stockQuantity'],
     reserved_quantity?: InventoryInsertBaseRecord['reservedQuantity'],
     reorder_level?: InventoryInsertBaseRecord['reorderLevel'],
     last_restocked?: InventoryInsertBaseRecord['lastRestocked'],
@@ -2587,7 +2587,7 @@ export const transformInventoryInsertBaseRecord = (data: InventoryInsertBaseReco
  */
 export const transformInventoryUpdateBaseRecord = (data: InventoryUpdateBaseRecord): {
     product_id: InventoryUpdateBaseRecord['productId'],
-    stock_quantity: InventoryUpdateBaseRecord['stockQuantity'],
+    stock_quantity?: InventoryUpdateBaseRecord['stockQuantity'],
     reserved_quantity?: InventoryUpdateBaseRecord['reservedQuantity'],
     reorder_level?: InventoryUpdateBaseRecord['reorderLevel'],
     last_restocked?: InventoryUpdateBaseRecord['lastRestocked'],
@@ -2668,7 +2668,7 @@ export interface InventoryInsertRecord {
     * Current stock quantity
     * @default: 0
     */
-    stockQuantity: TableInsertRecord['stockQuantity'];
+    stockQuantity?: TableInsertRecord['stockQuantity'];
     /**
     * Quantity reserved for orders
     * @default: 0
@@ -4992,7 +4992,7 @@ export const UserSessionsTableInsertBaseSchema = z.object({
       * dataType: uuid
       * defaultValue: gen_random_uuid()
       */
-    id: z.string().uuid(),
+    id: z.string().uuid().optional(),
      /**
       * dataType: int4
       */
@@ -5042,7 +5042,7 @@ export type UserSessionUpdateBaseRecord = Partial<UserSessionInsertBaseRecord>;
  * Maps app cased properties to database fields.
  */
 export const transformUserSessionInsertBaseRecord = (data: UserSessionInsertBaseRecord): {
-    id: UserSessionInsertBaseRecord['id'],
+    id?: UserSessionInsertBaseRecord['id'],
     user_id?: UserSessionInsertBaseRecord['userId'],
     token_hash: UserSessionInsertBaseRecord['tokenHash'],
     expires_at: UserSessionInsertBaseRecord['expiresAt'],
@@ -5066,7 +5066,7 @@ export const transformUserSessionInsertBaseRecord = (data: UserSessionInsertBase
  * Maps app cased properties to database fields.
  */
 export const transformUserSessionUpdateBaseRecord = (data: UserSessionUpdateBaseRecord): {
-    id: UserSessionUpdateBaseRecord['id'],
+    id?: UserSessionUpdateBaseRecord['id'],
     user_id?: UserSessionUpdateBaseRecord['userId'],
     token_hash: UserSessionUpdateBaseRecord['tokenHash'],
     expires_at: UserSessionUpdateBaseRecord['expiresAt'],
@@ -5144,7 +5144,7 @@ export interface UserSessionInsertRecord {
     * Primary key for user sessions table
     * @default: gen_random_uuid()
     */
-    id: TableInsertRecord['id'];
+    id?: TableInsertRecord['id'];
     /**
     * ID of the user this session belongs to
     */

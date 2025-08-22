@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { ZodDbsColumnInfo, ZodDbsConfig, ZodDbsTableInfo } from 'zod-dbs-core';
+import { ZodDbsColumn, ZodDbsConfig, ZodDbsTable } from 'zod-dbs-core';
 
 import { ZodBaseRenderer } from '../../../../src/renderers/ZodBaseRenderer.js';
 
 // Helpers
-const column = (overrides: Partial<ZodDbsColumnInfo>): ZodDbsColumnInfo => ({
+const column = (overrides: Partial<ZodDbsColumn>): ZodDbsColumn => ({
   name: 'col',
   dataType: 'text',
   type: 'string',
@@ -13,13 +13,15 @@ const column = (overrides: Partial<ZodDbsColumnInfo>): ZodDbsColumnInfo => ({
   isArray: false,
   isNullable: false,
   isWritable: true,
+  isReadOptional: false,
+  isWriteOptional: false,
   tableName: 'users',
   schemaName: 'public',
   tableType: 'table',
   ...overrides,
 });
 
-const table = (cols: ZodDbsColumnInfo[]): ZodDbsTableInfo => ({
+const table = (cols: ZodDbsColumn[]): ZodDbsTable => ({
   type: 'table',
   name: 'users',
   schemaName: 'public',
@@ -39,7 +41,7 @@ const baseConfig: ZodDbsConfig = {
   caseTransform: true,
 };
 
-describe('DefaultRenderer', () => {
+describe('ZodBaseRenderer', () => {
   it('renders fallback types number, unknown, any', async () => {
     const tbl = table([
       column({ name: 'total', type: 'number', dataType: 'numeric' }),
@@ -61,7 +63,7 @@ describe('DefaultRenderer', () => {
         type: 'json',
         dataType: 'jsonb',
         isNullable: true,
-        isOptional: true,
+        isReadOptional: true,
       }),
       column({ name: 'created_at', type: 'date', dataType: 'timestamptz' }),
       column({
@@ -70,7 +72,7 @@ describe('DefaultRenderer', () => {
         dataType: '_text',
         isArray: true,
         isNullable: true,
-        isOptional: true,
+        isReadOptional: true,
       }),
     ]);
     const out = await new ZodBaseRenderer().renderSchemaFile(tbl, baseConfig);
@@ -120,7 +122,8 @@ describe('DefaultRenderer', () => {
         dataType: 'timestamptz',
         isArray: true,
         isNullable: true,
-        isOptional: true,
+        isReadOptional: true,
+        isWriteOptional: true,
       }),
     ]);
     const out = await new ZodBaseRenderer().renderSchemaFile(tbl, baseConfig);
@@ -173,7 +176,7 @@ describe('DefaultRenderer', () => {
         type: 'json',
         dataType: 'json',
         isNullable: true,
-        isOptional: true,
+        isReadOptional: true,
       }),
     ]);
     const out = await new ZodBaseRenderer().renderSchemaFile(tbl, {
@@ -226,7 +229,7 @@ describe('DefaultRenderer', () => {
       isWritable: false,
     });
 
-    const tbl: ZodDbsTableInfo = {
+    const tbl: ZodDbsTable = {
       type: 'table',
       name: 'users',
       schemaName: 'public',
@@ -263,7 +266,7 @@ describe('DefaultRenderer', () => {
       column({
         name: 'nickname',
         type: 'string',
-        isOptional: true,
+        isReadOptional: true,
         isNullable: false,
       }),
     ]);
@@ -313,7 +316,7 @@ describe('DefaultRenderer', () => {
         name: 'maybe',
         type: 'string',
         isNullable: true,
-        isOptional: true,
+        isReadOptional: true,
       }),
     ]);
     const out = await new ZodBaseRenderer().renderSchemaFile(tbl, {
@@ -347,7 +350,7 @@ describe('DefaultRenderer', () => {
         type: 'json',
         dataType: 'jsonb',
         isNullable: true,
-        isOptional: true,
+        isWriteOptional: true,
       }),
     ]);
     const out = await new ZodBaseRenderer().renderSchemaFile(tbl, baseConfig);
@@ -364,7 +367,7 @@ describe('DefaultRenderer', () => {
         type: 'date',
         dataType: 'timestamptz',
         isNullable: true,
-        isOptional: true,
+        isWriteOptional: true,
       }),
     ]);
     const out = await new ZodBaseRenderer().renderSchemaFile(tbl, baseConfig);
@@ -388,7 +391,7 @@ describe('DefaultRenderer', () => {
 
   it('marks optional-only field as optional in write schema', async () => {
     const tbl = table([
-      column({ name: 'nickname', type: 'string', isOptional: true }),
+      column({ name: 'nickname', type: 'string', isWriteOptional: true }),
     ]);
     const out = await new ZodBaseRenderer().renderSchemaFile(tbl, baseConfig);
     // In insert base schema we expect .optional()
@@ -456,7 +459,7 @@ describe('DefaultRenderer', () => {
         name: 'note',
         type: 'string',
         isNullable: true,
-        isOptional: false,
+        isReadOptional: false,
       }),
     ]);
     const out = await new ZodBaseRenderer().renderSchemaFile(tbl, baseConfig);
@@ -475,7 +478,7 @@ describe('DefaultRenderer', () => {
         dataType: '_text',
         isArray: true,
         isNullable: true,
-        isOptional: true,
+        isReadOptional: true,
       }),
     ]);
     const out = await new ZodBaseRenderer().renderSchemaFile(tbl, {
@@ -524,7 +527,7 @@ describe('DefaultRenderer', () => {
         type: 'date',
         dataType: 'timestamptz',
         isNullable: true,
-        isOptional: true,
+        isWriteOptional: true,
       }),
     ]);
     const out = await new ZodBaseRenderer().renderSchemaFile(tbl, {

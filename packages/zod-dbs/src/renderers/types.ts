@@ -1,4 +1,4 @@
-import type { ZodDbsColumnInfo, ZodDbsTableType } from 'zod-dbs-core';
+import type { ZodDbsColumn, ZodDbsTableType } from 'zod-dbs-core';
 
 export type ZodDbsColumnBaseType =
   | 'string'
@@ -12,7 +12,8 @@ export type ZodDbsColumnBaseType =
  * Base model for a column with additional processing and naming information.
  * This represents the column after initial processing but before final rendering.
  */
-export interface ZodDbsColumnBaseRenderModel extends ZodDbsColumnInfo {
+export interface ZodDbsColumnBaseRenderModel extends ZodDbsColumn {
+  isOptional: boolean;
   /**
    * The property name of the column in the generated Zod schema.
    * This is typically the column name transformed according to the specified casing (e.g., camelCase).

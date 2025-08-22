@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { ZodDbsColumnInfo, ZodDbsConfig, ZodDbsTableInfo } from 'zod-dbs-core';
+import { ZodDbsColumn, ZodDbsConfig, ZodDbsTable } from 'zod-dbs-core';
 
 import { Zod4MiniRenderer } from '../../../../src/renderers/Zod4MiniRenderer.js';
 
-const column = (overrides: Partial<ZodDbsColumnInfo>): ZodDbsColumnInfo => ({
+const column = (overrides: Partial<ZodDbsColumn>): ZodDbsColumn => ({
   name: 'col',
   dataType: 'text',
   type: 'string',
@@ -12,12 +12,14 @@ const column = (overrides: Partial<ZodDbsColumnInfo>): ZodDbsColumnInfo => ({
   isArray: false,
   isNullable: false,
   isWritable: true,
+  isReadOptional: false,
+  isWriteOptional: false,
   tableName: 'users',
   schemaName: 'public',
   tableType: 'table',
   ...overrides,
 });
-const table = (cols: ZodDbsColumnInfo[]): ZodDbsTableInfo => ({
+const table = (cols: ZodDbsColumn[]): ZodDbsTable => ({
   type: 'table',
   name: 'users',
   schemaName: 'public',
@@ -57,7 +59,7 @@ describe('Zod4MiniRenderer', () => {
         type: 'string',
         isArray: true,
         isNullable: true,
-        isOptional: true,
+        isReadOptional: true,
       }),
     ]);
     const out = await new Zod4MiniRenderer().renderSchemaFile(tbl, config);
@@ -80,7 +82,8 @@ describe('Zod4MiniRenderer', () => {
         dataType: 'timestamptz',
         isArray: true,
         isNullable: true,
-        isOptional: true,
+        isReadOptional: true,
+        isWriteOptional: true,
       }),
     ]);
     const out = await new Zod4MiniRenderer().renderSchemaFile(tbl, config);
@@ -116,7 +119,7 @@ describe('Zod4MiniRenderer', () => {
       column({
         name: 'nickname',
         type: 'string',
-        isOptional: true,
+        isReadOptional: true,
         isNullable: false,
       }),
     ]);
@@ -244,7 +247,7 @@ describe('Zod4MiniRenderer', () => {
         name: 'labels',
         type: 'string',
         isArray: true,
-        isOptional: true,
+        isReadOptional: true,
       }),
     ]);
     const out = await new Zod4MiniRenderer().renderSchemaFile(tbl, config);
@@ -260,7 +263,7 @@ describe('Zod4MiniRenderer', () => {
         type: 'string',
         isArray: true,
         isNullable: true,
-        isOptional: true,
+        isReadOptional: true,
       }),
     ]);
     const out = await new Zod4MiniRenderer().renderSchemaFile(tbl, {
@@ -281,7 +284,7 @@ describe('Zod4MiniRenderer', () => {
         type: 'json',
         dataType: 'json',
         isNullable: true,
-        isOptional: true,
+        isReadOptional: true,
       }),
     ]);
     const out = await new Zod4MiniRenderer().renderSchemaFile(tbl, {
@@ -304,7 +307,8 @@ describe('Zod4MiniRenderer', () => {
         type: 'json',
         dataType: 'jsonb',
         isNullable: true,
-        isOptional: true,
+        isReadOptional: true,
+        isWriteOptional: true,
       }),
     ]);
     const out = await new Zod4MiniRenderer().renderSchemaFile(tbl, config);
@@ -324,7 +328,7 @@ describe('Zod4MiniRenderer', () => {
         type: 'date',
         dataType: 'timestamptz',
         isNullable: true,
-        isOptional: true,
+        isWriteOptional: true,
       }),
     ]);
     const out = await new Zod4MiniRenderer().renderSchemaFile(tbl, config);

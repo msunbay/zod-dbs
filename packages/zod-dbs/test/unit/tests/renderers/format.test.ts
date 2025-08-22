@@ -1,4 +1,4 @@
-import { ZodDbsTableInfo } from 'zod-dbs-core';
+import { ZodDbsTable } from 'zod-dbs-core';
 
 import {
   formatEnumConstantName,
@@ -11,10 +11,9 @@ import {
 } from '../../../../src/renderers/format.js';
 
 describe('format', () => {
-  // Helper function to create a mock ZodDbsTableInfo
-  const createMockTableInfo = (
-    overrides: Partial<ZodDbsTableInfo> = {}
-  ): ZodDbsTableInfo => ({
+  const createMockTable = (
+    overrides: Partial<ZodDbsTable> = {}
+  ): ZodDbsTable => ({
     type: 'table' as const,
     name: 'users',
     schemaName: 'public',
@@ -24,185 +23,185 @@ describe('format', () => {
 
   describe('getSchemaPrefix', () => {
     it('should return "Table" for table type', () => {
-      const tableInfo = createMockTableInfo({ type: 'table', name: 'users' });
-      const result = getSchemaPrefix(tableInfo);
+      const table = createMockTable({ type: 'table', name: 'users' });
+      const result = getSchemaPrefix(table);
       expect(result).toBe('Table');
     });
 
     it('should return "Table" for foreign_table type', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'foreign_table',
         name: 'external_data',
       });
-      const result = getSchemaPrefix(tableInfo);
+      const result = getSchemaPrefix(table);
       expect(result).toBe('Table');
     });
 
     it('should return "Mv" for materialized_view type', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'materialized_view',
         name: 'user_stats',
       });
-      const result = getSchemaPrefix(tableInfo);
+      const result = getSchemaPrefix(table);
       expect(result).toBe('Mv');
     });
 
     it('should return empty string for materialized_view with mv_ prefix', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'materialized_view',
         name: 'mv_user_stats',
       });
-      const result = getSchemaPrefix(tableInfo);
+      const result = getSchemaPrefix(table);
       expect(result).toBe('');
     });
 
     it('should return empty string for materialized_view with mview_ prefix', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'materialized_view',
         name: 'mview_user_stats',
       });
-      const result = getSchemaPrefix(tableInfo);
+      const result = getSchemaPrefix(table);
       expect(result).toBe('');
     });
 
     it('should return "View" for view type', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'view',
         name: 'user_summary',
       });
-      const result = getSchemaPrefix(tableInfo);
+      const result = getSchemaPrefix(table);
       expect(result).toBe('View');
     });
 
     it('should return empty string for view with v_ prefix', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'view',
         name: 'v_user_summary',
       });
-      const result = getSchemaPrefix(tableInfo);
+      const result = getSchemaPrefix(table);
       expect(result).toBe('');
     });
 
     it('should return empty string for view with view_ prefix', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'view',
         name: 'view_user_summary',
       });
-      const result = getSchemaPrefix(tableInfo);
+      const result = getSchemaPrefix(table);
       expect(result).toBe('');
     });
 
     it('should return empty string for unknown type', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'unknown',
         name: 'unknown_object',
       });
-      const result = getSchemaPrefix(tableInfo);
+      const result = getSchemaPrefix(table);
       expect(result).toBe('');
     });
   });
 
   describe('formatTableSchemaName', () => {
     it('should format read schema name for table with default PascalCase', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'table',
         name: 'user_posts',
       });
       const result = formatTableSchemaName({
-        tableInfo,
+        table,
         operation: 'read',
       });
       expect(result).toBe('UserPostsTableSchema');
     });
 
     it('should format insert schema name for table', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'table',
         name: 'user_posts',
       });
       const result = formatTableSchemaName({
-        tableInfo,
+        table,
         operation: 'insert',
       });
       expect(result).toBe('UserPostsTableInsertSchema');
     });
 
     it('should format update schema name for table', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'table',
         name: 'user_posts',
       });
       const result = formatTableSchemaName({
-        tableInfo,
+        table,
         operation: 'update',
       });
       expect(result).toBe('UserPostsTableUpdateSchema');
     });
 
     it('should format write schema name for table', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'table',
         name: 'user_posts',
       });
-      const result = formatTableSchemaName({ tableInfo, operation: 'write' });
+      const result = formatTableSchemaName({ table, operation: 'write' });
       expect(result).toBe('UserPostsTableWriteSchema');
     });
 
     it('should format schema name for view', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'view',
         name: 'user_summary',
       });
       const result = formatTableSchemaName({
-        tableInfo,
+        table,
         operation: 'read',
       });
       expect(result).toBe('UserSummaryViewSchema');
     });
 
     it('should format schema name for view with prefix', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'view',
         name: 'v_user_summary',
       });
       const result = formatTableSchemaName({
-        tableInfo,
+        table,
         operation: 'read',
       });
       expect(result).toBe('VUserSummarySchema');
     });
 
     it('should format schema name for materialized view', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'materialized_view',
         name: 'user_stats',
       });
       const result = formatTableSchemaName({
-        tableInfo,
+        table,
         operation: 'read',
       });
       expect(result).toBe('UserStatsMvSchema');
     });
 
     it('should format schema name for materialized view with prefix', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'materialized_view',
         name: 'mv_user_stats',
       });
       const result = formatTableSchemaName({
-        tableInfo,
+        table,
         operation: 'read',
       });
       expect(result).toBe('MvUserStatsSchema');
     });
 
     it('should respect camelCase casing', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'table',
         name: 'user_posts',
       });
       const result = formatTableSchemaName({
-        tableInfo,
+        table,
         operation: 'read',
         casing: 'camelCase',
       });
@@ -210,12 +209,12 @@ describe('format', () => {
     });
 
     it('should respect snake_case casing', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'table',
         name: 'UserPosts',
       });
       const result = formatTableSchemaName({
-        tableInfo,
+        table,
         operation: 'read',
         casing: 'snake_case',
       });
@@ -225,54 +224,54 @@ describe('format', () => {
 
   describe('formatTableRecordName', () => {
     it('should format read record name with default PascalCase', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'table',
         name: 'user_posts',
       });
-      const result = formatTableRecordName({ tableInfo, operation: 'read' });
+      const result = formatTableRecordName({ table, operation: 'read' });
       expect(result).toBe('UserPostRecord');
     });
 
     it('should format insert record name', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'table',
         name: 'user_posts',
       });
-      const result = formatTableRecordName({ tableInfo, operation: 'insert' });
+      const result = formatTableRecordName({ table, operation: 'insert' });
       expect(result).toBe('UserPostInsertRecord');
     });
 
     it('should format update record name', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'table',
         name: 'user_posts',
       });
-      const result = formatTableRecordName({ tableInfo, operation: 'update' });
+      const result = formatTableRecordName({ table, operation: 'update' });
       expect(result).toBe('UserPostUpdateRecord');
     });
 
     it('should singularize plural table names', () => {
-      const tableInfo = createMockTableInfo({ type: 'table', name: 'users' });
-      const result = formatTableRecordName({ tableInfo, operation: 'read' });
+      const table = createMockTable({ type: 'table', name: 'users' });
+      const result = formatTableRecordName({ table, operation: 'read' });
       expect(result).toBe('UserRecord');
     });
 
     it('should handle already singular table names', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'table',
         name: 'user_profile',
       });
-      const result = formatTableRecordName({ tableInfo, operation: 'read' });
+      const result = formatTableRecordName({ table, operation: 'read' });
       expect(result).toBe('UserProfileRecord');
     });
 
     it('should respect camelCase casing', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'table',
         name: 'user_posts',
       });
       const result = formatTableRecordName({
-        tableInfo,
+        table,
         operation: 'read',
         casing: 'camelCase',
       });
@@ -280,12 +279,12 @@ describe('format', () => {
     });
 
     it('should respect snake_case casing', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'table',
         name: 'UserPosts',
       });
       const result = formatTableRecordName({
-        tableInfo,
+        table,
         operation: 'read',
         casing: 'snake_case',
       });
@@ -293,65 +292,65 @@ describe('format', () => {
     });
 
     it('should handle complex plural forms', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'table',
         name: 'categories',
       });
-      const result = formatTableRecordName({ tableInfo, operation: 'read' });
+      const result = formatTableRecordName({ table, operation: 'read' });
       expect(result).toBe('CategoryRecord');
     });
 
     it('should format write record name with write operation suffix', () => {
-      const tableInfo = createMockTableInfo({
+      const table = createMockTable({
         type: 'table',
         name: 'user_posts',
       });
-      const result = formatTableRecordName({ tableInfo, operation: 'write' });
+      const result = formatTableRecordName({ table, operation: 'write' });
       expect(result).toBe('UserPostWriteRecord');
     });
   });
 
   describe('formatRecordTransformName', () => {
     it('should format read transform name (singularized) with default casing', () => {
-      const tableInfo = createMockTableInfo({ name: 'user_posts' });
+      const table = createMockTable({ name: 'user_posts' });
       const result = formatRecordTransformName({
-        tableInfo,
+        table,
         operation: 'read',
       });
       expect(result).toBe('transformUserPostBaseRecord');
     });
 
     it('should format insert transform name', () => {
-      const tableInfo = createMockTableInfo({ name: 'users' });
+      const table = createMockTable({ name: 'users' });
       const result = formatRecordTransformName({
-        tableInfo,
+        table,
         operation: 'insert',
       });
       expect(result).toBe('transformUserInsertBaseRecord');
     });
 
     it('should format update transform name with PascalCase table already singular', () => {
-      const tableInfo = createMockTableInfo({ name: 'user_profile' });
+      const table = createMockTable({ name: 'user_profile' });
       const result = formatRecordTransformName({
-        tableInfo,
+        table,
         operation: 'update',
       });
       expect(result).toBe('transformUserProfileUpdateBaseRecord');
     });
 
     it('should format write transform name', () => {
-      const tableInfo = createMockTableInfo({ name: 'user_profiles' });
+      const table = createMockTable({ name: 'user_profiles' });
       const result = formatRecordTransformName({
-        tableInfo,
+        table,
         operation: 'write',
       });
       expect(result).toBe('transformUserProfileWriteBaseRecord');
     });
 
     it('should respect camelCase casing', () => {
-      const tableInfo = createMockTableInfo({ name: 'user_profiles' });
+      const table = createMockTable({ name: 'user_profiles' });
       const result = formatRecordTransformName({
-        tableInfo,
+        table,
         operation: 'read',
         casing: 'camelCase',
       });
@@ -359,9 +358,9 @@ describe('format', () => {
     });
 
     it('should respect snake_case casing', () => {
-      const tableInfo = createMockTableInfo({ name: 'user_profiles' });
+      const table = createMockTable({ name: 'user_profiles' });
       const result = formatRecordTransformName({
-        tableInfo,
+        table,
         operation: 'insert',
         casing: 'snake_case',
       });
@@ -369,9 +368,9 @@ describe('format', () => {
     });
 
     it('should disable singularization when singularize=false', () => {
-      const tableInfo = createMockTableInfo({ name: 'user_profiles' });
+      const table = createMockTable({ name: 'user_profiles' });
       const result = formatRecordTransformName({
-        tableInfo,
+        table,
         operation: 'read',
         singularize: false,
       });
@@ -379,9 +378,9 @@ describe('format', () => {
     });
 
     it('should apply custom suffix', () => {
-      const tableInfo = createMockTableInfo({ name: 'users' });
+      const table = createMockTable({ name: 'users' });
       const result = formatRecordTransformName({
-        tableInfo,
+        table,
         operation: 'read',
         suffix: 'XYZ',
       });

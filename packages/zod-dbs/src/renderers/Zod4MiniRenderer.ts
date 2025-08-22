@@ -36,11 +36,11 @@ export class Zod4MiniRenderer extends Zod4Renderer {
       zodType = `z.nullable(${zodType})`;
     }
 
-    if (column.isOptional) {
+    if (column.isReadOptional) {
       zodType = `z.optional(${zodType})`;
     }
 
-    if (column.isNullable || column.isOptional) {
+    if (column.isNullable || column.isReadOptional) {
       if (column.isArray && config.defaultEmptyArray)
         zodType = `z.pipe(${zodType}, z.transform(val => val ?? []))`;
       else if (config.defaultNullsToUndefined)
@@ -123,7 +123,7 @@ export class Zod4MiniRenderer extends Zod4Renderer {
       zodType = `z.nullable(${zodType})`;
     }
 
-    if (column.isOptional) {
+    if (column.isWriteOptional) {
       zodType = `z.optional(${zodType})`;
     }
 

@@ -1,11 +1,13 @@
 import type {
+  ZodDbsColumn,
   ZodDbsColumnInfo,
   ZodDbsConnectorConfig,
   ZodDbsProvider,
   ZodDbsSchemaInfo,
-  ZodDbsTableInfo,
+  ZodDbsTable,
 } from './types.js';
 
+import { getZodType } from './getZodType.js';
 import { logDebug } from './utils/debug.js';
 
 export interface ZodDbsProviderOptions {
@@ -28,7 +30,7 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
   }
 
   protected async createSchemaInfo(
-    tables: ZodDbsTableInfo[],
+    tables: ZodDbsTable[],
     config: ZodDbsConnectorConfig
   ): Promise<ZodDbsSchemaInfo> {
     const { schemaName = 'public' } = config;
@@ -91,20 +93,32 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
     return filteredColumns;
   }
 
-  protected async createTables(
+  protected createColumnModel(column: ZodDbsColumnInfo): ZodDbsColumn {
+    return {
+      ...column,
+      type: getZodType(column.dataType),
+      isWritable:
+        column.isWritable ?? (!column.isSerial && column.tableType === 'table'),
+      isReadOptional: column.isNullable,
+      isWriteOptional: column.isNullable || !!column.defaultValue,
+    };
+  }
+
+  protected async createTableModels(
     columns: ZodDbsColumnInfo[],
     config: ZodDbsConnectorConfig
-  ): Promise<ZodDbsTableInfo[]> {
-    const tablesMap = new Map<string, ZodDbsTableInfo>();
+  ): Promise<ZodDbsTable[]> {
+    const tablesMap = new Map<string, ZodDbsTable>();
     const { schemaName = 'public' } = config;
 
     for (const column of columns) {
       const key = `${schemaName}:${column.tableName}`;
       let table = tablesMap.get(key);
-      let modifiedColumn = column;
+
+      let columnModel = this.createColumnModel(column);
 
       if (config.onColumnModelCreated) {
-        modifiedColumn = await config.onColumnModelCreated(column);
+        columnModel = await config.onColumnModelCreated(columnModel);
       }
 
       if (!table) {
@@ -118,7 +132,7 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
         tablesMap.set(key, table);
       }
 
-      table.columns.push(modifiedColumn);
+      table.columns.push(columnModel);
     }
 
     let tables = Array.from(tablesMap.values());
@@ -139,7 +153,7 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
   ): Promise<ZodDbsSchemaInfo> {
     const columns = await this.fetchSchemaInfo(config);
     const filteredColumns = this.filterColumns(columns, config);
-    const tables = await this.createTables(filteredColumns, config);
+    const tables = await this.createTableModels(filteredColumns, config);
 
     return await this.createSchemaInfo(tables, config);
   }

@@ -1,4 +1,4 @@
-import { getZodType, logDebug, sql, ZodDbsBaseProvider } from 'zod-dbs-core';
+import { logDebug, sql, ZodDbsBaseProvider } from 'zod-dbs-core';
 
 import type {
   ZodDbsColumnInfo,
@@ -52,8 +52,6 @@ export class PostgreSqlProvider extends ZodDbsBaseProvider {
       isEnum: false,
       isSerial: isSerialType(column.dataType, column.defaultValue),
       isArray: isArrayType(column.dataType),
-      isWritable: true,
-      type: getZodType(column.dataType),
       schemaName,
       name: column.name,
       isNullable: column.isNullable,
@@ -75,9 +73,6 @@ export class PostgreSqlProvider extends ZodDbsBaseProvider {
       );
     }
 
-    parsedColumn.isWritable =
-      !parsedColumn.isSerial && parsedColumn.tableType === 'table';
-    parsedColumn.isOptional = parsedColumn.isNullable;
     parsedColumn.isEnum = !!parsedColumn.enumValues?.length;
 
     return parsedColumn;

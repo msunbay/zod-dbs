@@ -1,17 +1,13 @@
 import { promises } from 'fs';
 import { logDebug } from 'zod-dbs-core';
 
-import type {
-  ZodDbsConfig,
-  ZodDbsRenderer,
-  ZodDbsTableInfo,
-} from 'zod-dbs-core';
+import type { ZodDbsConfig, ZodDbsRenderer, ZodDbsTable } from 'zod-dbs-core';
 
 import { ensureFolder, getOutputFolder } from '../utils/index.js';
 import { renderMustacheTemplate } from '../utils/mustache.js';
 
 async function generateSchemaFile(
-  table: ZodDbsTableInfo,
+  table: ZodDbsTable,
   renderer: ZodDbsRenderer,
   config: ZodDbsConfig
 ): Promise<void> {
@@ -34,7 +30,7 @@ async function generateSchemaFile(
 }
 
 async function generateSchemaIndexFile(
-  table: ZodDbsTableInfo,
+  table: ZodDbsTable,
   config: ZodDbsConfig
 ): Promise<void> {
   logDebug(`Generating schema index file for: ${table.type} ${table.name}`);
@@ -59,7 +55,7 @@ async function generateSchemaIndexFile(
 }
 
 export async function generateSchemaFiles(
-  table: ZodDbsTableInfo,
+  table: ZodDbsTable,
   renderer: ZodDbsRenderer,
   config: ZodDbsConfig
 ): Promise<void> {
