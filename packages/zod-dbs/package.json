@@ -3,7 +3,11 @@
   "version": "1.0.1",
   "description": "Opinionated Zod schema generator for databases",
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "build": "rm -rf ./dist && tsc --project tsconfig.build.json",
     "test": "pnpm run test:unit",

@@ -3,32 +3,34 @@ import path from 'path';
 
 import { generateZodSchemas } from '../../../src/generateZodSchemas.js';
 import {
-  createTestConnector,
+  createTestProvider,
   getOutputDir,
   getOutputFiles,
 } from '../testDbUtils.js';
 
-const connector = createTestConnector();
+const provider = createTestProvider();
 
 describe('hook options', () => {
   it('applies onColumnModelCreated hook to modify column schemas', async () => {
     const outputDir = getOutputDir('hooks', 'column-hook');
 
-    await generateZodSchemas(connector, {
-      moduleResolution: 'esm',
-      outputDir,
-      include: ['users'],
-      onColumnModelCreated: (column) => {
-        // Add custom validation to email columns
-        if (column.name === 'email') {
-          return {
-            ...column,
-            type: 'email',
-            writeTransforms: ['trim', 'lowercase'],
-          };
-        }
-
-        return column;
+    await generateZodSchemas({
+      provider,
+      config: {
+        moduleResolution: 'esm',
+        outputDir,
+        include: ['users'],
+        onColumnModelCreated: (column) => {
+          // Add custom validation to email columns
+          if (column.name === 'email') {
+            return {
+              ...column,
+              type: 'email',
+              writeTransforms: ['trim', 'lowercase'],
+            };
+          }
+          return column;
+        },
       },
     });
 
@@ -49,16 +51,19 @@ describe('hook options', () => {
   it('applies onTableModelCreated hook to modify table schemas', async () => {
     const outputDir = getOutputDir('hooks', 'table-hook');
 
-    await generateZodSchemas(connector, {
-      moduleResolution: 'esm',
-      outputDir,
-      include: ['users'],
-      onTableModelCreated: (table) => {
-        // Add a custom description to all tables
-        return {
-          ...table,
-          description: `Generated schema for ${table.name} table`,
-        };
+    await generateZodSchemas({
+      provider,
+      config: {
+        moduleResolution: 'esm',
+        outputDir,
+        include: ['users'],
+        onTableModelCreated: (table) => {
+          // Add a custom description to all tables
+          return {
+            ...table,
+            description: `Generated schema for ${table.name} table`,
+          };
+        },
       },
     });
 
@@ -75,26 +80,29 @@ describe('hook options', () => {
   it('applies both column and table hooks together', async () => {
     const outputDir = getOutputDir('hooks', 'combined-hooks');
 
-    await generateZodSchemas(connector, {
-      moduleResolution: 'esm',
-      outputDir,
-      include: ['users'],
-      onColumnModelCreated: (column) => {
-        // Mark all string columns as trimmed
-        if (column.type === 'string') {
+    await generateZodSchemas({
+      provider,
+      config: {
+        moduleResolution: 'esm',
+        outputDir,
+        include: ['users'],
+        onColumnModelCreated: (column) => {
+          // Mark all string columns as trimmed
+          if (column.type === 'string') {
+            return {
+              ...column,
+              isTrimmed: true,
+            };
+          }
+          return column;
+        },
+        onTableModelCreated: (table) => {
+          // Add table metadata
           return {
-            ...column,
-            isTrimmed: true,
+            ...table,
+            description: `Table: ${table.name} (${table.columns.length} columns)`,
           };
-        }
-        return column;
-      },
-      onTableModelCreated: (table) => {
-        // Add table metadata
-        return {
-          ...table,
-          description: `Table: ${table.name} (${table.columns.length} columns)`,
-        };
+        },
       },
     });
 

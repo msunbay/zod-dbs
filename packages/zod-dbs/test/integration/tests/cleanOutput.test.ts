@@ -3,12 +3,12 @@ import path from 'path';
 
 import { generateZodSchemas } from '../../../src/generateZodSchemas.js';
 import {
-  createTestConnector,
+  createTestProvider,
   getOutputDir,
   getOutputFiles,
 } from '../testDbUtils.js';
 
-const connector = createTestConnector();
+const provider = createTestProvider();
 
 describe('clean output option', () => {
   it('cleans output directory when cleanOutput is true', async () => {
@@ -29,11 +29,14 @@ describe('clean output option', () => {
     expect(fs.existsSync(`${outputDir}/tables/old-file.ts`)).toBe(true);
     expect(fs.existsSync(`${outputDir}/old-root-file.ts`)).toBe(true);
 
-    await generateZodSchemas(connector, {
-      outputDir: outputDir,
-      cleanOutput: true,
-      moduleResolution: 'esm',
-      include: ['users'],
+    await generateZodSchemas({
+      provider,
+      config: {
+        outputDir: outputDir,
+        cleanOutput: true,
+        moduleResolution: 'esm',
+        include: ['users'],
+      },
     });
 
     // Old files in tables directory should be cleaned
@@ -64,11 +67,14 @@ describe('clean output option', () => {
     // Verify file exists before generation
     expect(fs.existsSync(`${outputDir}/tables/old-file.ts`)).toBe(true);
 
-    await generateZodSchemas(connector, {
-      outputDir,
-      cleanOutput: false,
-      moduleResolution: 'esm',
-      include: ['users'],
+    await generateZodSchemas({
+      provider,
+      config: {
+        outputDir,
+        cleanOutput: false,
+        moduleResolution: 'esm',
+        include: ['users'],
+      },
     });
 
     // Old file should still exist

@@ -11,6 +11,7 @@
 - [Key Features](#key-features)
 - [Requirements](#requirements)
 - [Why zod-dbs?](#why-zod-dbs)
+- [Supported Databases](#supported-databases)
 - [Installation](#installation)
 - [Usage](#usage)
   - [With connection string](#with-connection-string)
@@ -52,7 +53,16 @@ Manually writing and maintaining TypeScript types and Zod schemas for database t
 
 zod-dbs automates this process by generating type-safe validation schemas directly from your database schema. This approach ensures your validation logic stays synchronized with your database structure, eliminating the manual work of writing and updating schemas when your database changes. Whether you're building APIs that need request validation, working with complex features like arrays and enums, or maintaining type safety across your entire stack, zod-dbs bridges the gap between your database and TypeScript application.
 
-## Installation
+## Supported Database Providers
+
+- PostgreSQL: [zod-dbs-pg](./packages/zod-dbs-pg/README.md)
+- MySQL: [zod-dbs-mysql](./packages/zod-dbs-mysql/README.md)
+
+## `zod-dbs-cli`
+
+zod-dbs comes with a CLI tool to generate Zod schemas from your database schema. The CLI supports multiple database providers and allows you to customize the output.
+
+### Installation
 
 ```sh
 npm install --save-dev zod-dbs-cli
@@ -60,15 +70,23 @@ npm install --save-dev zod-dbs-cli
 pnpm add -D zod-dbs-cli
 ```
 
-## Usage
+Then the provider you need:
 
-### With connection string
+```sh
+npm install --save-dev zod-dbs-pg
+# or
+pnpm add -D zod-dbs-pg
+```
+
+### Usage
+
+#### With connection string
 
 ```sh
 npx zod-dbs --provider pg --connection "postgres://user:password@localhost:5432/dbname" --ssl --output-dir ./src/output
 ```
 
-### With options
+#### With options
 
 You can also specify options directly:
 
@@ -76,7 +94,7 @@ You can also specify options directly:
 npx zod-dbs --provider pg --user postgres --password secret --host localhost --port 5432 --database mydb --ssl --output-dir ./src/output
 ```
 
-### With environment variables
+#### With environment variables
 
 zod-dbs can read connection details from environment variables. Set the following variables:
 
@@ -101,7 +119,7 @@ zod-dbs does not automatically load `.env` files, but you can use a package like
 dotenv -e .env npx zod-dbs --provider pg --output-dir ./src/output
 ```
 
-### Exclude / Include Tables
+#### Exclude / Include Tables
 
 You can exclude specific tables from schema generation using the `--exclude` option with a regex pattern. For example, to exclude all tables starting with "temp":
 
@@ -117,7 +135,7 @@ npx zod-dbs --include '^(user|account)' --output-dir ./src/output
 
 Note that if you use both `--exclude` and `--include` options together, the `--include` option is applied first, then the `--exclude` option is applied to the included tables.
 
-### All Options
+#### All Options
 
 All CLI options are optional. Sensible defaults are applied (e.g. output defaults to `./zod-schemas`, schema defaults to `public`). Values can be provided via:
 
@@ -130,7 +148,7 @@ Negative flags (`--no-*`) disable a feature that is enabled by default.
 
 | Option                                 | Description                                                                                       | Default         |
 | -------------------------------------- | ------------------------------------------------------------------------------------------------- | --------------- |
-| `--provider <string>`                  | DB connection provider (pg)                                                                       |                 |
+| `--provider <string>`                  | DB connection provider (pg, mysql)                                                                |                 |
 | `--connection-string <string>`         | DB connection string (overrides individual host/port/user/etc).                                   |                 |
 | `-o, --output-dir <path>`              | Output directory for generated files.                                                             | `./zod-schemas` |
 | `--clean-output`                       | Delete the output directory before generation.                                                    | `false`         |
@@ -141,7 +159,7 @@ Negative flags (`--no-*`) disable a feature that is enabled by default.
 | `--object-name-casing <value>`         | Casing for object/type names (one of: `PascalCase`, `camelCase`, `snake_case`).                   | `PascalCase`    |
 | `--field-name-casing <value>`          | Casing for field/property names (one of: `PascalCase`, `camelCase`, `snake_case`, `passthrough`). | `camelCase`     |
 | `--no-case-transform`                  | Disable transforming property name casing (skips base schema + transform helpers).                | `false`         |
-| `--no-singularize`                     | Preserve plural table / enum names (singularization on by default).                               | `false`         |
+| `--no-singularization`                 | Preserve plural table / enum names (singularization on by default).                               | `false`         |
 | `--include <regex>`                    | Include only tables matching this regex (applied before exclude).                                 |                 |
 | `--exclude <regex>`                    | Exclude tables matching this regex.                                                               |                 |
 | `--json-schema-import-location <path>` | Path to import custom JSON field schemas from.                                                    |                 |
@@ -158,18 +176,19 @@ Negative flags (`--no-*`) disable a feature that is enabled by default.
 | `--debug`                              | Enable verbose debug logging.                                                                     | `false`         |
 | `--help`                               | Show help and exit.                                                                               |                 |
 
-## Configuration File
+### Configuration File
 
-In addition to CLI options, you can use configuration files to set your options. zod-dbs uses [cosmiconfig](https://github.com/davidtheclark/cosmiconfig).
+In addition to CLI options, you can use configuration files to set your options. zod-dbs-cli uses [cosmiconfig](https://github.com/davidtheclark/cosmiconfig).
 
-### Example Configuration File
+#### Example Configuration File
 
 **zod-dbs.config.ts:**
 
 ```typescript
-import type { ZodDbsConfig } from 'zod-dbs-cli';
+import type { ZodDbsCliConfig } from 'zod-dbs-cli';
 
-const config: ZodDbsConfig = {
+const config: ZodDbsCliConfig = {
+  provider: 'pg',
   connectionString: 'postgresql://user:password@localhost:5432/mydb',
   ssl: false,
   outputDir: './src/generated',
@@ -272,7 +291,7 @@ Example:
 If you would prefer the generated identifiers to preserve the original (often plural / snake_case) names, disable singularization with the CLI flag:
 
 ```
-npx zod-dbs --no-singularize
+npx zod-dbs -no-singularization
 ```
 
 Or in a config file:
@@ -280,7 +299,7 @@ Or in a config file:
 ```ts
 export default {
   // ...other config
-  singularize: false,
+  singularization: false,
 };
 ```
 

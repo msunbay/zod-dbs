@@ -5,6 +5,7 @@ export const enableDebug = () => {
   debug.enable('zod-dbs');
 };
 
-export const logDebug = (...args: any[]) => {
-  debug('zod-dbs')(args);
+export const logDebug = (formatter: any, ...args: any[]) => {
+  const logger = debug('zod-dbs');
+  logger(formatter, ...args);
 };

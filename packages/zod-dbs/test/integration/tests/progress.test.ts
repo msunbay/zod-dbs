@@ -1,7 +1,7 @@
 import { generateZodSchemas } from '../../../src/generateZodSchemas.js';
-import { createTestConnector, getOutputDir } from '../testDbUtils.js';
+import { createTestProvider, getOutputDir } from '../testDbUtils.js';
 
-const connector = createTestConnector();
+const provider = createTestProvider();
 
 describe('progress callback', () => {
   it('works without onProgress callback', async () => {
@@ -9,11 +9,14 @@ describe('progress callback', () => {
 
     // Should not throw when no progress callback is provided
     await expect(
-      generateZodSchemas(connector, {
-        moduleResolution: 'esm',
-        outputDir,
-        include: ['users'],
-        // No onProgress callback
+      generateZodSchemas({
+        provider,
+        config: {
+          moduleResolution: 'esm',
+          outputDir,
+          include: ['users'],
+          // No onProgress callback
+        },
       })
     ).resolves.toBeDefined();
   });

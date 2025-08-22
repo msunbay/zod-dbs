@@ -3,21 +3,24 @@ import path from 'path';
 
 import { generateZodSchemas } from '../../../src/generateZodSchemas.js';
 import {
-  createTestConnector,
+  createTestProvider,
   getOutputDir,
   getOutputFiles,
 } from '../testDbUtils.js';
 
-const connector = createTestConnector();
+const provider = createTestProvider();
 
 it('generates schemas without case transformations', async () => {
   const outputDir = getOutputDir('disableCaseTransform');
 
-  await generateZodSchemas(connector, {
-    outputDir,
-    moduleResolution: 'esm',
-    caseTransform: true,
-    include: ['users'],
+  await generateZodSchemas({
+    provider,
+    config: {
+      outputDir,
+      moduleResolution: 'esm',
+      caseTransform: true,
+      include: ['users'],
+    },
   });
 
   const outputFiles = await getOutputFiles(outputDir);

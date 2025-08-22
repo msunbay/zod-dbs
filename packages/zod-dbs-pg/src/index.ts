@@ -1,4 +1,3 @@
-export { PostgreSqlConnector } from './PostgreSqlConnector.js';
+export { PostgreSqlProvider } from './PostgreSqlProvider.js';
 export { createClient } from './client.js';
-export { createConnector } from './factory.js';
-export type { Client } from 'pg';
+export { createProvider } from './provider.js';

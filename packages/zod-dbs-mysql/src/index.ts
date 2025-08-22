@@ -1,3 +1,3 @@
-export { MySqlConnector } from './MySqlConnector.js';
+export { MySqlProvider } from './MySqlProvider.js';
 export { createClient } from './client.js';
-export type { Connection as Client } from 'mysql2/promise';
+export { createProvider } from './provider.js';

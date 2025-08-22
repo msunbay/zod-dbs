@@ -3,13 +3,13 @@ import path from 'path';
 
 import { generateZodSchemas } from '../../../src/generateZodSchemas.js';
 import {
-  createTestConnector,
+  createTestProvider,
   deleteOutputFiles,
   getOutputDir,
   getOutputFiles,
 } from '../testDbUtils.js';
 
-const connector = createTestConnector();
+const provider = createTestProvider();
 
 afterAll(async () => {
   await deleteOutputFiles(getOutputDir('moduleResolution'));
@@ -19,10 +19,13 @@ describe('module resolution formats', () => {
   it('generates modules without file extensions (commonjs module resolution)', async () => {
     const outputDir = getOutputDir('moduleResolution', 'commonjs');
 
-    await generateZodSchemas(connector, {
-      outputDir,
-      moduleResolution: 'commonjs',
-      include: ['users'],
+    await generateZodSchemas({
+      provider,
+      config: {
+        outputDir,
+        moduleResolution: 'commonjs',
+        include: ['users'],
+      },
     });
     const outputFiles = await getOutputFiles(outputDir);
 
@@ -47,10 +50,13 @@ describe('module resolution formats', () => {
   it('generates modules with file extensions (esm module resolution)', async () => {
     const outputDir = getOutputDir('moduleResolution', 'esm');
 
-    await generateZodSchemas(connector, {
-      outputDir,
-      moduleResolution: 'esm',
-      include: ['users'],
+    await generateZodSchemas({
+      provider,
+      config: {
+        outputDir,
+        moduleResolution: 'esm',
+        include: ['users'],
+      },
     });
     const outputFiles = await getOutputFiles(outputDir);
 

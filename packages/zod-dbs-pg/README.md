@@ -1,0 +1,33 @@
+# zod-dbs-pg
+
+PostgreSQL provider for [zod-dbs](https://github.com/msolvaag/zod-dbs).
+
+## Installation
+
+```bash
+npm install zod-dbs-pg
+```
+
+## Cli Usage
+
+```bash
+npm install zod-dbs-cli zod-dbs-pg
+
+npx zod-dbs --provider pg
+```
+
+## Programmatic Usage
+
+```ts
+import { generateZodSchemas } from 'zod-dbs';
+import { PostgreSqlProvider } from 'zod-dbs-pg';
+
+const provider = new PostgreSqlProvider();
+
+await generateZodSchemas({
+  provider,
+  config: {
+    // See zod-dbs documentation for available options
+  },
+});
+```

@@ -19,7 +19,7 @@ export const DEFAULT_CONFIGURATION: ZodDbsConfig = {
   objectNameCasing: 'PascalCase',
 
   caseTransform: true,
-  singularize: true,
+  singularization: true,
   coerceDates: true,
   defaultEmptyArray: false,
   defaultNullsToUndefined: true,

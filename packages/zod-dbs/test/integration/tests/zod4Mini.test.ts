@@ -3,21 +3,24 @@ import path from 'path';
 
 import { generateZodSchemas } from '../../../src/generateZodSchemas.js';
 import {
-  createTestConnector,
+  createTestProvider,
   getOutputDir,
   getOutputFiles,
 } from '../testDbUtils.js';
 
-const connector = createTestConnector();
+const provider = createTestProvider();
 
 it('generates schemas compatible with zod version 4 mini', async () => {
   const outputDir = getOutputDir('zod4Mini');
 
-  await generateZodSchemas(connector, {
-    outputDir,
-    moduleResolution: 'esm',
-    zodVersion: '4-mini',
-    include: ['users'],
+  await generateZodSchemas({
+    provider,
+    config: {
+      outputDir,
+      moduleResolution: 'esm',
+      zodVersion: '4-mini',
+      include: ['users'],
+    },
   });
 
   const outputFiles = await getOutputFiles(outputDir);

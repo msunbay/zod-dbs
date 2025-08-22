@@ -1,15 +1,15 @@
 import fs from 'fs';
 import path from 'path';
 
-import { Zod4Renderer } from '../../../src/generate/renderers/Zod4Renderer.js';
 import { generateZodSchemas } from '../../../src/generateZodSchemas.js';
+import { Zod4Renderer } from '../../../src/renderers/Zod4Renderer.js';
 import {
-  createTestConnector,
+  createTestProvider,
   getOutputDir,
   getOutputFiles,
 } from '../testDbUtils.js';
 
-const connector = createTestConnector();
+const provider = createTestProvider();
 
 it('generates schemas using a custom renderer', async () => {
   const outputDir = getOutputDir('generate', 'customRenderer');
@@ -26,11 +26,14 @@ it('generates schemas using a custom renderer', async () => {
 
   const renderer = new CustomRenderer();
 
-  await generateZodSchemas(connector, {
-    outputDir,
-    moduleResolution: 'esm',
-    include: ['users'],
+  await generateZodSchemas({
+    provider,
     renderer,
+    config: {
+      outputDir,
+      moduleResolution: 'esm',
+      include: ['users'],
+    },
   });
 
   const outputFiles = await getOutputFiles(outputDir);

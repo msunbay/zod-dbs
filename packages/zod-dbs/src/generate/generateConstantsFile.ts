@@ -3,8 +3,8 @@ import { logDebug } from 'zod-dbs-core';
 
 import type { ZodDbsConfig, ZodDbsSchemaInfo } from 'zod-dbs-core';
 
+import { getSchemaPrefix } from '../renderers/format.js';
 import { renderMustacheTemplate } from '../utils/mustache.js';
-import { getSchemaPrefix } from './format.js';
 
 export const generateConstantsFile = async (
   schema: ZodDbsSchemaInfo,

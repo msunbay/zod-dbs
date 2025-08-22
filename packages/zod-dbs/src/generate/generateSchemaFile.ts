@@ -1,37 +1,18 @@
 import { promises } from 'fs';
 import { logDebug } from 'zod-dbs-core';
 
-import type { ZodDbsConfig, ZodDbsTableInfo } from 'zod-dbs-core';
+import type {
+  ZodDbsConfig,
+  ZodDbsRenderer,
+  ZodDbsTableInfo,
+} from 'zod-dbs-core';
 
 import { ensureFolder, getOutputFolder } from '../utils/index.js';
 import { renderMustacheTemplate } from '../utils/mustache.js';
-import { DefaultRenderer } from './renderers/DefaultRenderer.js';
-import { Zod3Renderer } from './renderers/Zod3Renderer.js';
-import { Zod4MiniRenderer } from './renderers/Zod4MiniRenderer.js';
-import { Zod4Renderer } from './renderers/Zod4Renderer.js';
-
-const createRenderer = (config: ZodDbsConfig) => {
-  if (config.renderer) {
-    return config.renderer;
-  }
-
-  if (config.zodVersion === '3') {
-    return new Zod3Renderer();
-  }
-
-  if (config.zodVersion === '4') {
-    return new Zod4Renderer();
-  }
-
-  if (config.zodVersion === '4-mini') {
-    return new Zod4MiniRenderer();
-  }
-
-  return new DefaultRenderer();
-};
 
 async function generateSchemaFile(
   table: ZodDbsTableInfo,
+  renderer: ZodDbsRenderer,
   config: ZodDbsConfig
 ): Promise<void> {
   logDebug(`Generating schema for: ${table.type} ${table.name}`);
@@ -41,8 +22,7 @@ async function generateSchemaFile(
     return;
   }
 
-  const renderer = createRenderer(config);
-  const output = await renderer.renderSchema(table, config);
+  const output = await renderer.renderSchemaFile(table, config);
 
   const folderPath = `${config.outputDir}/${getOutputFolder(table.type)}/${table.name}`;
   await ensureFolder(folderPath);
@@ -80,8 +60,9 @@ async function generateSchemaIndexFile(
 
 export async function generateSchemaFiles(
   table: ZodDbsTableInfo,
+  renderer: ZodDbsRenderer,
   config: ZodDbsConfig
 ): Promise<void> {
-  await generateSchemaFile(table, config);
+  await generateSchemaFile(table, renderer, config);
   await generateSchemaIndexFile(table, config);
 }

@@ -10,7 +10,7 @@ import {
 import { createClient as createMysqlClient } from 'zod-dbs-mysql';
 import { createClient as createPostgreSqlClient } from 'zod-dbs-pg';
 
-import { ZodDbsProvider } from '../../src/types.js';
+import { ZodDbsProviderName } from '../../src/types.js';
 
 export interface TestDbContext {
   container: { stop(): Promise<unknown> };
@@ -104,7 +104,7 @@ export async function setupMysql(): Promise<TestDbContext> {
 }
 
 export async function setupTestDb(
-  db: ZodDbsProvider = 'pg'
+  db: ZodDbsProviderName = 'pg'
 ): Promise<TestDbContext> {
   if (db === 'pg') return setupPostgreSql();
   if (db === 'mysql') return setupMysql();

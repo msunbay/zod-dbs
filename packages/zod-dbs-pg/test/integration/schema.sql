@@ -33,7 +33,7 @@ CREATE TABLE categories (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
-CREATE TABLE post_categories (
+CREATE TABLE posts_categories (
   post_id INTEGER REFERENCES posts(id) ON DELETE CASCADE,
   category_id INTEGER REFERENCES categories(id) ON DELETE CASCADE,
   PRIMARY KEY (post_id, category_id)
@@ -50,7 +50,7 @@ CREATE TABLE comments (
   updated_at TIMESTAMPTZ DEFAULT now()
 );
 
-CREATE TABLE user_sessions (
+CREATE TABLE users_sessions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   token_hash VARCHAR(255) NOT NULL,
@@ -104,7 +104,7 @@ CREATE TABLE orders (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
-CREATE TABLE order_items (
+CREATE TABLE orders_items (
   id BIGSERIAL PRIMARY KEY,
   order_id BIGINT REFERENCES orders(id) ON DELETE CASCADE,
   product_id INTEGER REFERENCES products(id),
@@ -230,9 +230,9 @@ COMMENT ON COLUMN categories.description IS 'Description of the category';
 COMMENT ON COLUMN categories.color IS 'Hex color code for the category';
 COMMENT ON COLUMN categories.created_at IS 'Timestamp when the category was created';
 
--- Column descriptions for post_categories table
-COMMENT ON COLUMN post_categories.post_id IS 'ID of the post';
-COMMENT ON COLUMN post_categories.category_id IS 'ID of the category';
+-- Column descriptions for posts_categories table
+COMMENT ON COLUMN posts_categories.post_id IS 'ID of the post';
+COMMENT ON COLUMN posts_categories.category_id IS 'ID of the category';
 
 -- Column descriptions for comments table
 COMMENT ON COLUMN comments.id IS 'Primary key for comments table';
@@ -244,15 +244,15 @@ COMMENT ON COLUMN comments.is_approved IS 'Whether the comment has been approved
 COMMENT ON COLUMN comments.created_at IS 'Timestamp when the comment was created';
 COMMENT ON COLUMN comments.updated_at IS 'Timestamp when the comment was last updated';
 
--- Column descriptions for user_sessions table
-COMMENT ON COLUMN user_sessions.id IS 'Primary key for user sessions table';
-COMMENT ON COLUMN user_sessions.user_id IS 'ID of the user this session belongs to';
-COMMENT ON COLUMN user_sessions.token_hash IS 'Hashed session token';
-COMMENT ON COLUMN user_sessions.expires_at IS 'Timestamp when the session expires';
-COMMENT ON COLUMN user_sessions.created_at IS 'Timestamp when the session was created';
-COMMENT ON COLUMN user_sessions.last_used_at IS 'Timestamp when the session was last used';
-COMMENT ON COLUMN user_sessions.ip_address IS 'IP address of the client';
-COMMENT ON COLUMN user_sessions.user_agent IS 'User agent string of the client';
+-- Column descriptions for users_sessions table
+COMMENT ON COLUMN users_sessions.id IS 'Primary key for user sessions table';
+COMMENT ON COLUMN users_sessions.user_id IS 'ID of the user this session belongs to';
+COMMENT ON COLUMN users_sessions.token_hash IS 'Hashed session token';
+COMMENT ON COLUMN users_sessions.expires_at IS 'Timestamp when the session expires';
+COMMENT ON COLUMN users_sessions.created_at IS 'Timestamp when the session was created';
+COMMENT ON COLUMN users_sessions.last_used_at IS 'Timestamp when the session was last used';
+COMMENT ON COLUMN users_sessions.ip_address IS 'IP address of the client';
+COMMENT ON COLUMN users_sessions.user_agent IS 'User agent string of the client';
 
 -- Column descriptions for audit_logs table
 COMMENT ON COLUMN audit_logs.id IS 'Primary key for audit logs table';
@@ -292,14 +292,14 @@ COMMENT ON COLUMN orders.notes IS 'Array of order notes';
 COMMENT ON COLUMN orders.metadata IS 'Additional order metadata';
 COMMENT ON COLUMN orders.created_at IS 'Timestamp when order was created';
 
--- Column descriptions for order_items table
-COMMENT ON COLUMN order_items.id IS 'Primary key for order items table';
-COMMENT ON COLUMN order_items.order_id IS 'ID of the order this item belongs to';
-COMMENT ON COLUMN order_items.product_id IS 'ID of the product';
-COMMENT ON COLUMN order_items.quantity IS 'Quantity of the product ordered';
-COMMENT ON COLUMN order_items.unit_price IS 'Price per unit';
-COMMENT ON COLUMN order_items.discount_percent IS 'Discount percentage applied';
-COMMENT ON COLUMN order_items.line_total IS 'Calculated line total';
+-- Column descriptions for orders_items table
+COMMENT ON COLUMN orders_items.id IS 'Primary key for order items table';
+COMMENT ON COLUMN orders_items.order_id IS 'ID of the order this item belongs to';
+COMMENT ON COLUMN orders_items.product_id IS 'ID of the product';
+COMMENT ON COLUMN orders_items.quantity IS 'Quantity of the product ordered';
+COMMENT ON COLUMN orders_items.unit_price IS 'Price per unit';
+COMMENT ON COLUMN orders_items.discount_percent IS 'Discount percentage applied';
+COMMENT ON COLUMN orders_items.line_total IS 'Calculated line total';
 
 -- Column descriptions for inventory table
 COMMENT ON COLUMN inventory.product_id IS 'ID of the product';

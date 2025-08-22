@@ -3,21 +3,24 @@ import path from 'path';
 
 import { generateZodSchemas } from '../../../src/generateZodSchemas.js';
 import {
-  createTestConnector,
+  createTestProvider,
   getOutputDir,
   getOutputFiles,
 } from '../testDbUtils.js';
 
-const connector = createTestConnector();
+const provider = createTestProvider();
 
 describe('JSON and date handling options', () => {
   it('generates schemas with stringifyJson enabled', async () => {
     const outputDir = getOutputDir('jsonAndDateOptions', 'stringify-json');
 
-    await generateZodSchemas(connector, {
-      moduleResolution: 'esm',
-      outputDir,
-      include: ['posts'],
+    await generateZodSchemas({
+      provider,
+      config: {
+        moduleResolution: 'esm',
+        outputDir,
+        include: ['posts'],
+      },
     });
 
     const outputFiles = await getOutputFiles(outputDir);
@@ -31,11 +34,14 @@ describe('JSON and date handling options', () => {
   it('generates schemas with stringifyJson disabled', async () => {
     const outputDir = getOutputDir('jsonAndDateOptions', 'no-stringify-json');
 
-    await generateZodSchemas(connector, {
-      moduleResolution: 'esm',
-      outputDir,
-      stringifyJson: false,
-      include: ['posts'],
+    await generateZodSchemas({
+      provider,
+      config: {
+        moduleResolution: 'esm',
+        outputDir,
+        stringifyJson: false,
+        include: ['posts'],
+      },
     });
 
     const outputFiles = await getOutputFiles(outputDir);
@@ -50,11 +56,14 @@ describe('JSON and date handling options', () => {
   it('generates schemas with stringifyDates enabled', async () => {
     const outputDir = getOutputDir('jsonAndDateOptions', 'stringify-dates');
 
-    await generateZodSchemas(connector, {
-      moduleResolution: 'esm',
-      outputDir,
-      stringifyDates: true,
-      include: ['users'],
+    await generateZodSchemas({
+      provider,
+      config: {
+        moduleResolution: 'esm',
+        outputDir,
+        stringifyDates: true,
+        include: ['users'],
+      },
     });
 
     const outputFiles = await getOutputFiles(outputDir);
@@ -68,11 +77,14 @@ describe('JSON and date handling options', () => {
   it('generates schemas with defaultEmptyArray enabled', async () => {
     const outputDir = getOutputDir('jsonAndDateOptions', 'default-empty-array');
 
-    await generateZodSchemas(connector, {
-      moduleResolution: 'esm',
-      outputDir,
-      defaultEmptyArray: true,
-      include: ['users'],
+    await generateZodSchemas({
+      provider,
+      config: {
+        moduleResolution: 'esm',
+        outputDir,
+        defaultEmptyArray: true,
+        include: ['users'],
+      },
     });
 
     const outputFiles = await getOutputFiles(outputDir);
@@ -86,11 +98,14 @@ describe('JSON and date handling options', () => {
   it('generates schemas with coerceDates enabled', async () => {
     const outputDir = getOutputDir('jsonAndDateOptions', 'coerce-dates');
 
-    await generateZodSchemas(connector, {
-      moduleResolution: 'esm',
-      outputDir,
-      coerceDates: true,
-      include: ['users'],
+    await generateZodSchemas({
+      provider,
+      config: {
+        moduleResolution: 'esm',
+        outputDir,
+        coerceDates: true,
+        include: ['users'],
+      },
     });
 
     const outputFiles = await getOutputFiles(outputDir);
@@ -110,11 +125,14 @@ describe('JSON and date handling options', () => {
       'coerce-dates-disabled'
     );
 
-    await generateZodSchemas(connector, {
-      moduleResolution: 'esm',
-      outputDir,
-      coerceDates: false,
-      include: ['users'],
+    await generateZodSchemas({
+      provider,
+      config: {
+        moduleResolution: 'esm',
+        outputDir,
+        coerceDates: false,
+        include: ['users'],
+      },
     });
 
     const outputFiles = await getOutputFiles(outputDir);

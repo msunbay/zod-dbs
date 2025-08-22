@@ -3,19 +3,22 @@ import path from 'path';
 
 import { generateZodSchemas } from '../../../src/generateZodSchemas.js';
 import {
-  createTestConnector,
+  createTestProvider,
   getOutputDir,
   getOutputFiles,
 } from '../testDbUtils.js';
 
-const connector = createTestConnector();
+const provider = createTestProvider();
 
 it('generates correct zod schemas with default options', async () => {
   const outputDir = getOutputDir('default');
 
-  await generateZodSchemas(connector, {
-    outputDir,
-    moduleResolution: 'esm',
+  await generateZodSchemas({
+    provider,
+    config: {
+      outputDir,
+      moduleResolution: 'esm',
+    },
   });
 
   const outputFiles = await getOutputFiles(outputDir);

@@ -10,20 +10,21 @@ import {
 } from 'zod-dbs-core';
 
 import { getConfiguration } from './config.js';
-import { getDbConnector } from './db.js';
+import { loadProvider } from './provider.js';
+import { ZodDbsCliConfig } from './types.js';
 import { logAppName, logError, logSetting } from './utils/logger.js';
 import { maskConnectionString } from './utils/mask.js';
 import { createProgressHandler } from './utils/progress.js';
 import { getAppVersion } from './utils/version.js';
 
-export const main = async (overrides?: Partial<ZodDbsConfig>) => {
+export const runCli = async (overrides?: Partial<ZodDbsConfig>) => {
   const config = await getConfiguration(overrides);
   const appVersion = await getAppVersion();
 
   program.name('zod-dbs');
   program.description('Generates Zod schemas from database schema.');
 
-  program.requiredOption(
+  program.option(
     '--provider <name>',
     'Database provider to use (e.g. pg, mysql, sqlite, mssql, mongodb)'
   );
@@ -78,7 +79,7 @@ export const main = async (overrides?: Partial<ZodDbsConfig>) => {
     'Disable case transformations / conversions for generated schemas'
   );
   program.option(
-    '--no-singularize',
+    '--no-singularization',
     'Disable singularization of type and enum names'
   );
   program.option('--exclude <regex>', 'Exclude tables matching this regex');
@@ -120,7 +121,7 @@ export const main = async (overrides?: Partial<ZodDbsConfig>) => {
     ? parseConnectionString(options.connectionString)
     : options;
 
-  const cliConfig: ZodDbsConfig = {
+  const cliConfig: ZodDbsCliConfig = {
     ...config,
     ...connectionConfig,
     ...options,
@@ -131,41 +132,12 @@ export const main = async (overrides?: Partial<ZodDbsConfig>) => {
 
   if (!cliConfig.silent) {
     logAppName(`zod-dbs CLI v${appVersion}`);
-
-    logSetting('output', cliConfig.outputDir);
-    if (cliConfig.cleanOutput) logSetting('clean-output', 'true');
-    if (cliConfig.coerceDates) logSetting('coerce-dates', 'true');
-    if (cliConfig.stringifyDates) logSetting('stringify-dates', 'true');
-    if (cliConfig.defaultEmptyArray) logSetting('default-empty-array', 'true');
-    if (cliConfig.stringifyJson) logSetting('stringify-json', 'true');
-    if (cliConfig.coerceDates) logSetting('coerce-dates', 'true');
-    if (cliConfig.caseTransform) logSetting('case-transform', 'true');
-    if (cliConfig.moduleResolution)
-      logSetting('module', cliConfig.moduleResolution);
-    if (cliConfig.zodVersion) logSetting('zod-version', cliConfig.zodVersion);
-    logSetting(
-      'connection-string',
-      maskConnectionString(createConnectionString(cliConfig))
-    );
-    logSetting('ssl', cliConfig.ssl ? 'true' : 'false');
-    if (cliConfig.schemaName) logSetting('schema', cliConfig.schemaName);
-
-    if (process.env.DEBUG) logSetting('debug', process.env.DEBUG);
-
-    if (cliConfig.include) logSetting('include', options.include);
-    if (cliConfig.exclude) logSetting('exclude', options.exclude);
-
-    if (cliConfig.jsonSchemaImportLocation) {
-      logSetting('json-import-location', cliConfig.jsonSchemaImportLocation);
-    }
-
+    logSettings(cliConfig);
     console.log();
   }
 
-  const dbConnector = await getDbConnector(options.provider);
-
   try {
-    await generateZodSchemas(dbConnector, cliConfig);
+    await generate(cliConfig);
 
     spinner.done();
   } catch (error) {
@@ -176,4 +148,52 @@ export const main = async (overrides?: Partial<ZodDbsConfig>) => {
 
     process.exit(1);
   }
+};
+
+const logSettings = (cliConfig: ZodDbsCliConfig) => {
+  if (cliConfig.provider && typeof cliConfig.provider === 'string') {
+    logSetting('provider', cliConfig.provider);
+  } else if (cliConfig.provider && typeof cliConfig.provider === 'object') {
+    logSetting('provider', cliConfig.provider.name);
+  }
+
+  logSetting('output', cliConfig.outputDir);
+  if (cliConfig.cleanOutput) logSetting('clean-output', 'true');
+  if (!cliConfig.stringifyJson) logSetting('stringify-json', 'false');
+  if (cliConfig.stringifyDates) logSetting('stringify-dates', 'true');
+  if (cliConfig.defaultEmptyArray) logSetting('default-empty-array', 'true');
+  if (!cliConfig.coerceDates) logSetting('coerce-dates', 'false');
+  if (!cliConfig.caseTransform) logSetting('case-transform', 'false');
+  if (!cliConfig.singularization) logSetting('singularization', 'false');
+  if (cliConfig.moduleResolution)
+    logSetting('module', cliConfig.moduleResolution);
+  if (cliConfig.zodVersion) logSetting('zod-version', cliConfig.zodVersion);
+
+  logSetting(
+    'connection-string',
+    maskConnectionString(createConnectionString(cliConfig))
+  );
+  logSetting('ssl', cliConfig.ssl ? 'true' : 'false');
+  if (cliConfig.schemaName) logSetting('schema-name', cliConfig.schemaName);
+
+  if (process.env.DEBUG) logSetting('debug', process.env.DEBUG);
+
+  if (cliConfig.include) logSetting('include', cliConfig.include.toString());
+  if (cliConfig.exclude) logSetting('exclude', cliConfig.exclude.toString());
+
+  if (cliConfig.jsonSchemaImportLocation) {
+    logSetting('json-import-location', cliConfig.jsonSchemaImportLocation);
+  }
+};
+
+const generate = async (cliConfig: ZodDbsCliConfig) => {
+  const { provider: providerOrName, renderer, ...config } = cliConfig;
+
+  const provider = await loadProvider(providerOrName);
+
+  await generateZodSchemas({
+    provider,
+    renderer,
+    config,
+  });
 };

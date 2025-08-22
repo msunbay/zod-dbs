@@ -153,14 +153,29 @@ export type ZodDbsProgress =
   | 'generating' // Processing and generating schemas
   | 'done'; // Generation complete
 
-export interface ZodDbsDbConnector {
+export interface ZodDbsProvider {
+  /**
+   * The name of the database provider (e.g., 'pg', 'mysql', 'sqlite', etc.)
+   */
+  name: string;
+  /**
+   * The display name of the provider, used for user-friendly output.
+   * For example, 'PostgreSQL', 'MySQL', etc.
+   */
+  displayName?: string;
+  /**
+   * Fetches schema information from the database.
+   */
   getSchemaInformation: (
     config: ZodDbsConnectorConfig
   ) => Promise<ZodDbsSchemaInfo>;
 }
 
 export interface ZodDbsRenderer {
-  renderSchema: (
+  /**
+   * Renders the TypeScript code for the generated Zod schemas and types for a given table.
+   */
+  renderSchemaFile: (
     table: ZodDbsTableInfo,
     config: ZodDbsConfig
   ) => string | Promise<string>;
@@ -302,7 +317,7 @@ export interface ZodDbsConfig extends ZodDbsConnectorConfig {
   /** Whether to enable case transformations for generated schemas */
   caseTransform?: boolean;
   /** Whether to enable singularization of table names / types in generated schemas */
-  singularize?: boolean;
+  singularization?: boolean;
 
   /** Whether to suppress console output during generation */
   silent?: boolean;
@@ -310,10 +325,4 @@ export interface ZodDbsConfig extends ZodDbsConnectorConfig {
   moduleResolution?: 'esm' | 'commonjs';
   /** Output directory for generated files */
   outputDir: string;
-
-  /**
-   * Custom renderer for generating Zod schemas.
-   * If not provided, the default renderer will be used.
-   */
-  renderer?: ZodDbsRenderer;
 }
