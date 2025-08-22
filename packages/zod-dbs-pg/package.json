@@ -1,6 +1,6 @@
 {
   "name": "zod-dbs-pg",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "PostgreSQL connector for zod-dbs",
   "main": "./dist/index.js",
   "type": "module",
