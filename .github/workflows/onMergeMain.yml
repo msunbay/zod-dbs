@@ -1,4 +1,4 @@
-name: Release and Publish to npm
+name: Merge and Publish to npm
 
 permissions:
   contents: write

@@ -77,12 +77,6 @@ importers:
       zod-dbs-core:
         specifier: workspace:*
         version: link:../zod-dbs-core
-      zod-dbs-mysql:
-        specifier: workspace:*
-        version: link:../zod-dbs-mysql
-      zod-dbs-pg:
-        specifier: workspace:*
-        version: link:../zod-dbs-pg
     devDependencies:
       '@testcontainers/mysql':
         specifier: ^11.5.1
@@ -90,6 +84,12 @@ importers:
       '@testcontainers/postgresql':
         specifier: ^11.5.1
         version: 11.5.1
+      zod-dbs-mysql:
+        specifier: workspace:*
+        version: link:../zod-dbs-mysql
+      zod-dbs-pg:
+        specifier: workspace:*
+        version: link:../zod-dbs-pg
 
   packages/zod-dbs-core:
     dependencies:
