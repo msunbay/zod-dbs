@@ -4,7 +4,7 @@ import {
   PostgreSqlContainer,
   StartedPostgreSqlContainer,
 } from '@testcontainers/postgresql';
-import { ZodDbsConnectorConfig, ZodDbsDatabaseClient } from 'zod-dbs-core';
+import { ZodDbsDatabaseClient, ZodDbsProviderConfig } from 'zod-dbs-core';
 
 import { createClient } from '../../src/client.js';
 
@@ -22,7 +22,7 @@ export const getClient = (): ZodDbsDatabaseClient => {
   return _clientInstance;
 };
 
-export const getConnectionConfig = (): ZodDbsConnectorConfig => {
+export const getConnectionConfig = (): ZodDbsProviderConfig => {
   const client = getClient();
 
   return {

@@ -1,6 +1,6 @@
 {
   "name": "zod-dbs-mysql",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "MySQL connector for zod-dbs",
   "main": "./dist/index.js",
   "type": "module",

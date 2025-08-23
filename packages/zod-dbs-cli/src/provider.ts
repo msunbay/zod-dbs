@@ -12,7 +12,9 @@ export const loadProvider = async (
     return provider;
   }
 
-  const name = `zod-dbs-${provider}`;
+  const name = provider.startsWith('zod-dbs-')
+    ? provider
+    : `zod-dbs-${provider}`;
 
   try {
     let importedProvider = await import(name);

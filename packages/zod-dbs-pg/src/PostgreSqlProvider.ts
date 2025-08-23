@@ -3,7 +3,7 @@ import { logDebug, sql, ZodDbsBaseProvider } from 'zod-dbs-core';
 import type {
   ZodDbsColumnInfo,
   ZodDbsConnectionConfig,
-  ZodDbsConnectorConfig,
+  ZodDbsProviderConfig,
   ZodDbsTableType,
 } from 'zod-dbs-core';
 
@@ -79,7 +79,7 @@ export class PostgreSqlProvider extends ZodDbsBaseProvider {
   }
 
   public override async fetchSchemaInfo(
-    config: ZodDbsConnectorConfig
+    config: ZodDbsProviderConfig
   ): Promise<ZodDbsColumnInfo[]> {
     const { schemaName = 'public' } = config;
 

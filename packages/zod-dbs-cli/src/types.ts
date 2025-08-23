@@ -1,6 +1,11 @@
 import { ZodDbsConfig, ZodDbsProvider, ZodDbsRenderer } from 'zod-dbs-core';
 
-export type ZodDbsProviderName = 'pg' | 'mysql';
+export type ZodDbsProviderName =
+  | 'pg'
+  | 'mysql'
+  | 'mmsql'
+  | 'oracle'
+  | `zod-dbs-${string}`;
 
 /**
  * Configuration options for the zod-dbs CLI.

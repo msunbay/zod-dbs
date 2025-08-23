@@ -4,8 +4,8 @@ import { MySqlContainer } from '@testcontainers/mysql';
 import { PostgreSqlContainer } from '@testcontainers/postgresql';
 import {
   createConnectionString,
-  ZodDbsConnectorConfig,
   ZodDbsDatabaseClient,
+  ZodDbsProviderConfig,
 } from 'zod-dbs-core';
 import { createClient as createMysqlClient } from 'zod-dbs-mysql';
 import { createClient as createPostgreSqlClient } from 'zod-dbs-pg';
@@ -26,7 +26,7 @@ export const getClient = (): ZodDbsDatabaseClient => {
   return _clientInstance;
 };
 
-export const getConnectionConfig = (): ZodDbsConnectorConfig => {
+export const getConnectionConfig = (): ZodDbsProviderConfig => {
   const client = getClient();
 
   return {

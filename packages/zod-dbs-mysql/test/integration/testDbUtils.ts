@@ -2,7 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
 import { Connection } from 'mysql2/promise';
-import { ZodDbsConnectorConfig } from 'zod-dbs-core';
+import { ZodDbsProviderConfig } from 'zod-dbs-core';
 
 import { createClient } from '../../src/client.js';
 
@@ -20,7 +20,7 @@ export const getClient = (): Connection => {
   return _clientInstance;
 };
 
-export const getConnectionConfig = (): ZodDbsConnectorConfig => {
+export const getConnectionConfig = (): ZodDbsProviderConfig => {
   const client = getClient();
 
   return {

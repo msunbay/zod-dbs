@@ -3,7 +3,7 @@ import { logDebug, sql, ZodDbsBaseProvider } from 'zod-dbs-core';
 import type {
   ZodDbsColumnInfo,
   ZodDbsConnectionConfig,
-  ZodDbsConnectorConfig,
+  ZodDbsProviderConfig,
 } from 'zod-dbs-core';
 
 import { createClient } from './client.js';
@@ -65,7 +65,7 @@ export class MySqlProvider extends ZodDbsBaseProvider {
   }
 
   public override async fetchSchemaInfo(
-    config: ZodDbsConnectorConfig
+    config: ZodDbsProviderConfig
   ): Promise<ZodDbsColumnInfo[]> {
     const { schemaName = 'public' } = config;
 

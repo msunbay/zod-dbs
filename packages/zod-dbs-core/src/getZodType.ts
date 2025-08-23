@@ -2,11 +2,11 @@ import { ZodDbsColumnType } from './types.js';
 
 export const getZodType = (dataType: string): ZodDbsColumnType => {
   // Normalize the data type to handle variations
-  const lowerUdtName = dataType.toLowerCase();
+  const lowercaseDataType = dataType.toLowerCase();
 
-  const normalizedType = lowerUdtName.startsWith('_')
-    ? lowerUdtName.slice(1) // Remove leading underscore for array types
-    : lowerUdtName;
+  const normalizedType = lowercaseDataType.startsWith('_')
+    ? lowercaseDataType.slice(1) // Remove leading underscore for array types
+    : lowercaseDataType;
 
   switch (normalizedType) {
     case 'text':
@@ -52,6 +52,7 @@ export const getZodType = (dataType: string): ZodDbsColumnType => {
     case 'double':
     case 'double precision':
     case 'numeric':
+    case 'number':
     case 'money':
       return 'number';
     case 'bool':

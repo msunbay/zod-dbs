@@ -122,15 +122,6 @@ export interface ZodDbsColumn extends ZodDbsColumnInfo {
   writeTransforms?: ZodDbsTransform[];
 }
 
-/**
- * Progress states during schema generation process.
- */
-export type ZodDbsProgress =
-  | 'connecting' // Establishing database connection
-  | 'fetchingSchema' // Querying database metadata
-  | 'generating' // Processing and generating schemas
-  | 'done'; // Generation complete
-
 export interface ZodDbsProvider {
   /**
    * The name of the database provider (e.g., 'pg', 'mysql', 'sqlite', etc.)
@@ -145,7 +136,7 @@ export interface ZodDbsProvider {
    * Fetches schema information from the database.
    */
   getSchemaInformation: (
-    config: ZodDbsConnectorConfig
+    config: ZodDbsProviderConfig
   ) => Promise<ZodDbsSchemaInfo>;
 }
 
@@ -198,8 +189,8 @@ export interface ZodDbsHooks {
    * Hook called during the schema generation process.
    */
   onProgress?: (
-    status: ZodDbsProgress,
-    args?: { total?: number; index?: number }
+    status: string,
+    args?: { [key: string]: unknown; total?: number; index?: number }
   ) => void;
 
   /**
@@ -247,7 +238,7 @@ export interface ZodDbsConnectionConfig {
   ssl?: boolean | ZodDbsSslConfig;
 }
 
-export interface ZodDbsConnectorConfig
+export interface ZodDbsProviderConfig
   extends ZodDbsConnectionConfig,
     ZodDbsHooks {
   /** Database schema name to process (default: 'public') */
@@ -262,7 +253,7 @@ export interface ZodDbsConnectorConfig
  * Main configuration interface for zod-dbs schema generation.
  * This interface defines all available options for customizing the generation process.
  */
-export interface ZodDbsConfig extends ZodDbsConnectorConfig {
+export interface ZodDbsConfig extends ZodDbsProviderConfig {
   /** Whether to clean the output directory before generation */
   cleanOutput?: boolean;
   /** Regex pattern(s) to include only specific tables */

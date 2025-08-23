@@ -1,8 +1,9 @@
 import type {
   ZodDbsColumn,
   ZodDbsColumnInfo,
-  ZodDbsConnectorConfig,
+  ZodDbsColumnType,
   ZodDbsProvider,
+  ZodDbsProviderConfig,
   ZodDbsSchemaInfo,
   ZodDbsTable,
 } from './types.js';
@@ -31,7 +32,7 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
 
   protected async createSchemaInfo(
     tables: ZodDbsTable[],
-    config: ZodDbsConnectorConfig
+    config: ZodDbsProviderConfig
   ): Promise<ZodDbsSchemaInfo> {
     const { schemaName = 'public' } = config;
     const result: ZodDbsSchemaInfo = { name: schemaName, tables };
@@ -51,12 +52,12 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
   }
 
   protected abstract fetchSchemaInfo(
-    config: ZodDbsConnectorConfig
+    config: ZodDbsProviderConfig
   ): Promise<ZodDbsColumnInfo[]>;
 
   protected filterColumns(
     columns: ZodDbsColumnInfo[],
-    config: ZodDbsConnectorConfig
+    config: ZodDbsProviderConfig
   ): ZodDbsColumnInfo[] {
     const { include, exclude } = config;
 
@@ -93,10 +94,14 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
     return filteredColumns;
   }
 
+  protected getZodType(dataType: string): ZodDbsColumnType {
+    return getZodType(dataType);
+  }
+
   protected createColumnModel(column: ZodDbsColumnInfo): ZodDbsColumn {
     return {
       ...column,
-      type: getZodType(column.dataType),
+      type: this.getZodType(column.dataType),
       isWritable:
         column.isWritable ?? (!column.isSerial && column.tableType === 'table'),
       isReadOptional: column.isNullable,
@@ -106,7 +111,7 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
 
   protected async createTableModels(
     columns: ZodDbsColumnInfo[],
-    config: ZodDbsConnectorConfig
+    config: ZodDbsProviderConfig
   ): Promise<ZodDbsTable[]> {
     const tablesMap = new Map<string, ZodDbsTable>();
     const { schemaName = 'public' } = config;
@@ -149,7 +154,7 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
   }
 
   async getSchemaInformation(
-    config: ZodDbsConnectorConfig
+    config: ZodDbsProviderConfig
   ): Promise<ZodDbsSchemaInfo> {
     const columns = await this.fetchSchemaInfo(config);
     const filteredColumns = this.filterColumns(columns, config);
