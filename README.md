@@ -21,9 +21,8 @@
   - [Using .env files](#using-env-files)
   - [Exclude / Include Tables](#exclude--include-tables)
   - [All Options](#all-options)
-- [Configuration File](#configuration-file)
-  - [Example Configuration File](#example-configuration-file)
-- [SSL Support](#ssl-support)
+  - [Configuration File](#configuration-file)
+  - [SSL Support](#ssl-support)
 - [Programmatic usage](#programmatic-usage)
 - [Output File Structure](#output-file-structure)
 - [Schema Output](#schema-output)
@@ -200,11 +199,11 @@ Negative flags (`--no-*`) disable a feature that is enabled by default.
 | `--debug`                              | Enable verbose debug logging.                                                                     | `false`         |
 | `--help`                               | Show help and exit.                                                                               |                 |
 
-## Configuration File
+### Configuration File
 
 In addition to CLI options, you can use configuration files to set your options. zod-dbs-cli uses [cosmiconfig](https://github.com/davidtheclark/cosmiconfig).
 
-### Example Configuration File
+#### Example Configuration File
 
 **zod-dbs.config.ts:**
 
@@ -248,7 +247,7 @@ module.exports = {
 };
 ```
 
-## SSL Support
+### SSL Support
 
 To connect to databases that require SSL, use the `--ssl` flag. For more advanced SSL configurations (e.g., providing certificates), you can provide parameters using the `ssl` option in a configuration file.
 
