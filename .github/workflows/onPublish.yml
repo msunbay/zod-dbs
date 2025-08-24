@@ -1,12 +1,24 @@
-name: Release and Publish to npm
+name: Manual Publish to npm
 
 permissions:
   contents: write
 
 on:
-  push:
-    branches:
-      - next
+  workflow_dispatch:
+    inputs:
+      dist_tag:
+        description: 'npm dist-tag to use (e.g., latest, next)'
+        required: false
+        default: 'latest'
+      bump_type:
+        description: 'Semver bump type when needed (patch, minor, major)'
+        required: false
+        default: 'patch'
+      dry_run:
+        description: 'Do a dry run (no publish)'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   release:
@@ -34,37 +46,135 @@ jobs:
       - name: Run tests
         run: pnpm test
 
-      - name: Build package
+      - name: Build packages
         run: pnpm run build
 
-      - name: Check if version is already published
-        id: version-check
-        run: |
-          PKG_VERSION=$(node -p "require('./package.json').version")
-          NPM_VIEW=$(pnpm view ${{ github.event.repository.name }}@$PKG_VERSION version || true)
-          echo "Current version: $PKG_VERSION"
-          echo "Published version: $NPM_VIEW"
-          if [ "$PKG_VERSION" = "$NPM_VIEW" ]; then
-            echo "Version $PKG_VERSION is already published. Skipping publish."
-            echo "should_publish=false" >> $GITHUB_OUTPUT
-          else
-            echo "should_publish=true" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Publish to npm
-        if: steps.version-check.outputs.should_publish == 'true'
+      - name: Publish changed workspace packages to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          pnpm publish --provenance --access public
+          set -euo pipefail
+          sudo apt-get update && sudo apt-get install -y jq >/dev/null
 
-      - name: Create and push git tag for new version
-        if: steps.version-check.outputs.should_publish == 'true'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          PKG_VERSION=$(node -p "require('./package.json').version")
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag v$PKG_VERSION
-          git push origin v$PKG_VERSION
+
+          PUBLISHED_ANY=0
+          TAG_INPUT="${{ github.event.inputs.dist_tag }}"
+          BUMP_TYPE="${{ github.event.inputs.bump_type }}"
+          DRY_INPUT="${{ github.event.inputs.dry_run }}"
+          TAG_FLAG=""
+          DRY_FLAG=""
+          declare -a BUMPED_PKGS=()
+          declare -a PUBLISH_LIST=()
+          declare -a FILES_TO_COMMIT=()
+
+          if [ -n "$TAG_INPUT" ]; then
+            TAG_FLAG="--tag $TAG_INPUT"
+          fi
+          if [ "$DRY_INPUT" = "true" ]; then
+            DRY_FLAG="--dry-run"
+          fi
+
+          # Collect packages first
+          declare -A NAME_TO_JSON
+          declare -A NAME_TO_DIR
+          declare -a ALL_NAMES=()
+          for pkg_json in packages/*/package.json; do
+            [ -f "$pkg_json" ] || continue
+            dir=$(dirname "$pkg_json")
+            name=$(jq -r .name "$pkg_json")
+            private=$(jq -r '.private // false' "$pkg_json")
+            version=$(jq -r .version "$pkg_json")
+            if [ "$private" = "true" ] || [ "$name" = "null" ] || [ "$version" = "null" ]; then
+              continue
+            fi
+            NAME_TO_JSON["$name"]="$pkg_json"
+            NAME_TO_DIR["$name"]="$dir"
+            ALL_NAMES+=("$name")
+          done
+
+          # Define a simple priority to respect workspace dependencies
+          PRIORITY=(
+            "zod-dbs-core"
+            "zod-dbs"
+            "zod-dbs-pg" "zod-dbs-mysql" "zod-dbs-mssql" "zod-dbs-oracle"
+            "zod-dbs-cli"
+          )
+
+          declare -a ORDERED=()
+          declare -A ADDED=()
+          for p in "${PRIORITY[@]}"; do
+            if [ -n "${NAME_TO_JSON[$p]:-}" ]; then
+              ORDERED+=("$p")
+              ADDED["$p"]=1
+            fi
+          done
+          for n in "${ALL_NAMES[@]}"; do
+            if [ -z "${ADDED[$n]:-}" ]; then
+              ORDERED+=("$n")
+              ADDED["$n"]=1
+            fi
+          done
+
+          # Process in ordered list
+          for name in "${ORDERED[@]}"; do
+            pkg_json="${NAME_TO_JSON[$name]}"
+            dir="${NAME_TO_DIR[$name]}"
+            version=$(jq -r .version "$pkg_json")
+
+            echo "Checking $name@$version"
+            published=$(npm view "$name@$version" version || true)
+
+            # Determine if package directory changed since last tag for this package
+            last_tag=$(git tag --list "$name@v*" | sort -V | tail -n1 || true)
+            changed=1
+            if [ -n "$last_tag" ]; then
+              if git diff --quiet "$last_tag"..HEAD -- "$dir"; then
+                changed=0
+              fi
+            fi
+
+            if [ "$published" = "$version" ]; then
+              if [ "$changed" = "0" ]; then
+                echo "No changes since $last_tag and version already published; skipping $name"
+                continue
+              fi
+              if [ -n "$BUMP_TYPE" ] && [ "$DRY_INPUT" != "true" ]; then
+                echo "Bumping $name ($version) -> $BUMP_TYPE"
+                (cd "$dir" && npm version "$BUMP_TYPE" --no-git-tag-version >/dev/null)
+                version=$(jq -r .version "$pkg_json")
+                BUMPED_PKGS+=("$name@$version")
+                FILES_TO_COMMIT+=("$pkg_json")
+              else
+                echo "Would bump $name but dry-run or no bump type specified; skipping"
+                continue
+              fi
+            fi
+
+            echo "Publishing $name@$version from $dir"
+            (cd "$dir" && pnpm publish --provenance --access public --no-git-checks $TAG_FLAG $DRY_FLAG)
+
+            if [ "$DRY_INPUT" != "true" ]; then
+              PUBLISH_LIST+=("$name@$version")
+              PUBLISHED_ANY=1
+            fi
+          done
+
+          if [ "$DRY_INPUT" != "true" ]; then
+            if [ ${#FILES_TO_COMMIT[@]} -gt 0 ]; then
+              git add "${FILES_TO_COMMIT[@]}"
+              git commit -m "chore(release): version bumps ${BUMPED_PKGS[*]}" || true
+              git push
+            fi
+            if [ "$PUBLISHED_ANY" = "1" ]; then
+              for entry in "${PUBLISH_LIST[@]}"; do
+                pkg_name="${entry%@*}"
+                pkg_ver="${entry#*@}"
+                git tag "$pkg_name@v$pkg_ver"
+              done
+              git push --tags
+            else
+              echo "No packages to publish."
+            fi
+          fi

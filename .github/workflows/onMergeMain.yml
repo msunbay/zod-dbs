@@ -1,7 +1,4 @@
-name: Merge and Publish to npm
-
-permissions:
-  contents: write
+name: Test on merge to main
 
 on:
   push:
@@ -9,12 +6,8 @@ on:
       - main
 
 jobs:
-  release:
+  test:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      id-token: write
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -33,6 +26,3 @@ jobs:
 
       - name: Run tests
         run: pnpm test
-
-      - name: Build package
-        run: pnpm run build
