@@ -8,6 +8,12 @@ PostgreSQL provider for [zod-dbs](https://github.com/msolvaag/zod-dbs).
 npm install zod-dbs-pg
 ```
 
+> Note: This package has a peer dependency on `pg`. If you don't already have it, install it:
+
+```bash
+npm install pg
+```
+
 ## Cli Usage
 
 ```bash

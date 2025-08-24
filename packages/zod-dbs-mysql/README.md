@@ -8,6 +8,12 @@ MySQL provider for [zod-dbs](https://github.com/msolvaag/zod-dbs).
 npm install zod-dbs-mysql
 ```
 
+> Note: This package has a peer dependency on `mysql2`. If you don't already have it, install it:
+
+```bash
+npm install mysql2
+```
+
 ## Cli Usage
 
 ```bash

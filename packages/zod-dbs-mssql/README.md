@@ -8,6 +8,12 @@ Microsoft SQL Server provider for [zod-dbs](https://github.com/msolvaag/zod-dbs)
 npm install zod-dbs-mssql
 ```
 
+> Note: This package has a peer dependency on `mssql`. If you don't already have it, install it:
+
+```bash
+npm install mssql
+```
+
 ## Cli Usage
 
 ```bash

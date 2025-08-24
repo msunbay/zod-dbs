@@ -2,6 +2,18 @@
 
 Oracle connector for zod-dbs. Experimental.
 
+## Installation
+
+```bash
+npm install zod-dbs-oracle
+```
+
+> Note: This package has a peer dependency on `oracledb`. If you don't already have it, install it:
+
+```bash
+npm install oracledb
+```
+
 ## Cli Usage
 
 ```bash

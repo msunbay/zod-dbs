@@ -60,11 +60,11 @@ zod-dbs automates this process by generating type-safe validation schemas direct
 
 ## Supported Database Providers
 
-- PostgreSQL: [zod-dbs-pg docs](./packages/zod-dbs-pg/README.md)
-- MySQL: [zod-dbs-mysql docs](./packages/zod-dbs-mysql/README.md) (experimental)
-- Microsoft SQL Server: [zod-dbs-mssql docs](./packages/zod-dbs-mssql/README.md) (experimental)
-- Oracle: [zod-dbs-oracle docs](./packages/zod-dbs-oracle/README.md) (experimental)
-- SQLite: [zod-dbs-sqlite docs](./packages/zod-dbs-sqlite/README.md) (experimental)
+- PostgreSQL: [zod-dbs-pg](./packages/zod-dbs-pg/README.md)
+- MySQL: [zod-dbs-mysql](./packages/zod-dbs-mysql/README.md) (experimental)
+- Microsoft SQL Server: [zod-dbs-mssql](./packages/zod-dbs-mssql/README.md) (experimental)
+- Oracle: [zod-dbs-oracle](./packages/zod-dbs-oracle/README.md) (experimental)
+- SQLite: [zod-dbs-sqlite](./packages/zod-dbs-sqlite/README.md) (experimental)
 
 ## Installation
 
