@@ -4,8 +4,7 @@ import {
   MSSQLServerContainer,
   StartedMSSQLServerContainer,
 } from '@testcontainers/mssqlserver';
-import { Connection } from 'mysql2/promise';
-import { ZodDbsProviderConfig } from 'zod-dbs-core';
+import { ZodDbsDatabaseClient, ZodDbsProviderConfig } from 'zod-dbs-core';
 
 import { createClient } from '../../src/client.js';
 
@@ -16,7 +15,7 @@ export interface TestDbContext {
 
 let _clientInstance: any | null = null;
 
-export const getClient = (): Connection => {
+export const getClient = (): ZodDbsDatabaseClient => {
   if (!_clientInstance) {
     throw new Error('Client has not been initialized. Call setupTestDb first.');
   }
