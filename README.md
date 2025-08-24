@@ -100,7 +100,7 @@ npx zod-dbs --provider pg \
   --output-dir ./zod-schemas --silent
 ```
 
-3. Explore the output in ./zod-schemas (constants.ts, types.ts, tables/<table>/schema.ts)
+3. Explore the output in `./zod-schemas`.
 
 ## CLI usage
 
