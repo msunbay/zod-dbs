@@ -19,7 +19,9 @@ export const createClient = async (
       const result = await mssql.query<T>(query);
       return result.recordset as T;
     },
-    end: async () => {},
+    end: async () => {
+      await Promise.resolve();
+    },
     config: {
       ...options,
       protocol: 'mssql',
