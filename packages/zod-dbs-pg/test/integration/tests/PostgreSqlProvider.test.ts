@@ -57,7 +57,7 @@ it('returns schema models', async () => {
   expect(userTable).toMatchSnapshot('userTable');
 });
 
-it.only('supports enum column type', async () => {
+it('supports enum column type', async () => {
   const connector = new PostgreSqlProvider();
 
   const info = await connector.getSchemaInformation({
