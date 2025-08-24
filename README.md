@@ -11,16 +11,20 @@
 - [Key Features](#key-features)
 - [Requirements](#requirements)
 - [Why zod-dbs?](#why-zod-dbs)
-- [Supported Databases](#supported-databases)
+- [Supported Database Providers](#supported-database-providers)
 - [Installation](#installation)
-- [Usage](#usage)
+- [Quickstart](#quickstart)
+- [CLI usage](#cli-usage)
   - [With connection string](#with-connection-string)
   - [With options](#with-options)
   - [With environment variables](#with-environment-variables)
+  - [Using .env files](#using-env-files)
   - [Exclude / Include Tables](#exclude--include-tables)
   - [All Options](#all-options)
+- [Programmatic usage](#programmatic-usage)
 - [Configuration File](#configuration-file)
   - [Example Configuration File](#example-configuration-file)
+- [SSL Support](#ssl-support)
 - [Output File Structure](#output-file-structure)
 - [Schema Output](#schema-output)
   - [The Read Schemas](#the-read-schemas)
@@ -31,7 +35,7 @@
   - [Setting up JSON Schema Integration](#setting-up-json-schema-integration)
 - [Customizing Generated Models with Hooks](#customizing-generated-models-with-hooks)
 - [Extending schemas](#extending-schemas)
-- [Custom provider](#custom-provider)
+- [Custom Provider](#custom-provider)
 - [Contributing](#contributing)
 
 ## Key Features
@@ -57,16 +61,14 @@ zod-dbs automates this process by generating type-safe validation schemas direct
 
 ## Supported Database Providers
 
-- PostgreSQL: [zod-dbs-pg](./packages/zod-dbs-pg/README.md)
-- MySQL: [zod-dbs-mysql](./packages/zod-dbs-mysql/README.md) (experimental)
-- Microsoft SQL Server: [zod-dbs-mssql](./packages/zod-dbs-mssql/README.md) (experimental)
-- Oracle: [zod-dbs-oracle](./packages/zod-dbs-oracle/README.md) (experimental)
+- PostgreSQL: [zod-dbs-pg docs](./packages/zod-dbs-pg/README.md)
+- MySQL: [zod-dbs-mysql docs](./packages/zod-dbs-mysql/README.md) (experimental)
+- Microsoft SQL Server: [zod-dbs-mssql docs](./packages/zod-dbs-mssql/README.md) (experimental)
+- Oracle: [zod-dbs-oracle docs](./packages/zod-dbs-oracle/README.md) (experimental)
 
-## `zod-dbs-cli`
+## Installation
 
 zod-dbs comes with a CLI tool to generate Zod schemas from your database schema. The CLI supports multiple database providers and allows you to customize the output.
-
-### Installation
 
 ```sh
 npm install --save-dev zod-dbs-cli
@@ -82,15 +84,33 @@ npm install --save-dev zod-dbs-pg
 pnpm add -D zod-dbs-pg
 ```
 
-### Usage
+## Quickstart
 
-#### With connection string
+1. Install the CLI and a provider
 
 ```sh
-npx zod-dbs --provider pg --connection "postgres://user:password@localhost:5432/dbname" --ssl --output-dir ./src/output
+pnpm add -D zod-dbs-cli zod-dbs-pg
 ```
 
-#### With options
+2. Generate schemas
+
+```sh
+npx zod-dbs --provider pg \
+  --connection-string "postgres://user:password@localhost:5432/dbname" \
+  --output-dir ./zod-schemas --silent
+```
+
+3. Explore the output in ./zod-schemas (constants.ts, types.ts, tables/<table>/schema.ts)
+
+## CLI usage
+
+### With connection string
+
+```sh
+npx zod-dbs --provider pg --connection-string "postgres://user:password@localhost:5432/dbname" --ssl --output-dir ./src/output
+```
+
+### With options
 
 You can also specify options directly:
 
@@ -98,7 +118,7 @@ You can also specify options directly:
 npx zod-dbs --provider pg --user postgres --password secret --host localhost --port 5432 --database mydb --ssl --output-dir ./src/output
 ```
 
-#### With environment variables
+### With environment variables
 
 zod-dbs can read connection details from environment variables. Set the following variables:
 
@@ -115,7 +135,7 @@ Then run:
 npx zod-dbs --provider pg --output-dir ./src/output
 ```
 
-#### Using .env files:
+### Using .env files
 
 zod-dbs does not automatically load `.env` files, but you can use a package like `dotenv-cli` to load them before running zod-dbs. For example:
 
@@ -123,7 +143,7 @@ zod-dbs does not automatically load `.env` files, but you can use a package like
 dotenv -e .env npx zod-dbs --provider pg --output-dir ./src/output
 ```
 
-#### Exclude / Include Tables
+### Exclude / Include Tables
 
 You can exclude specific tables from schema generation using the `--exclude` option with a regex pattern. For example, to exclude all tables starting with "temp":
 
@@ -131,7 +151,7 @@ You can exclude specific tables from schema generation using the `--exclude` opt
 npx zod-dbs --exclude '^temp_' --output-dir ./src/output
 ```
 
-To include only specific tables, use the `--include` option with a regex pattern. For example, to include only tables starting with "user" or "account:
+To include only specific tables, use the `--include` option with a regex pattern. For example, to include only tables starting with "user" or "account":
 
 ```sh
 npx zod-dbs --include '^(user|account)' --output-dir ./src/output
@@ -139,7 +159,7 @@ npx zod-dbs --include '^(user|account)' --output-dir ./src/output
 
 Note that if you use both `--exclude` and `--include` options together, the `--include` option is applied first, then the `--exclude` option is applied to the included tables.
 
-#### All Options
+### All Options
 
 All CLI options are optional. Sensible defaults are applied (e.g. output defaults to `./zod-schemas`, schema defaults to `public`). Values can be provided via:
 
@@ -180,11 +200,34 @@ Negative flags (`--no-*`) disable a feature that is enabled by default.
 | `--debug`                              | Enable verbose debug logging.                                                                     | `false`         |
 | `--help`                               | Show help and exit.                                                                               |                 |
 
-### Configuration File
+## Programmatic usage
+
+Use the library directly in Node/TypeScript if you prefer code over the CLI.
+
+```ts
+import { generateZodSchemas } from 'zod-dbs';
+import { createProvider } from 'zod-dbs-pg';
+
+await generateZodSchemas({
+  provider: createProvider(),
+  config: {
+    host: 'localhost',
+    port: 5432,
+    database: 'mydb',
+    user: 'postgres',
+    password: 'secret',
+    schemaName: 'public',
+    outputDir: './zod-schemas',
+    zodVersion: '4',
+  },
+});
+```
+
+## Configuration File
 
 In addition to CLI options, you can use configuration files to set your options. zod-dbs-cli uses [cosmiconfig](https://github.com/davidtheclark/cosmiconfig).
 
-#### Example Configuration File
+### Example Configuration File
 
 **zod-dbs.config.ts:**
 
@@ -228,7 +271,7 @@ module.exports = {
 };
 ```
 
-### SSL Support
+## SSL Support
 
 To connect to databases that require SSL, use the `--ssl` flag. For more advanced SSL configurations (e.g., providing certificates), you can provide parameters using the `ssl` option in a configuration file.
 
@@ -320,7 +363,7 @@ Example:
 If you would prefer the generated identifiers to preserve the original (often plural / snake_case) names, disable singularization with the CLI flag:
 
 ```
-npx zod-dbs -no-singularization
+npx zod-dbs --no-singularization
 ```
 
 Or in a config file:
@@ -476,19 +519,19 @@ const ExtendedSchema = UsersTableSchema.extend({
 
 ## Custom Provider
 
-If you want to support a database that is not supported out of the box, you can create a custom provider by implementing the `ZodDbsProvider` interface from `zod-dbs-cli`.
+If you want to support a database that is not supported out of the box, you can create a custom provider by implementing the `ZodDbsProvider` interface (available from `zod-dbs`).
 
 ### Extending the base provider
 
 zod-dbs provides a base class `ZodDbsBaseProvider` that you can extend to create your custom provider. This base class provides default implementations for some methods, so you only need to implement the methods that are specific to your database.
 
 ```ts
+import { ZodDbsBaseProvider } from 'zod-dbs';
+
+import type { ZodDbsColumnInfo, ZodDbsProviderConfig } from 'zod-dbs';
+import type { ZodDbsCliConfig } from 'zod-dbs-cli';
+
 // zod-dbs.config.ts
-import {
-  ZodDbsBaseProvider,
-  ZodDbsCliConfig,
-  ZodDbsColumnInfo,
-} from 'zod-dbs-cli';
 
 class CustomProvider extends ZodDbsBaseProvider {
   constructor() {
@@ -498,7 +541,9 @@ class CustomProvider extends ZodDbsBaseProvider {
     });
   }
 
-  protected override async fetchSchemaInfo(): Promise<ZodDbsColumnInfo[]> {
+  protected override async fetchSchemaInfo(
+    _config: ZodDbsProviderConfig
+  ): Promise<ZodDbsColumnInfo[]> {
     // Implement logic to fetch column information from your database.
     // Looking at existing providers can be helpful.
     return [];
