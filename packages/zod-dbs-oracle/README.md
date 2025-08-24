@@ -13,9 +13,7 @@ npm install zod-dbs-cli zod-dbs-oracle
 npx zod-dbs --provider oracle
 ```
 
-## Usage
-
-Programmatic:
+## Programmatic Usage
 
 ```ts
 import { generateZodSchemas } from 'zod-dbs';
