@@ -21,10 +21,10 @@
   - [Using .env files](#using-env-files)
   - [Exclude / Include Tables](#exclude--include-tables)
   - [All Options](#all-options)
-- [Programmatic usage](#programmatic-usage)
 - [Configuration File](#configuration-file)
   - [Example Configuration File](#example-configuration-file)
 - [SSL Support](#ssl-support)
+- [Programmatic usage](#programmatic-usage)
 - [Output File Structure](#output-file-structure)
 - [Schema Output](#schema-output)
   - [The Read Schemas](#the-read-schemas)
@@ -200,33 +200,6 @@ Negative flags (`--no-*`) disable a feature that is enabled by default.
 | `--debug`                              | Enable verbose debug logging.                                                                     | `false`         |
 | `--help`                               | Show help and exit.                                                                               |                 |
 
-## Programmatic usage
-
-Use the library directly in Node/TypeScript if you prefer code over the CLI.
-
-```bash
-npm install zod-dbs zod-dbs-pg
-```
-
-```ts
-import { generateZodSchemas } from 'zod-dbs';
-import { createProvider } from 'zod-dbs-pg';
-
-await generateZodSchemas({
-  provider: createProvider(),
-  config: {
-    host: 'localhost',
-    port: 5432,
-    database: 'mydb',
-    user: 'postgres',
-    password: 'secret',
-    schemaName: 'public',
-    outputDir: './zod-schemas',
-    zodVersion: '4',
-  },
-});
-```
-
 ## Configuration File
 
 In addition to CLI options, you can use configuration files to set your options. zod-dbs-cli uses [cosmiconfig](https://github.com/davidtheclark/cosmiconfig).
@@ -295,6 +268,33 @@ const config: ZodDbsCliConfig = {
 };
 
 export default config;
+```
+
+## Programmatic usage
+
+Use the library directly in Node/TypeScript if you prefer code over the CLI.
+
+```bash
+npm install zod-dbs zod-dbs-pg
+```
+
+```ts
+import { generateZodSchemas } from 'zod-dbs';
+import { createProvider } from 'zod-dbs-pg';
+
+await generateZodSchemas({
+  provider: createProvider(),
+  config: {
+    host: 'localhost',
+    port: 5432,
+    database: 'mydb',
+    user: 'postgres',
+    password: 'secret',
+    schemaName: 'public',
+    outputDir: './zod-schemas',
+    zodVersion: '4',
+  },
+});
 ```
 
 ## Output File Structure
