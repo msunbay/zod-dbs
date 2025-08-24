@@ -204,6 +204,10 @@ Negative flags (`--no-*`) disable a feature that is enabled by default.
 
 Use the library directly in Node/TypeScript if you prefer code over the CLI.
 
+```bash
+npm install zod-dbs zod-dbs-pg
+```
+
 ```ts
 import { generateZodSchemas } from 'zod-dbs';
 import { createProvider } from 'zod-dbs-pg';
