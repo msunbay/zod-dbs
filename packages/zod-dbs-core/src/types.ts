@@ -122,6 +122,9 @@ export interface ZodDbsColumn extends ZodDbsColumnInfo {
   writeTransforms?: ZodDbsTransform[];
 }
 
+/**
+ * Represents a provider that returns schema information that will be used to generate Zod schemas.
+ */
 export interface ZodDbsProvider {
   /**
    * The name of the database provider (e.g., 'pg', 'mysql', 'sqlite', etc.)
@@ -132,6 +135,10 @@ export interface ZodDbsProvider {
    * For example, 'PostgreSQL', 'MySQL', etc.
    */
   displayName?: string;
+  /**
+   * Default configuration for the provider.
+   */
+  defaultConfiguration?: ZodDbsConfig;
   /**
    * Fetches schema information from the database.
    */
@@ -294,5 +301,5 @@ export interface ZodDbsConfig extends ZodDbsProviderConfig {
   /** Module resolution strategy (affects import statements) */
   moduleResolution?: 'esm' | 'commonjs';
   /** Output directory for generated files */
-  outputDir: string;
+  outputDir?: string;
 }

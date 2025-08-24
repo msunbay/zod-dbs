@@ -7,16 +7,18 @@ import { getConfiguration } from '../../../src/config.js';
 vi.mock('cosmiconfig');
 
 describe.sequential('getConfiguration', () => {
-  const mockExplorer = {
-    search: vi.fn(),
-  };
+  let mockExplorer: { search: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
+    mockExplorer = { search: vi.fn() } as any;
     vi.mocked(cosmiconfig).mockReturnValue(mockExplorer as any);
   });
 
   afterEach(() => {
     vi.clearAllMocks();
+    // reset any stubbed envs between tests to avoid bleed (vitest runtime API)
+    const anyVi: any = vi as any;
+    if (typeof anyVi.unstubAllEnvs === 'function') anyVi.unstubAllEnvs();
   });
 
   it('should return default config when no configuration file is found', async () => {
@@ -89,12 +91,12 @@ describe.sequential('getConfiguration', () => {
 
   it('applies environment variable overrides for defaults (no config file)', async () => {
     mockExplorer.search.mockResolvedValue(null);
-    process.env.ZOD_DBS_HOST = 'env-host';
-    process.env.ZOD_DBS_USER = 'env-user';
-    process.env.ZOD_DBS_PASSWORD = 'env-pass';
-    process.env.ZOD_DBS_DB = 'env-db';
-    process.env.ZOD_DBS_PORT = '6543';
-    process.env.ZOD_DBS_SSL = 'true';
+    vi.stubEnv('ZOD_DBS_HOST', 'env-host');
+    vi.stubEnv('ZOD_DBS_USER', 'env-user');
+    vi.stubEnv('ZOD_DBS_PASSWORD', 'env-pass');
+    vi.stubEnv('ZOD_DBS_DB', 'env-db');
+    vi.stubEnv('ZOD_DBS_PORT', '6543');
+    vi.stubEnv('ZOD_DBS_SSL', 'true');
 
     const config = await getConfiguration();
 
@@ -108,13 +110,7 @@ describe.sequential('getConfiguration', () => {
       ssl: true,
     });
 
-    // cleanup
-    delete process.env.ZOD_DBS_HOST;
-    delete process.env.ZOD_DBS_USER;
-    delete process.env.ZOD_DBS_PASSWORD;
-    delete process.env.ZOD_DBS_DB;
-    delete process.env.ZOD_DBS_PORT;
-    delete process.env.ZOD_DBS_SSL;
+    // cleanup handled by afterEach
   });
 
   it('environment variables override config file values', async () => {
@@ -131,12 +127,12 @@ describe.sequential('getConfiguration', () => {
       config: mockConfig,
       filepath: '/x',
     });
-    process.env.ZOD_DBS_HOST = 'env-host2';
-    process.env.ZOD_DBS_USER = 'env-user2';
-    process.env.ZOD_DBS_PASSWORD = 'env-pass2';
-    process.env.ZOD_DBS_DB = 'env-db2';
-    process.env.ZOD_DBS_PORT = '7777';
-    process.env.ZOD_DBS_SSL = 'true';
+    vi.stubEnv('ZOD_DBS_HOST', 'env-host2');
+    vi.stubEnv('ZOD_DBS_USER', 'env-user2');
+    vi.stubEnv('ZOD_DBS_PASSWORD', 'env-pass2');
+    vi.stubEnv('ZOD_DBS_DB', 'env-db2');
+    vi.stubEnv('ZOD_DBS_PORT', '7777');
+    vi.stubEnv('ZOD_DBS_SSL', 'true');
 
     const config = await getConfiguration();
 
@@ -149,15 +145,9 @@ describe.sequential('getConfiguration', () => {
       port: 7777,
       ssl: true,
       outputDir: './out',
-      schemaName: 'public',
     });
 
-    delete process.env.ZOD_DBS_HOST;
-    delete process.env.ZOD_DBS_USER;
-    delete process.env.ZOD_DBS_PASSWORD;
-    delete process.env.ZOD_DBS_DB;
-    delete process.env.ZOD_DBS_PORT;
-    delete process.env.ZOD_DBS_SSL;
+    // cleanup handled by afterEach
   });
 
   it('environment variables override only provided fields and retain others from config', async () => {
@@ -176,8 +166,8 @@ describe.sequential('getConfiguration', () => {
     });
 
     // Only override host & password via env
-    process.env.ZOD_DBS_HOST = 'env-host-partial';
-    process.env.ZOD_DBS_PASSWORD = 'env-pass-partial';
+    vi.stubEnv('ZOD_DBS_HOST', 'env-host-partial');
+    vi.stubEnv('ZOD_DBS_PASSWORD', 'env-pass-partial');
 
     const config = await getConfiguration();
 
@@ -190,10 +180,8 @@ describe.sequential('getConfiguration', () => {
       port: 9999,
       ssl: false,
       outputDir: './out',
-      schemaName: 'public',
     });
 
-    delete process.env.ZOD_DBS_HOST;
-    delete process.env.ZOD_DBS_PASSWORD;
+    // cleanup handled by afterEach
   });
 });

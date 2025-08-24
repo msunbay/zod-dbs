@@ -118,27 +118,34 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
   const options = program.opts();
   const spinner = createProgressHandler(options.silent);
 
-  const connectionConfig = options.connectionString
-    ? parseConnectionString(options.connectionString)
-    : options;
-
-  const cliConfig: ZodDbsCliConfig = {
-    ...config,
-    ...connectionConfig,
-    ...options,
-    onProgress: spinner.onProgress,
-  };
-
-  logDebug('CLI configuration:', cliConfig);
-
-  if (!cliConfig.silent) {
-    logAppName(`${appName} CLI v${appVersion}`);
-    logSettings(cliConfig);
-    console.log();
-  }
-
   try {
-    await generate(cliConfig);
+    const connectionConfig = options.connectionString
+      ? parseConnectionString(options.connectionString)
+      : options;
+
+    const provider = await loadProvider(options.provider ?? config.provider);
+
+    const cliConfig: ZodDbsCliConfig = {
+      ...provider.defaultConfiguration,
+      ...config,
+      ...connectionConfig,
+      ...options,
+      onProgress: spinner.onProgress,
+    };
+
+    logDebug('CLI configuration:', cliConfig);
+
+    if (!cliConfig.silent) {
+      logAppName(`${appName} CLI v${appVersion}`);
+      logSettings(cliConfig);
+      console.log();
+    }
+
+    await generateZodSchemas({
+      provider,
+      renderer: cliConfig.renderer,
+      config: cliConfig,
+    });
 
     spinner.done();
   } catch (error) {
@@ -158,7 +165,7 @@ const logSettings = (cliConfig: ZodDbsCliConfig) => {
     logSetting('provider', cliConfig.provider.name);
   }
 
-  logSetting('output', cliConfig.outputDir);
+  if (cliConfig.outputDir) logSetting('output', cliConfig.outputDir);
   if (cliConfig.cleanOutput) logSetting('clean-output', 'true');
   if (!cliConfig.stringifyJson) logSetting('stringify-json', 'false');
   if (cliConfig.stringifyDates) logSetting('stringify-dates', 'true');
@@ -186,16 +193,4 @@ const logSettings = (cliConfig: ZodDbsCliConfig) => {
   if (cliConfig.jsonSchemaImportLocation) {
     logSetting('json-import-location', cliConfig.jsonSchemaImportLocation);
   }
-};
-
-const generate = async (cliConfig: ZodDbsCliConfig) => {
-  const { provider: providerOrName, renderer, ...config } = cliConfig;
-
-  const provider = await loadProvider(providerOrName);
-
-  await generateZodSchemas({
-    provider,
-    renderer,
-    config,
-  });
 };

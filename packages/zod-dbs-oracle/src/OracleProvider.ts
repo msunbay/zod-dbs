@@ -25,6 +25,10 @@ interface RawColumnRow {
 
 const CHECK_CONSTRAINT_SEPARATOR = ' ||| ';
 
+const DEFAULT_CONFIGURATION = {
+  port: 1521,
+};
+
 function parseCheckConstraints(raw: string): string[] {
   return raw
     .split(CHECK_CONSTRAINT_SEPARATOR)
@@ -39,7 +43,11 @@ function isSerialColumn(defaultValue: string | null): boolean {
 
 export class OracleProvider extends ZodDbsBaseProvider {
   constructor() {
-    super({ name: 'oracle', displayName: 'Oracle' });
+    super({
+      name: 'oracle',
+      displayName: 'Oracle',
+      defaultConfiguration: DEFAULT_CONFIGURATION,
+    });
   }
 
   async createClient(options: ZodDbsConnectionConfig) {

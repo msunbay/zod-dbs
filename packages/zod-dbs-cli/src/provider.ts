@@ -5,7 +5,7 @@ import type { ZodDbsProviderName } from './types.js';
 
 export const loadProvider = async (
   provider: ZodDbsProviderName | ZodDbsProvider
-) => {
+): Promise<ZodDbsProvider> => {
   if (!provider) throw new Error('Provider must be specified');
 
   if (typeof provider !== 'string') {

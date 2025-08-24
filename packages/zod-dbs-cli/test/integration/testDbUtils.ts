@@ -52,9 +52,9 @@ export async function setupPostgreSql(): Promise<TestDbContext> {
   const schemaPath = path.resolve(import.meta.dirname, './schema-pg.sql');
 
   const container = await new PostgreSqlContainer('postgres')
-    .withDatabase('postgres')
-    .withUsername('postgres')
-    .withPassword('postgres')
+    .withDatabase('test')
+    .withUsername('test')
+    .withPassword('test')
     .start();
 
   const client = await createPostgreSqlClient({

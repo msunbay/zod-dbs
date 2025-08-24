@@ -1,6 +1,6 @@
 {
   "name": "zod-dbs-oracle",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Oracle connector for zod-dbs",
   "main": "./dist/index.js",
   "type": "module",

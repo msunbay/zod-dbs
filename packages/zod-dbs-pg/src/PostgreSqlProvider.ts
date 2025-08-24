@@ -2,6 +2,7 @@ import { logDebug, sql, ZodDbsBaseProvider } from 'zod-dbs-core';
 
 import type {
   ZodDbsColumnInfo,
+  ZodDbsConfig,
   ZodDbsConnectionConfig,
   ZodDbsProviderConfig,
   ZodDbsTableType,
@@ -25,7 +26,18 @@ interface RawColumnInfo {
         checkClause: string;
       }[]
     | null;
+  enumTypeName?: string | null;
+  enumValues?: string[] | null;
 }
+
+const DEFAULT_CONFIGURATION: ZodDbsConfig = {
+  user: 'postgres',
+  password: 'postgres',
+  host: 'localhost',
+  port: 5432,
+  database: 'postgres',
+  schemaName: 'public',
+};
 
 /**
  * Provider to interact with PostgreSQL database and retrieve schema information.
@@ -36,6 +48,7 @@ export class PostgreSqlProvider extends ZodDbsBaseProvider {
     super({
       name: 'pg',
       displayName: 'PostgreSQL',
+      defaultConfiguration: DEFAULT_CONFIGURATION,
     });
   }
 
@@ -62,7 +75,10 @@ export class PostgreSqlProvider extends ZodDbsBaseProvider {
       tableType: column.tableType,
     };
 
-    if (column.checkConstraints) {
+    // Prefer native enum type values if present
+    if (column.enumValues && column.enumValues.length > 0) {
+      parsedColumn.enumValues = column.enumValues;
+    } else if (column.checkConstraints) {
       parsedColumn.enumValues = getEnumConstraints(
         column.name,
         column.checkConstraints.map((c) => c.checkClause)
@@ -105,6 +121,12 @@ export class PostgreSqlProvider extends ZodDbsBaseProvider {
             END AS "maxLen",
             t.typname AS "dataType",
             checks."checkConstraints",
+            CASE WHEN t.typtype = 'e' THEN t.typname ELSE NULL END AS "enumTypeName",
+            CASE WHEN t.typtype = 'e' THEN (
+              SELECT array_agg(ev.enumlabel::text ORDER BY ev.enumsortorder)::text[]
+              FROM pg_enum ev
+              WHERE ev.enumtypid = t.oid
+            ) ELSE NULL END AS "enumValues",
             col_description(c.oid, a.attnum) AS "description",
             CASE 
               WHEN c.relkind = 'r' THEN 'table'

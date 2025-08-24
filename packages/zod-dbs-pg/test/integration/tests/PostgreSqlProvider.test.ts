@@ -56,3 +56,27 @@ it('returns schema models', async () => {
 
   expect(userTable).toMatchSnapshot('userTable');
 });
+
+it.only('supports enum column type', async () => {
+  const connector = new PostgreSqlProvider();
+
+  const info = await connector.getSchemaInformation({
+    ...connectionOptions,
+    include: ['orders'],
+  });
+
+  const table = info.tables.find((t) => t.name === 'orders')!;
+  expect(table).toBeDefined();
+
+  const enumCol = table.columns.find((column) => column.name === 'status')!;
+
+  expect(enumCol).toBeDefined();
+  expect(enumCol.isEnum).toBe(true);
+  expect(enumCol.enumValues).toEqual([
+    'pending',
+    'processing',
+    'shipped',
+    'delivered',
+    'cancelled',
+  ]);
+});

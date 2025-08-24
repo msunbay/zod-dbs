@@ -2,6 +2,7 @@ import type {
   ZodDbsColumn,
   ZodDbsColumnInfo,
   ZodDbsColumnType,
+  ZodDbsConfig,
   ZodDbsProvider,
   ZodDbsProviderConfig,
   ZodDbsSchemaInfo,
@@ -14,6 +15,7 @@ import { logDebug } from './utils/debug.js';
 export interface ZodDbsProviderOptions {
   name: string;
   displayName?: string;
+  defaultConfiguration?: ZodDbsConfig;
 }
 
 /**
@@ -24,10 +26,12 @@ export interface ZodDbsProviderOptions {
 export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
   name: string;
   displayName?: string;
+  defaultConfiguration?: ZodDbsConfig;
 
   constructor(options: ZodDbsProviderOptions) {
     this.name = options.name;
     this.displayName = options.displayName;
+    this.defaultConfiguration = options.defaultConfiguration;
   }
 
   protected async createSchemaInfo(

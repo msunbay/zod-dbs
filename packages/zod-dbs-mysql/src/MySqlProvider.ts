@@ -2,6 +2,7 @@ import { logDebug, sql, ZodDbsBaseProvider } from 'zod-dbs-core';
 
 import type {
   ZodDbsColumnInfo,
+  ZodDbsConfig,
   ZodDbsConnectionConfig,
   ZodDbsProviderConfig,
 } from 'zod-dbs-core';
@@ -26,6 +27,10 @@ interface RawColumnInfo {
   description: string | null;
 }
 
+const DEFAULT_CONFIGURATION: ZodDbsConfig = {
+  port: 3306,
+};
+
 /**
  * Provider to interact with MySQL database and retrieve schema information.
  * Supports MySQL version 8 and above.
@@ -35,6 +40,7 @@ export class MySqlProvider extends ZodDbsBaseProvider {
     super({
       name: 'mysql',
       displayName: 'MySQL',
+      defaultConfiguration: DEFAULT_CONFIGURATION,
     });
   }
 

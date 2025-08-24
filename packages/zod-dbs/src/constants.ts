@@ -1,17 +1,13 @@
 import { ZodDbsConfig } from 'zod-dbs-core';
 
+export const DEFAULT_OUTPUT_DIR = './zod-schemas';
+
 // Base defaults independent of environment.
 export const DEFAULT_CONFIGURATION: ZodDbsConfig = {
   host: 'localhost',
-  user: 'postgres',
-  password: 'postgres',
-  database: 'postgres',
-  port: 5432,
-  ssl: false,
-  schemaName: 'public',
 
   zodVersion: '3',
-  outputDir: './zod-schemas',
+  outputDir: DEFAULT_OUTPUT_DIR,
   moduleResolution: 'commonjs',
   cleanOutput: false,
 

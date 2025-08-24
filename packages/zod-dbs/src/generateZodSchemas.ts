@@ -8,7 +8,7 @@ import type {
   ZodDbsZodVersion,
 } from 'zod-dbs-core';
 
-import { DEFAULT_CONFIGURATION } from './constants.js';
+import { DEFAULT_CONFIGURATION, DEFAULT_OUTPUT_DIR } from './constants.js';
 import { generateConstantsFile } from './generate/generateConstantsFile.js';
 import { generateIndexFiles } from './generate/generateIndexFiles.js';
 import { generateSchemaFiles } from './generate/generateSchemaFile.js';
@@ -54,8 +54,13 @@ export const generateZodSchemas = async ({
     ...config,
   };
 
-  const { outputDir, schemaName, cleanOutput, onProgress, zodVersion } =
-    generateConfig;
+  const {
+    outputDir = DEFAULT_OUTPUT_DIR,
+    schemaName,
+    cleanOutput,
+    onProgress,
+    zodVersion,
+  } = generateConfig;
 
   if (cleanOutput) {
     clearTablesDirectory(outputDir);
