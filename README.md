@@ -25,11 +25,13 @@
 - [Schema Output](#schema-output)
   - [The Read Schemas](#the-read-schemas)
   - [The Write Schemas](#the-write-schemas)
-- [Customizing Generated Models with Hooks](#customizing-generated-models-with-hooks)
-  - [Available Hooks](#available-hooks)
+  - [Casing](#casing)
+  - [Singularization](#singularization)
 - [JSON Schema Support](#json-schema-support)
   - [Setting up JSON Schema Integration](#setting-up-json-schema-integration)
+- [Customizing Generated Models with Hooks](#customizing-generated-models-with-hooks)
 - [Extending schemas](#extending-schemas)
+- [Custom provider](#custom-provider)
 - [Contributing](#contributing)
 
 ## Key Features
@@ -224,6 +226,28 @@ module.exports = {
 
   outputDir: './src/generated',
 };
+```
+
+### SSL Support
+
+To connect to databases that require SSL, use the `--ssl` flag. For more advanced SSL configurations (e.g., providing certificates), you can provide parameters using the `ssl` option in a configuration file.
+
+Note that the exact SSL options depend on the database provider you are using. Refer to the documentation of the specific provider for supported SSL options.
+
+```ts
+import type { ZodDbsCliConfig } from 'zod-dbs-cli';
+
+const config: ZodDbsCliConfig = {
+  provider: 'pg',
+  ssl: {
+    rejectUnauthorized: false,
+    ca: fs.readFileSync('/path/to/ca.crt').toString(),
+    key: fs.readFileSync('/path/to/client.key').toString(),
+    cert: fs.readFileSync('/path/to/client.crt').toString(),
+  },
+};
+
+export default config;
 ```
 
 ## Output File Structure
@@ -448,6 +472,45 @@ const ExtendedSchema = UsersTableSchema.extend({
   permissions: z.array(z.string()).nullish().optional(),
   signed_in_at: z.coerce.date().nullish().optional(),
 });
+```
+
+## Custom Provider
+
+If you want to support a database that is not supported out of the box, you can create a custom provider by implementing the `ZodDbsProvider` interface from `zod-dbs-cli`.
+
+### Extending the base provider
+
+zod-dbs provides a base class `ZodDbsBaseProvider` that you can extend to create your custom provider. This base class provides default implementations for some methods, so you only need to implement the methods that are specific to your database.
+
+```ts
+// zod-dbs.config.ts
+import {
+  ZodDbsBaseProvider,
+  ZodDbsCliConfig,
+  ZodDbsColumnInfo,
+} from 'zod-dbs-cli';
+
+class CustomProvider extends ZodDbsBaseProvider {
+  constructor() {
+    super({
+      name: 'my-custom-provider',
+      displayName: 'My Custom Provider',
+    });
+  }
+
+  protected override async fetchSchemaInfo(): Promise<ZodDbsColumnInfo[]> {
+    // Implement logic to fetch column information from your database.
+    // Looking at existing providers can be helpful.
+    return [];
+  }
+}
+
+const config: ZodDbsCliConfig = {
+  provider: new CustomProvider(),
+  // Other config options
+};
+
+export default config;
 ```
 
 ## Contributing

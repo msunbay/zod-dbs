@@ -18,6 +18,10 @@ npx zod-dbs --provider pg
 
 ## Programmatic Usage
 
+```bash
+npm install zod-dbs zod-dbs-pg
+```
+
 ```ts
 import { generateZodSchemas } from 'zod-dbs';
 import { PostgreSqlProvider } from 'zod-dbs-pg';

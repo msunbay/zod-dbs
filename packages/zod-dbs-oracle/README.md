@@ -2,9 +2,6 @@
 
 Oracle connector for zod-dbs. Experimental.
 
-- Uses `oracledb` (peer dependency) at runtime via dynamic import.
-- Fetches column metadata from `USER_TAB_COLUMNS` and `USER_COL_COMMENTS`.
-
 ## Cli Usage
 
 ```bash
