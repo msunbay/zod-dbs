@@ -1,28 +1,28 @@
-# zod-dbs-mysql
+# zod-dbs-mssql
 
-MySQL provider for [zod-dbs](https://github.com/msolvaag/zod-dbs).
+Microsoft SQL Server provider for [zod-dbs](https://github.com/msolvaag/zod-dbs).
 
 ## Installation
 
 ```bash
-npm install zod-dbs-mysql
+npm install zod-dbs-mssql
 ```
 
 ## Cli Usage
 
 ```bash
-npm install zod-dbs-cli zod-dbs-mysql
+npm install zod-dbs-cli zod-dbs-mssql
 
-npx zod-dbs --provider mysql
+npx zod-dbs --provider mssql
 ```
 
 ## Programmatic Usage
 
 ```ts
 import { generateZodSchemas } from 'zod-dbs';
-import { MySqlProvider } from 'zod-dbs-mysql';
+import { MsSqlServerProvider } from 'zod-dbs-mssql';
 
-const provider = new MySqlProvider();
+const provider = new MsSqlServerProvider();
 
 await generateZodSchemas({
   provider,

@@ -4,15 +4,14 @@ Oracle connector for zod-dbs. Experimental.
 
 - Uses `oracledb` (peer dependency) at runtime via dynamic import.
 - Fetches column metadata from `USER_TAB_COLUMNS` and `USER_COL_COMMENTS`.
-- Exposes `createProvider()` for programmatic/CLI dynamic loading as `zod-dbs-oracle`.
 
-## Install
+## Cli Usage
 
-```sh
-pnpm add zod-dbs-oracle oracledb
+```bash
+npm install zod-dbs-cli zod-dbs-oracle
+
+npx zod-dbs --provider oracle
 ```
-
-Note: `oracledb` requires native dependencies; see the official docs if build fails.
 
 ## Usage
 
@@ -20,10 +19,12 @@ Programmatic:
 
 ```ts
 import { generateZodSchemas } from 'zod-dbs';
-import { createProvider } from 'zod-dbs-oracle';
+import { OracleProvider } from 'zod-dbs-oracle';
+
+const provider = new OracleProvider();
 
 await generateZodSchemas({
-  provider: createProvider(),
+  provider,
   config: {
     host: 'localhost',
     port: 1521,
