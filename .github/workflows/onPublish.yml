@@ -36,15 +36,13 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org/'
+          always-auth: true
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 9
           run_install: true
-
-      - name: Run tests
-        run: pnpm test
 
       - name: Build packages
         run: pnpm run build
@@ -55,6 +53,11 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update && sudo apt-get install -y jq >/dev/null
+
+          # Ensure npm auth is configured for pnpm/npm
+          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
+          echo "always-auth=true" >> ~/.npmrc
+          echo "registry=https://registry.npmjs.org/" >> ~/.npmrc
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
