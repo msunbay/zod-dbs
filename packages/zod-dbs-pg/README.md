@@ -41,3 +41,22 @@ await generateZodSchemas({
   },
 });
 ```
+
+## Compatibility
+
+This provider works with standard PostgreSQL and most managed PostgreSQL services. In many cases, no special configuration is required beyond a valid connection string.
+
+- Works out of the box:
+  - PostgreSQL (self-hosted), AWS RDS for PostgreSQL, Aurora PostgreSQL, GCP Cloud SQL for PostgreSQL, Azure Database for PostgreSQL
+  - Neon, Supabase, Crunchy Bridge, Aiven, AlloyDB
+  - Extensions like TimescaleDB and Citus
+
+- Generally compatible (minor catalog differences may affect advanced features like enum detection):
+  - CockroachDB (Postgres wire protocol)
+  - YugabyteDB YSQL
+
+- Not supported / limited for introspection:
+  - Amazon Redshift (PG-like but diverged catalogs)
+  - PG-wire systems that don’t expose standard information_schema/pg_catalog
+
+Tip: If your database speaks the PG wire protocol and exposes standard pg_catalog/info_schema (including pg_type/pg_enum), this provider should work. If those differ, some features may be limited.

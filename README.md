@@ -61,6 +61,7 @@ zod-dbs automates this process by generating type-safe validation schemas direct
 ## Supported Database Providers
 
 - PostgreSQL: [zod-dbs-pg](./packages/zod-dbs-pg/README.md)
+  - Compatible with managed PostgreSQL (AlloyDB, Amazon RDS, Cloud SQL, Azure Database for PostgreSQL, Neon, Supabase, etc.). See the provider README for details.
 - MySQL: [zod-dbs-mysql](./packages/zod-dbs-mysql/README.md) (experimental)
 - Microsoft SQL Server: [zod-dbs-mssql](./packages/zod-dbs-mssql/README.md) (experimental)
 - Oracle: [zod-dbs-oracle](./packages/zod-dbs-oracle/README.md) (experimental)
