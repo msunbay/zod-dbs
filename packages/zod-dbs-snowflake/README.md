@@ -2,6 +2,12 @@
 
 Snowflake provider for zod-dbs.
 
+## Notes
+
+- Requires `snowflake-sdk` as a peer dependency.
+- You must provide both `database` and `schemaName`.
+- You currently must use a configuration file to specify options like `account`, `token`, `warehouse`, and `role`.
+
 ## Installation
 
 ```bash
@@ -23,6 +29,21 @@ npx zod-dbs --provider snowflake \
   --database <db> --schema-name <schema>
 ```
 
+```ts
+import { ZodDbsCliConfig } from 'zod-dbs-cli';
+import { createProvider } from 'zod-dbs-snowflake';
+
+const config: ZodDbsCliConfig = {
+  provider: createProvider(),
+  account: '<account>',
+  token: '<token>',
+  warehouse: '<warehouse>', // optional
+  role: '<role>', // optional
+};
+
+export default config;
+```
+
 ## Programmatic Usage
 
 ```ts
@@ -32,17 +53,14 @@ import { SnowflakeProvider } from 'zod-dbs-snowflake';
 await generateZodSchemas({
   provider: new SnowflakeProvider(),
   config: {
+    account: '<account>',
     host: '<account>.snowflakecomputing.com',
     user: '<user>',
     password: '<password>',
+    token: '<token>',
     database: '<db>',
     schemaName: '<schema>',
     // optionally: warehouse, role
   },
 });
 ```
-
-## Notes
-
-- Requires `snowflake-sdk` as a peer dependency.
-- You must provide both `database` and `schemaName`.

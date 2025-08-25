@@ -47,7 +47,7 @@ it('returns schema models', async () => {
   expect(userTable).toMatchSnapshot('userTable');
 });
 
-it.only('throws if schemaName and database is missing', async () => {
+it('throws if schemaName and database is missing', async () => {
   const provider = new MySqlProvider();
 
   await expect(
