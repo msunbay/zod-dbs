@@ -49,6 +49,10 @@ export const getConnectionConfig = (): ZodDbsProviderConfig => {
     user: client.config.user,
     password: client.config.password,
     schemaName: client.config.schemaName,
+    account: client.config.account,
+    role: client.config.role,
+    token: client.config.token,
+    warehouse: client.config.warehouse,
   } as any;
 };
 

@@ -8,6 +8,9 @@ import type {
 export async function createClient(
   options: ZodDbsConnectionConfig
 ): Promise<ZodDbsDatabaseClient> {
+  if (!options.account)
+    throw new Error("Snowflake 'account' is required in connection config");
+
   const connection = sdk.createConnection({
     host: options.host,
     account: options.account,

@@ -19,6 +19,10 @@ on:
         required: false
         type: boolean
         default: false
+      package_name:
+        description: 'Optional: publish only this workspace package (exact name, e.g. zod-dbs-pg)'
+        required: false
+        default: ''
 
 jobs:
   release:
@@ -66,6 +70,7 @@ jobs:
           TAG_INPUT="${{ github.event.inputs.dist_tag }}"
           BUMP_TYPE="${{ github.event.inputs.bump_type }}"
           DRY_INPUT="${{ github.event.inputs.dry_run }}"
+          PKG_NAME_INPUT="${{ github.event.inputs.package_name }}"
           TAG_FLAG=""
           DRY_FLAG=""
           declare -a BUMPED_PKGS=()
@@ -97,28 +102,39 @@ jobs:
             ALL_NAMES+=("$name")
           done
 
-          # Define a simple priority to respect workspace dependencies
-          PRIORITY=(
-            "zod-dbs-core"
-            "zod-dbs"
-            "zod-dbs-pg" "zod-dbs-mysql" "zod-dbs-mssql" "zod-dbs-oracle"
-            "zod-dbs-cli"
-          )
-
           declare -a ORDERED=()
           declare -A ADDED=()
-          for p in "${PRIORITY[@]}"; do
-            if [ -n "${NAME_TO_JSON[$p]:-}" ]; then
-              ORDERED+=("$p")
-              ADDED["$p"]=1
+
+          if [ -n "$PKG_NAME_INPUT" ]; then
+            if [ -z "${NAME_TO_JSON[$PKG_NAME_INPUT]:-}" ]; then
+              echo "Package '$PKG_NAME_INPUT' not found in workspace."
+              echo "Available: ${ALL_NAMES[*]}"
+              exit 1
             fi
-          done
-          for n in "${ALL_NAMES[@]}"; do
-            if [ -z "${ADDED[$n]:-}" ]; then
-              ORDERED+=("$n")
-              ADDED["$n"]=1
-            fi
-          done
+            echo "Targeting single package: $PKG_NAME_INPUT"
+            ORDERED+=("$PKG_NAME_INPUT")
+          else
+            # Define a simple priority to respect workspace dependencies
+            PRIORITY=(
+              "zod-dbs-core"
+              "zod-dbs"
+              "zod-dbs-pg" "zod-dbs-mysql" "zod-dbs-mssql" "zod-dbs-oracle"
+              "zod-dbs-cli"
+            )
+
+            for p in "${PRIORITY[@]}"; do
+              if [ -n "${NAME_TO_JSON[$p]:-}" ]; then
+                ORDERED+=("$p")
+                ADDED["$p"]=1
+              fi
+            done
+            for n in "${ALL_NAMES[@]}"; do
+              if [ -z "${ADDED[$n]:-}" ]; then
+                ORDERED+=("$n")
+                ADDED["$n"]=1
+              fi
+            done
+          fi
 
           # Process in ordered list
           for name in "${ORDERED[@]}"; do
