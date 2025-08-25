@@ -65,9 +65,12 @@ export class SnowflakeProvider extends ZodDbsBaseProvider {
     if (!database) throw new Error('Snowflake: database is required');
     if (!schemaName) throw new Error('Snowflake: schemaName is required');
 
+    config.onProgress?.('creating client');
     const client = await this.createClient(config);
+    config.onProgress?.('connecting');
     await client.connect();
 
+    config.onProgress?.('retrieving schema information');
     logDebug(`Retrieving schema information for ${database}.${schemaName}`);
 
     try {
@@ -94,6 +97,8 @@ export class SnowflakeProvider extends ZodDbsBaseProvider {
         `,
         [schemaName, database]
       );
+
+      config.onProgress?.('processing schema information');
 
       return rows.map((r) => this.createColumnInfo(r, schemaName));
     } finally {
