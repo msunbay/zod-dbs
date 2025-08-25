@@ -11,6 +11,10 @@ export async function createClient(
   if (!options.account)
     throw new Error("Snowflake 'account' is required in connection config");
 
+  sdk.configure({
+    logLevel: 'ERROR',
+  });
+
   const connection = sdk.createConnection({
     host: options.host,
     account: options.account,
@@ -37,15 +41,21 @@ export async function createClient(
     });
 
   return {
-    connect: () =>
-      new Promise<void>((resolve, reject) => {
+    connect: async () => {
+      await new Promise<void>((resolve, reject) => {
         connection.connect((err: any) => (err ? reject(err) : resolve()));
-      }),
-    query: async <T>(query: string, params?: any[]) => exec<T>(query, params),
-    end: () =>
-      new Promise<void>((resolve) => {
+      });
+    },
+    query: async <T>(query: string, params?: any[]) => {
+      return await exec<T>(query, params);
+    },
+    end: async () => {
+      if (!connection.isUp()) return;
+
+      await new Promise<void>((resolve) => {
         connection.destroy((/* err */) => resolve());
-      }),
+      });
+    },
     config: {
       ...options,
       protocol: 'snowflake',
