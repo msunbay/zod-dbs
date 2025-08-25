@@ -163,7 +163,7 @@ Note that if you use both `--exclude` and `--include` options together, the `--i
 
 ### All Options
 
-All CLI options are optional. Sensible defaults are applied (e.g. output defaults to `./zod-schemas`, schema defaults to `public`). Values can be provided via:
+All CLI options except `--provider` are optional. Each provider applies sensible defaults. E.g. `zod-pg` defaults `schema-name` to `public` and `port` to `5432`.
 
 - CLI flags (highest precedence)
 - Environment variables (connection fields)
@@ -171,6 +171,8 @@ All CLI options are optional. Sensible defaults are applied (e.g. output default
 - Built-in defaults
 
 Negative flags (`--no-*`) disable a feature that is enabled by default.
+
+**Note that some options are provider-specific and not listed here. See the provider documentation for details.**
 
 | Option                                 | Description                                                                                       | Default         |
 | -------------------------------------- | ------------------------------------------------------------------------------------------------- | --------------- |

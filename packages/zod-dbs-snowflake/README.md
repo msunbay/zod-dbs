@@ -31,12 +31,24 @@ npx zod-dbs --provider snowflake \
   --database <db> --schema-name <schema>
 ```
 
+### CLI Options
+
+| Option                | Description                        | Required |
+| --------------------- | ---------------------------------- | -------- |
+| `--schema-name <str>` | Name of the schema to introspect   | `true`   |
+| `--database <str>`    | Name of the database to connect to | `true`   |
+| `--account <str>`     | Snowflake account identifier       | `true`   |
+| `--token <str>`       | Snowflake token for authentication |          |
+| `--warehouse <str>`   | Snowflake warehouse to use         |          |
+| `--role <str>`        | Snowflake role to use              |          |
+
 ### Configuration File Example
 
 ```ts
 import { ZodDbsCliConfig } from 'zod-dbs-cli';
 
-import 'zod-dbs-snowflake'; // import needed to load the provider configuration types.
+// Import needed to load the provider specific configuration types.
+import 'zod-dbs-snowflake';
 
 const config: ZodDbsCliConfig = {
   provider: createProvider(),
