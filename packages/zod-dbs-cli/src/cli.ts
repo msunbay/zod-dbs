@@ -8,10 +8,14 @@ import {
   ZodDbsProvider,
 } from 'zod-dbs-core';
 
-import type { ZodDbsCliConfig, ZodDbsCliOptions } from './types.js';
+import type {
+  ZodDbsCliConfig,
+  ZodDbsCliOptions,
+  ZodDbsProviderName,
+} from './types.js';
 
 import { getConfiguration } from './config.js';
-import { loadProvider } from './provider.js';
+import { importProvider } from './provider.js';
 import { getArgumentValue } from './utils/args.js';
 import { logAppName, logError, logSetting } from './utils/logger.js';
 import { createProgressHandler } from './utils/progress.js';
@@ -25,11 +29,7 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
   program.name(appName);
   program.description('Generates Zod schemas from database schema.');
 
-  const providerFromArg = getArgumentValue('--provider');
-  const providerName =
-    cliOptions.overrides?.provider ?? providerFromArg ?? config.provider;
-
-  const provider = await loadProvider(providerName);
+  const provider = await loadProvider(cliOptions.overrides?.provider, config);
 
   if (!cliOptions.overrides?.provider) {
     program.option(
@@ -168,24 +168,46 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
   }
 };
 
+const loadProvider = async (
+  override: ZodDbsProvider | ZodDbsProviderName | undefined,
+  config: ZodDbsCliConfig
+) => {
+  try {
+    const providerOrName =
+      override ?? getArgumentValue('--provider') ?? config.provider;
+
+    return await importProvider(providerOrName);
+  } catch (error) {
+    logError(toError(error).message);
+    logDebug(error);
+    process.exit(1);
+  }
+};
+
 const addProviderOptions = (program: Command, provider: ZodDbsProvider) => {
-  if (provider.options && provider.options.length > 0) {
-    for (const option of provider.options) {
-      const flag = option.required
-        ? `--${option.name} <value>`
-        : `--${option.name} [value]`;
-      const description = option.description;
-      if (option.allowedValues) {
-        program.addOption(
-          new Option(flag, description).choices(option.allowedValues)
-        );
-      } else if (option.type === 'boolean') {
-        program.option(flag, description);
-      } else if (option.type === 'number') {
-        program.option(flag, description, (value) => parseInt(value, 10));
-      } else {
-        program.option(flag, description);
-      }
+  if (!provider.options) return;
+
+  for (const option of provider.options) {
+    const flag = option.required
+      ? `--${option.name} <value>`
+      : `--${option.name} [value]`;
+    const description = option.description;
+    const addOption = option.required
+      ? program.requiredOption.bind(program)
+      : program.option.bind(program);
+
+    if (option.allowedValues) {
+      program.addOption(
+        new Option(flag, description)
+          .choices(option.allowedValues)
+          .makeOptionMandatory(option.required)
+      );
+    } else if (option.type === 'boolean') {
+      addOption(flag, description);
+    } else if (option.type === 'number') {
+      addOption(flag, description, (value) => parseInt(value, 10));
+    } else {
+      addOption(flag, description);
     }
   }
 };
