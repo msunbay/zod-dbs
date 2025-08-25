@@ -1,6 +1,6 @@
 {
   "name": "zod-dbs-mysql",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "MySQL provider for zod-dbs",
   "main": "./dist/index.js",
   "type": "module",

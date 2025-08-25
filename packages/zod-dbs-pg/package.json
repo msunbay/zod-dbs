@@ -1,6 +1,6 @@
 {
   "name": "zod-dbs-pg",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "PostgreSQL provider for zod-dbs",
   "main": "./dist/index.js",
   "type": "module",
