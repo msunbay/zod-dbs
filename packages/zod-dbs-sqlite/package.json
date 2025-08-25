@@ -1,6 +1,6 @@
 {
   "name": "zod-dbs-sqlite",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "SQLite provider for zod-dbs",
   "main": "./dist/index.js",
   "type": "module",
