@@ -6,7 +6,11 @@ Snowflake provider for zod-dbs.
 
 ```bash
 npm install zod-dbs-snowflake
-# peer dep
+```
+
+> Note: This package has a peer dependency on `snowflake-sdk`. If you don't already have it, install it:
+
+```bash
 npm install snowflake-sdk
 ```
 
@@ -42,4 +46,3 @@ await generateZodSchemas({
 
 - Requires `snowflake-sdk` as a peer dependency.
 - You must provide both `database` and `schemaName`.
-- Data type mapping uses zod-dbs defaults; extend via hooks if needed.
