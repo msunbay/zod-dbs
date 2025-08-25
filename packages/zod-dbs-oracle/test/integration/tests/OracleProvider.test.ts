@@ -21,9 +21,9 @@ afterAll(async () => {
 });
 
 it('returns raw schema column information', async () => {
-  const connector = new OracleProvider();
+  const provider = new OracleProvider();
 
-  const info = await connector.fetchSchemaInfo(connectionConfig);
+  const info = await provider.fetchSchemaInfo(connectionConfig);
 
   expect(info).toBeDefined();
   expect(info).toHaveLength(7);
@@ -31,9 +31,9 @@ it('returns raw schema column information', async () => {
 });
 
 it('returns schema models', async () => {
-  const connector = new OracleProvider();
+  const provider = new OracleProvider();
 
-  const info = await connector.getSchemaInformation(connectionConfig);
+  const info = await provider.getSchemaInformation(connectionConfig);
 
   expect(info).toBeDefined();
   expect(info.tables).toBeDefined();

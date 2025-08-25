@@ -6,7 +6,7 @@ vi.mock('../../../src/client', () => ({
 }));
 
 describe('PostgreSqlProvider', () => {
-  let connector: PostgreSqlProvider;
+  let provider: PostgreSqlProvider;
   let mockClient: any;
 
   beforeEach(() => {
@@ -32,9 +32,9 @@ describe('PostgreSqlProvider', () => {
       onProgress,
     };
 
-    connector = new PostgreSqlProvider();
+    provider = new PostgreSqlProvider();
 
-    await connector.getSchemaInformation(config);
+    await provider.getSchemaInformation(config);
 
     expect(onProgress).toHaveBeenNthCalledWith(1, 'connecting');
     expect(onProgress).toHaveBeenNthCalledWith(2, 'fetchingSchema');
@@ -74,9 +74,9 @@ describe('PostgreSqlProvider', () => {
       schemaName: 'custom_schema',
     };
 
-    connector = new PostgreSqlProvider();
+    provider = new PostgreSqlProvider();
 
-    const result = await connector.getSchemaInformation(config);
+    const result = await provider.getSchemaInformation(config);
 
     expect(mockClient.query).toHaveBeenCalledWith(expect.any(String), [
       'custom_schema',
@@ -127,9 +127,9 @@ describe('PostgreSqlProvider', () => {
       password: 'password',
     };
 
-    connector = new PostgreSqlProvider();
+    provider = new PostgreSqlProvider();
 
-    await expect(connector.getSchemaInformation(config)).rejects.toThrow(error);
+    await expect(provider.getSchemaInformation(config)).rejects.toThrow(error);
 
     expect(mockClient.end).toHaveBeenCalled();
   });

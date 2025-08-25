@@ -21,18 +21,18 @@ afterAll(async () => {
 });
 
 it('returns raw schema column information', async () => {
-  const connector = new MsSqlServerProvider();
+  const provider = new MsSqlServerProvider();
 
-  const info = await connector.fetchSchemaInfo(connectionConfig);
+  const info = await provider.fetchSchemaInfo(connectionConfig);
 
   expect(info).toBeDefined();
   expect(info).toMatchSnapshot('rawColumns');
 });
 
 it('returns schema models', async () => {
-  const connector = new MsSqlServerProvider();
+  const provider = new MsSqlServerProvider();
 
-  const info = await connector.getSchemaInformation({
+  const info = await provider.getSchemaInformation({
     ...connectionConfig,
     include: ['users'],
   });

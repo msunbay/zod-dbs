@@ -40,7 +40,7 @@ class TestProvider extends ZodDbsBaseProvider {
   }
 }
 
-const buildConnector = (rows: ZodDbsColumnInfo[]) => {
+const buildProvider = (rows: ZodDbsColumnInfo[]) => {
   const mockClient: MockClient = {
     connect: vi.fn().mockResolvedValue(undefined),
     query: vi.fn().mockResolvedValue(rows),
@@ -62,8 +62,8 @@ describe('ZodDbsBaseProvider', () => {
       createRaw({ tableName: 'posts', name: 'id' }),
     ];
 
-    const connector = buildConnector(rows);
-    const schema = await connector.getSchemaInformation({});
+    const provider = buildProvider(rows);
+    const schema = await provider.getSchemaInformation({});
 
     expect(schema.tables).toHaveLength(2);
     const users = schema.tables.find((t) => t.name === 'users');
@@ -71,7 +71,7 @@ describe('ZodDbsBaseProvider', () => {
 
     expect(users?.columns).toHaveLength(2);
     expect(posts?.columns).toHaveLength(1);
-    expect(connector.mockClient.query).toHaveBeenCalled();
+    expect(provider.mockClient.query).toHaveBeenCalled();
   });
 
   it('applies include regex filtering', async () => {
@@ -79,8 +79,8 @@ describe('ZodDbsBaseProvider', () => {
       createRaw({ tableName: 'users' }),
       createRaw({ tableName: 'posts' }),
     ];
-    const connector = buildConnector(rows);
-    const schema = await connector.getSchemaInformation({
+    const provider = buildProvider(rows);
+    const schema = await provider.getSchemaInformation({
       include: '^use',
     });
 
@@ -93,8 +93,8 @@ describe('ZodDbsBaseProvider', () => {
       createRaw({ tableName: 'posts' }),
       createRaw({ tableName: 'comments' }),
     ];
-    const connector = buildConnector(rows);
-    const schema = await connector.getSchemaInformation({
+    const provider = buildProvider(rows);
+    const schema = await provider.getSchemaInformation({
       include: ['users', 'comments'],
     });
 
@@ -109,8 +109,8 @@ describe('ZodDbsBaseProvider', () => {
       createRaw({ tableName: 'users' }),
       createRaw({ tableName: 'posts' }),
     ];
-    const connector = buildConnector(rows);
-    const schema = await connector.getSchemaInformation({
+    const provider = buildProvider(rows);
+    const schema = await provider.getSchemaInformation({
       exclude: 'user',
     });
 
@@ -123,8 +123,8 @@ describe('ZodDbsBaseProvider', () => {
       createRaw({ tableName: 'user_settings' }),
       createRaw({ tableName: 'posts' }),
     ];
-    const connector = buildConnector(rows);
-    const schema = await connector.getSchemaInformation({
+    const provider = buildProvider(rows);
+    const schema = await provider.getSchemaInformation({
       include: '^user_',
       exclude: 'settings',
     });
@@ -134,8 +134,8 @@ describe('ZodDbsBaseProvider', () => {
 
   it('applies onColumnModelCreated hook (async) before grouping', async () => {
     const rows = [createRaw({ name: 'id' })];
-    const connector = buildConnector(rows);
-    const schema = await connector.getSchemaInformation({
+    const provider = buildProvider(rows);
+    const schema = await provider.getSchemaInformation({
       onColumnModelCreated: async (c) => ({
         ...c,
         type: 'int',
@@ -146,8 +146,8 @@ describe('ZodDbsBaseProvider', () => {
 
   it('applies onTableModelCreated hook (async) after grouping', async () => {
     const rows = [createRaw({ tableName: 'users' })];
-    const connector = buildConnector(rows);
-    const schema = await connector.getSchemaInformation({
+    const provider = buildProvider(rows);
+    const schema = await provider.getSchemaInformation({
       onTableModelCreated: async (t) => ({
         ...t,
         name: `${t.name}_x`,
@@ -157,14 +157,14 @@ describe('ZodDbsBaseProvider', () => {
   });
 
   it('returns empty tables list when no columns', async () => {
-    const connector = buildConnector([]);
-    const schema = await connector.getSchemaInformation({});
+    const provider = buildProvider([]);
+    const schema = await provider.getSchemaInformation({});
     expect(schema.tables).toEqual([]);
   });
 
   it('ensures maxLen undefined normalization', async () => {
-    const connector = buildConnector([createRaw({ maxLen: undefined })]);
-    const schema = await connector.getSchemaInformation({});
+    const provider = buildProvider([createRaw({ maxLen: undefined })]);
+    const schema = await provider.getSchemaInformation({});
     expect(schema.tables[0].columns[0].maxLen).toBeUndefined();
   });
 });

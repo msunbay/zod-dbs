@@ -1,6 +1,6 @@
 # zod-dbs-oracle
 
-Oracle connector for zod-dbs. Experimental.
+Oracle provider for zod-dbs. Experimental.
 
 ## Installation
 

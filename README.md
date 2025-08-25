@@ -66,6 +66,7 @@ zod-dbs automates this process by generating type-safe validation schemas direct
 - Microsoft SQL Server: [zod-dbs-mssql](./packages/zod-dbs-mssql/README.md) (experimental)
 - Oracle: [zod-dbs-oracle](./packages/zod-dbs-oracle/README.md) (experimental)
 - SQLite: [zod-dbs-sqlite](./packages/zod-dbs-sqlite/README.md) (experimental)
+- Snowflake: [zod-dbs-snowflake](./packages/zod-dbs-snowflake/README.md) (experimental)
 
 ## Installation
 

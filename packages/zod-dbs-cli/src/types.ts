@@ -5,6 +5,7 @@ export type ZodDbsProviderName =
   | 'mysql'
   | 'mmsql'
   | 'oracle'
+  | 'snowflake'
   | `zod-dbs-${string}`;
 
 /**

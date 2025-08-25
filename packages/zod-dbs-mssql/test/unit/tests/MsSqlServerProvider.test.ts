@@ -6,7 +6,7 @@ vi.mock('../../../src/client', () => ({
 }));
 
 describe('MsSqlServerProvider', () => {
-  let connector: MsSqlServerProvider;
+  let provider: MsSqlServerProvider;
   let mockClient: any;
 
   beforeEach(() => {
@@ -32,9 +32,9 @@ describe('MsSqlServerProvider', () => {
       onProgress,
     };
 
-    connector = new MsSqlServerProvider();
+    provider = new MsSqlServerProvider();
 
-    await connector.getSchemaInformation(config);
+    await provider.getSchemaInformation(config);
 
     expect(onProgress).toHaveBeenNthCalledWith(1, 'connecting');
     expect(onProgress).toHaveBeenNthCalledWith(2, 'fetchingSchema');
@@ -72,9 +72,9 @@ describe('MsSqlServerProvider', () => {
       schemaName: 'custom_schema',
     };
 
-    connector = new MsSqlServerProvider();
+    provider = new MsSqlServerProvider();
 
-    const result = await connector.getSchemaInformation(config);
+    const result = await provider.getSchemaInformation(config);
 
     expect(mockClient.query).toHaveBeenCalledWith(expect.any(String), [
       'custom_schema',
@@ -125,9 +125,9 @@ describe('MsSqlServerProvider', () => {
       password: 'password',
     };
 
-    connector = new MsSqlServerProvider();
+    provider = new MsSqlServerProvider();
 
-    await expect(connector.getSchemaInformation(config)).rejects.toThrow(error);
+    await expect(provider.getSchemaInformation(config)).rejects.toThrow(error);
 
     expect(mockClient.end).toHaveBeenCalled();
   });

@@ -6,7 +6,7 @@ vi.mock('../../../src/client', () => ({
 }));
 
 describe('MySqlProvider', () => {
-  let connector: MySqlProvider;
+  let provider: MySqlProvider;
   let mockClient: any;
 
   beforeEach(() => {
@@ -32,9 +32,9 @@ describe('MySqlProvider', () => {
       onProgress,
     };
 
-    connector = new MySqlProvider();
+    provider = new MySqlProvider();
 
-    await connector.getSchemaInformation(config);
+    await provider.getSchemaInformation(config);
 
     expect(onProgress).toHaveBeenNthCalledWith(1, 'connecting');
     expect(onProgress).toHaveBeenNthCalledWith(2, 'fetchingSchema');
@@ -74,9 +74,9 @@ describe('MySqlProvider', () => {
       schemaName: 'custom_schema',
     };
 
-    connector = new MySqlProvider();
+    provider = new MySqlProvider();
 
-    const result = await connector.getSchemaInformation(config);
+    const result = await provider.getSchemaInformation(config);
 
     expect(mockClient.query).toHaveBeenCalledWith(expect.any(String), [
       'custom_schema',
@@ -127,9 +127,9 @@ describe('MySqlProvider', () => {
       password: 'password',
     };
 
-    connector = new MySqlProvider();
+    provider = new MySqlProvider();
 
-    await expect(connector.getSchemaInformation(config)).rejects.toThrow(error);
+    await expect(provider.getSchemaInformation(config)).rejects.toThrow(error);
 
     expect(mockClient.end).toHaveBeenCalled();
   });

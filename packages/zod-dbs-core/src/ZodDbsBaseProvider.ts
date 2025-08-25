@@ -19,7 +19,7 @@ export interface ZodDbsProviderOptions {
 }
 
 /**
- * Base class for database connectors.
+ * Base class for schema information providers.
  * Provides common functionality for fetching schema information and processing columns.
  * Should be extended by specific database providers like PostgreSqlProvider.
  */

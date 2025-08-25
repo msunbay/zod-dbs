@@ -22,9 +22,9 @@ afterAll(async () => {
 });
 
 it('returns raw schema column information', async () => {
-  const connector = new SqliteProvider();
+  const provider = new SqliteProvider();
 
-  const info = await connector.fetchSchemaInfo(connectionConfig);
+  const info = await provider.fetchSchemaInfo(connectionConfig);
 
   expect(info).toBeDefined();
   expect(info.length).toBeGreaterThan(0);
@@ -32,9 +32,9 @@ it('returns raw schema column information', async () => {
 });
 
 it('returns schema models', async () => {
-  const connector = new SqliteProvider();
+  const provider = new SqliteProvider();
 
-  const info = await connector.getSchemaInformation(connectionConfig);
+  const info = await provider.getSchemaInformation(connectionConfig);
 
   expect(info).toBeDefined();
   expect(info.tables).toBeDefined();
@@ -46,9 +46,9 @@ it('returns schema models', async () => {
 });
 
 it('detects enum-like columns via CHECK IN constraints', async () => {
-  const connector = new SqliteProvider();
+  const provider = new SqliteProvider();
 
-  const info = await connector.getSchemaInformation(connectionConfig);
+  const info = await provider.getSchemaInformation(connectionConfig);
 
   const userTable = info.tables.find((t) => t.name === 'users')!;
   const statusCol = userTable.columns.find((c) => c.name === 'status');

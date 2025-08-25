@@ -21,9 +21,9 @@ afterAll(async () => {
 });
 
 it('returns raw schema column information', async () => {
-  const connector = new PostgreSqlProvider();
+  const provider = new PostgreSqlProvider();
 
-  const info = await connector.fetchSchemaInfo(connectionOptions);
+  const info = await provider.fetchSchemaInfo(connectionOptions);
 
   expect(info).toBeDefined();
   expect(info).toHaveLength(168);
@@ -41,9 +41,9 @@ it('returns raw schema column information', async () => {
 });
 
 it('returns schema models', async () => {
-  const connector = new PostgreSqlProvider();
+  const provider = new PostgreSqlProvider();
 
-  const info = await connector.getSchemaInformation(connectionOptions);
+  const info = await provider.getSchemaInformation(connectionOptions);
 
   expect(info).toBeDefined();
   expect(info.tables).toBeDefined();
@@ -58,9 +58,9 @@ it('returns schema models', async () => {
 });
 
 it('supports enum column type', async () => {
-  const connector = new PostgreSqlProvider();
+  const provider = new PostgreSqlProvider();
 
-  const info = await connector.getSchemaInformation({
+  const info = await provider.getSchemaInformation({
     ...connectionOptions,
     include: ['orders'],
   });

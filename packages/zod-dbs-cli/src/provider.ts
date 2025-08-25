@@ -29,9 +29,7 @@ export const loadProvider = async (
       return importedProvider.createProvider();
     }
   } catch (error) {
-    throw new Error(
-      `Failed to import connector for provider ${provider}: ${error}`
-    );
+    throw new Error(`Failed to import provider ${provider}: ${error}`);
   }
 
   throw new Error(`Unsupported database provider: ${provider}`);
