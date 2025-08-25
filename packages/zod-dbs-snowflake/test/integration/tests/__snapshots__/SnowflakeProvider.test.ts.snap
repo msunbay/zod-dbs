@@ -188,7 +188,7 @@ exports[`SnowflakeProvider (integration) > fetches schema info for provided data
         {
           "dataType": "VARIANT",
           "defaultValue": undefined,
-          "description": undefined,
+          "description": "Test description",
           "isArray": false,
           "isEnum": false,
           "isNullable": true,
@@ -201,7 +201,7 @@ exports[`SnowflakeProvider (integration) > fetches schema info for provided data
           "schemaName": "MSOLVAAG_LOAD_SAMPLE_DATA_FROM_S3",
           "tableName": "MENU",
           "tableType": "table",
-          "type": "any",
+          "type": "json",
         },
       ],
       "name": "MENU",

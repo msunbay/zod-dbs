@@ -1,4 +1,6 @@
+import path from 'path';
 import sdk from 'snowflake-sdk';
+import { logDebug } from 'zod-dbs-core';
 
 import type {
   ZodDbsConnectionConfig,
@@ -12,8 +14,11 @@ export async function createClient(
     throw new Error("Snowflake 'account' is required in connection config");
 
   sdk.configure({
-    logLevel: 'ERROR',
+    additionalLogToConsole: false,
+    logFilePath: path.join(process.cwd(), '/snowflake.log'),
   });
+
+  logDebug('Creating Snowflake connection', { options });
 
   const connection = sdk.createConnection({
     host: options.host,
