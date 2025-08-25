@@ -5,6 +5,7 @@ import type {
   ZodDbsConfig,
   ZodDbsProvider,
   ZodDbsProviderConfig,
+  ZodDbsProviderOption,
   ZodDbsSchemaInfo,
   ZodDbsTable,
 } from './types.js';
@@ -16,6 +17,7 @@ export interface ZodDbsProviderOptions {
   name: string;
   displayName?: string;
   defaultConfiguration?: Partial<ZodDbsConfig>;
+  options?: ZodDbsProviderOption[];
 }
 
 /**
@@ -27,11 +29,13 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
   name: string;
   displayName?: string;
   defaultConfiguration?: ZodDbsConfig;
+  options: ZodDbsProviderOption[];
 
   constructor(options: ZodDbsProviderOptions) {
     this.name = options.name;
     this.displayName = options.displayName;
     this.defaultConfiguration = options.defaultConfiguration;
+    this.options = options.options || [];
   }
 
   protected initConfiguration(config: ZodDbsConfig): ZodDbsConfig {

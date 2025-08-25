@@ -1,10 +1,9 @@
 import { logDebug } from 'zod-dbs-core';
 
 import type { ZodDbsProvider } from 'zod-dbs-core';
-import type { ZodDbsProviderName } from './types.js';
 
 export const loadProvider = async (
-  provider: ZodDbsProviderName | ZodDbsProvider
+  provider: string | ZodDbsProvider
 ): Promise<ZodDbsProvider> => {
   if (!provider) throw new Error('Provider must be specified');
 

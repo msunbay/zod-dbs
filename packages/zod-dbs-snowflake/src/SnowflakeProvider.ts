@@ -32,6 +32,33 @@ export class SnowflakeProvider extends ZodDbsBaseProvider {
         port: 443,
         ssl: true,
       },
+      options: [
+        {
+          name: 'account',
+          type: 'string',
+          description:
+            'Snowflake account identifier (e.g., xy12345.eu-central-1)',
+          required: true,
+        },
+        {
+          name: 'token',
+          type: 'string',
+          description: 'JWT token for authentication',
+          required: false,
+        },
+        {
+          name: 'role',
+          type: 'string',
+          description: 'Role to assume after connecting',
+          required: false,
+        },
+        {
+          name: 'warehouse',
+          type: 'string',
+          description: 'Virtual warehouse to use for the session',
+          required: false,
+        },
+      ],
     });
   }
 

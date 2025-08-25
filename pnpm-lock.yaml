@@ -90,6 +90,9 @@ importers:
       zod-dbs-pg:
         specifier: workspace:*
         version: link:../zod-dbs-pg
+      zod-dbs-snowflake:
+        specifier: workspace:*
+        version: link:../zod-dbs-snowflake
 
   packages/zod-dbs-core:
     dependencies:

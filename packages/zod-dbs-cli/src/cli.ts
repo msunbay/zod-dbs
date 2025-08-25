@@ -1,4 +1,4 @@
-import { Option, program } from 'commander';
+import { Command, Option, program } from 'commander';
 import { generateZodSchemas } from 'zod-dbs';
 import {
   enableDebug,
@@ -12,6 +12,7 @@ import type { ZodDbsCliConfig, ZodDbsCliOptions } from './types.js';
 
 import { getConfiguration } from './config.js';
 import { loadProvider } from './provider.js';
+import { getArgumentValue } from './utils/args.js';
 import { logAppName, logError, logSetting } from './utils/logger.js';
 import { createProgressHandler } from './utils/progress.js';
 import { getAppVersion } from './utils/version.js';
@@ -23,6 +24,12 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
 
   program.name(appName);
   program.description('Generates Zod schemas from database schema.');
+
+  const providerFromArg = getArgumentValue('--provider');
+  const providerName =
+    cliOptions.overrides?.provider ?? providerFromArg ?? config.provider;
+
+  const provider = await loadProvider(providerName);
 
   if (!cliOptions.overrides?.provider) {
     program.option(
@@ -97,14 +104,19 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
     '--json-schema-import-location <path>',
     'Path to import JSON schemas'
   );
-  program.option('--connection-string <string>', 'Postgres connection string');
-  program.option('--password <string>', 'Postgres password');
-  program.option('--user <string>', 'Postgres user');
-  program.option('--database <string>', 'Postgres database');
-  program.option('--host <string>', 'Postgres host');
-  program.option('--ssl', 'Use SSL for Postgres connection');
-  program.option('--port <number>', 'Postgres port');
   program.option('--zod-version <number>', 'Zod version to use');
+
+  program.option('--connection-string <string>', 'Connection string');
+  program.option('--password <string>', 'Database password');
+  program.option('--user <string>', 'Database user');
+  program.option('--database <string>', 'Database name');
+  program.option('--host <string>', 'Database host');
+  program.option('--ssl', 'Use SSL for database connection');
+  program.option('--port <number>', 'Database port');
+
+  // Add provider-specific dynamic options before parsing the full CLI
+  addProviderOptions(program, provider);
+
   program.option(
     '--debug',
     'Enable debug logging',
@@ -123,8 +135,6 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
     const connectionConfig = options.connectionString
       ? parseConnectionString(options.connectionString)
       : options;
-
-    const provider = await loadProvider(options.provider ?? config.provider);
 
     const cliConfig: ZodDbsCliConfig = {
       ...config,
@@ -155,6 +165,28 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
     logDebug(error);
 
     process.exit(1);
+  }
+};
+
+const addProviderOptions = (program: Command, provider: ZodDbsProvider) => {
+  if (provider.options && provider.options.length > 0) {
+    for (const option of provider.options) {
+      const flag = option.required
+        ? `--${option.name} <value>`
+        : `--${option.name} [value]`;
+      const description = option.description;
+      if (option.allowedValues) {
+        program.addOption(
+          new Option(flag, description).choices(option.allowedValues)
+        );
+      } else if (option.type === 'boolean') {
+        program.option(flag, description);
+      } else if (option.type === 'number') {
+        program.option(flag, description, (value) => parseInt(value, 10));
+      } else {
+        program.option(flag, description);
+      }
+    }
   }
 };
 

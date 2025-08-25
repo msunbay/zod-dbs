@@ -6,7 +6,7 @@ Snowflake provider for zod-dbs.
 
 - Requires `snowflake-sdk` as a peer dependency.
 - You must provide both `database` and `schemaName`.
-- You currently must use a configuration file to specify options like `account`, `token`, `warehouse`, and `role`.
+- Enum types are not yet supported.
 
 ## Installation
 
@@ -26,12 +26,17 @@ npm install snowflake-sdk
 npx zod-dbs --provider snowflake \
   --host <account>.snowflakecomputing.com \
   --user <user> --password <password> \
+  --account <account> --token <token> \
+  --warehouse <warehouse> --role <role> \ # optional
   --database <db> --schema-name <schema>
 ```
 
+### Configuration File Example
+
 ```ts
 import { ZodDbsCliConfig } from 'zod-dbs-cli';
-import { createProvider } from 'zod-dbs-snowflake';
+
+import 'zod-dbs-snowflake'; // import needed to load the provider configuration types.
 
 const config: ZodDbsCliConfig = {
   provider: createProvider(),

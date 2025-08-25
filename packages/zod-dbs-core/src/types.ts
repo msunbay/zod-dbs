@@ -120,6 +120,15 @@ export interface ZodDbsColumn extends ZodDbsColumnInfo {
   writeTransforms?: ZodDbsTransform[];
 }
 
+export interface ZodDbsProviderOption {
+  name: string;
+  type: 'string' | 'number' | 'boolean';
+  description: string;
+  default?: string | number | boolean;
+  required?: boolean;
+  allowedValues?: string[];
+}
+
 /**
  * Represents a provider that returns schema information that will be used to generate Zod schemas.
  */
@@ -133,6 +142,11 @@ export interface ZodDbsProvider {
    * For example, 'PostgreSQL', 'MySQL', etc.
    */
   displayName?: string;
+  /**
+   * Configuration options supported by this provider.
+   * Used by CLI tools to generate prompts or validate config files.
+   */
+  options?: ZodDbsProviderOption[];
   /**
    * Fetches schema information from the database.
    */

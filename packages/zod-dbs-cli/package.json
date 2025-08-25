@@ -35,7 +35,8 @@
     "@testcontainers/mysql": "^11.5.1",
     "@testcontainers/postgresql": "^11.5.1",
     "zod-dbs-pg": "workspace:*",
-    "zod-dbs-mysql": "workspace:*"
+    "zod-dbs-mysql": "workspace:*",
+    "zod-dbs-snowflake": "workspace:*"
   },
   "dependencies": {
     "chalk": "^5.4.1",
