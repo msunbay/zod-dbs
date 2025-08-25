@@ -17,9 +17,19 @@ describe('casing utilities', () => {
       expect(camelCase('user_profile_data')).toBe('userProfileData');
     });
 
+    it('should covert UPPER_SNAKE_CASE to camelCase', () => {
+      expect(camelCase('HELLO_WORLD_TEST')).toBe('helloWorldTest');
+      expect(camelCase('USER_PROFILE_DATA')).toBe('userProfileData');
+    });
+
     it('should convert kebab-case to camelCase', () => {
       expect(camelCase('hello-world-test')).toBe('helloWorldTest');
       expect(camelCase('user-profile-data')).toBe('userProfileData');
+    });
+
+    it('should convert PascalCase to camelCase', () => {
+      expect(camelCase('HelloWorldTest')).toBe('helloWorldTest');
+      expect(camelCase('UserProfileData')).toBe('userProfileData');
     });
 
     it('should handle mixed separators', () => {
