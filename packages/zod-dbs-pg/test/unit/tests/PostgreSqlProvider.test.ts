@@ -39,7 +39,10 @@ describe('PostgreSqlProvider', () => {
     expect(onProgress).toHaveBeenNthCalledWith(1, 'connecting');
     expect(onProgress).toHaveBeenNthCalledWith(2, 'fetchingSchema');
 
-    expect(createClient).toHaveBeenCalledWith(config);
+    expect(createClient).toHaveBeenCalledWith({
+      ...config,
+      schemaName: 'public',
+    });
     expect(mockClient.connect).toHaveBeenCalledBefore(mockClient.query);
     expect(mockClient.query).toHaveBeenCalledBefore(mockClient.end);
     expect(mockClient.end).toHaveBeenCalled();
@@ -81,7 +84,6 @@ describe('PostgreSqlProvider', () => {
 
     expect(result).toMatchInlineSnapshot(`
       {
-        "name": "custom_schema",
         "tables": [
           {
             "columns": [

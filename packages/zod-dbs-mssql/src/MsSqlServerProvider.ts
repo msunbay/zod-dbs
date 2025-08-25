@@ -26,10 +26,6 @@ interface RawColumnInfo {
   description: string | null;
 }
 
-const DEFAULT_CONFIGURATION = {
-  port: 1433,
-};
-
 /**
  * Provider to interact with Microsoft SQL Server database and retrieve schema information.
  * Supports MMSQL version x and above.
@@ -39,7 +35,10 @@ export class MsSqlServerProvider extends ZodDbsBaseProvider {
     super({
       name: 'mssql',
       displayName: 'Microsoft SQL Server',
-      defaultConfiguration: DEFAULT_CONFIGURATION,
+      defaultConfiguration: {
+        port: 1433,
+        schemaName: 'dbo',
+      },
     });
   }
 
@@ -72,7 +71,7 @@ export class MsSqlServerProvider extends ZodDbsBaseProvider {
   public override async fetchSchemaInfo(
     config: ZodDbsProviderConfig
   ): Promise<ZodDbsColumnInfo[]> {
-    const { schemaName = 'public' } = config;
+    const { schemaName } = config;
 
     config.onProgress?.('connecting');
     const client = await this.createClient(config);

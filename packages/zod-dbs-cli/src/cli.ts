@@ -5,6 +5,7 @@ import {
   logDebug,
   parseConnectionString,
   toError,
+  ZodDbsProvider,
 } from 'zod-dbs-core';
 
 import type { ZodDbsCliConfig, ZodDbsCliOptions } from './types.js';
@@ -126,7 +127,6 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
     const provider = await loadProvider(options.provider ?? config.provider);
 
     const cliConfig: ZodDbsCliConfig = {
-      ...provider.defaultConfiguration,
       ...config,
       ...connectionConfig,
       ...options,
@@ -137,7 +137,7 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
 
     if (!cliConfig.silent) {
       logAppName(`${appName} CLI v${appVersion}`);
-      logSettings(cliConfig);
+      logSettings(provider, cliConfig);
       console.log();
     }
 
@@ -158,12 +158,8 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
   }
 };
 
-const logSettings = (cliConfig: ZodDbsCliConfig) => {
-  if (cliConfig.provider && typeof cliConfig.provider === 'string') {
-    logSetting('provider', cliConfig.provider);
-  } else if (cliConfig.provider && typeof cliConfig.provider === 'object') {
-    logSetting('provider', cliConfig.provider.name);
-  }
+const logSettings = (provider: ZodDbsProvider, cliConfig: ZodDbsCliConfig) => {
+  logSetting('provider', provider.name);
 
   if (cliConfig.outputDir) logSetting('output', cliConfig.outputDir);
   if (cliConfig.cleanOutput) logSetting('clean-output', 'true');

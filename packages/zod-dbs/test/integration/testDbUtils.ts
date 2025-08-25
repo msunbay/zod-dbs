@@ -34,7 +34,12 @@ export async function deleteOutputFiles(dir: string): Promise<void> {
 
 class TestProvider extends ZodDbsBaseProvider {
   constructor() {
-    super({ name: 'test' });
+    super({
+      name: 'test',
+      defaultConfiguration: {
+        schemaName: 'test-schema',
+      },
+    });
   }
 
   protected fetchSchemaInfo(): Promise<ZodDbsColumnInfo[]> {

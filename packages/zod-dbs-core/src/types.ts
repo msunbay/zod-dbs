@@ -2,8 +2,6 @@
  * Represents the overall schema information for a database schema.
  */
 export interface ZodDbsSchemaInfo {
-  /** The name of the database schema (e.g., 'public') */
-  name: string;
   /** Array of all tables found in the schema */
   tables: ZodDbsTable[];
 }
@@ -17,7 +15,7 @@ export interface ZodDbsTable {
   /** The name of the table/relation */
   name: string;
   /** The schema name where this table resides */
-  schemaName: string;
+  schemaName?: string;
   /** Array of all columns in this table */
   columns: ZodDbsColumn[];
 }
@@ -64,7 +62,7 @@ export interface ZodDbsColumnInfo {
   /** Name of the table this column belongs to */
   tableName: string;
   /** Name of the schema containing the table */
-  schemaName: string;
+  schemaName?: string;
   /** Column description/comment from the database */
   description?: string;
   /** The type of table this column belongs to */
@@ -135,10 +133,6 @@ export interface ZodDbsProvider {
    * For example, 'PostgreSQL', 'MySQL', etc.
    */
   displayName?: string;
-  /**
-   * Default configuration for the provider.
-   */
-  defaultConfiguration?: ZodDbsConfig;
   /**
    * Fetches schema information from the database.
    */

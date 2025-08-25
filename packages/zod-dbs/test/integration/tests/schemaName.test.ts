@@ -11,7 +11,7 @@ import {
 const provider = createTestProvider();
 
 describe('schema name option', () => {
-  it('generates schemas for default schema (public)', async () => {
+  it('generates schemas without schema name ', async () => {
     const outputDir = getOutputDir('schemaName', 'default-schema');
 
     await generateZodSchemas({
@@ -20,7 +20,7 @@ describe('schema name option', () => {
         moduleResolution: 'esm',
         outputDir,
         include: ['users'],
-        // schemaName not specified, should default to 'public'
+        // schemaName not specified, should default to provider default ('public')
       },
     });
 
@@ -40,7 +40,7 @@ describe('schema name option', () => {
       config: {
         moduleResolution: 'esm',
         outputDir,
-        schemaName: 'public',
+        schemaName: 'test',
         include: ['users'],
       },
     });

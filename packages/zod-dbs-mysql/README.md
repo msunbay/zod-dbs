@@ -37,3 +37,7 @@ await generateZodSchemas({
   },
 });
 ```
+
+## Compatibility
+
+- Works with MariaDB in addition to MySQL. The provider uses the MySQL protocol (`mysql2`) and introspects via `information_schema.columns`, which MariaDB supports.

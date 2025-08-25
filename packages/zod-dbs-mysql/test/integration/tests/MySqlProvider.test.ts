@@ -46,3 +46,17 @@ it('returns schema models', async () => {
 
   expect(userTable).toMatchSnapshot('userTable');
 });
+
+it.only('throws if schemaName and database is missing', async () => {
+  const connector = new MySqlProvider();
+
+  await expect(
+    connector.fetchSchemaInfo({
+      ...connectionConfig,
+      database: undefined,
+      schemaName: undefined,
+    })
+  ).rejects.toThrowErrorMatchingInlineSnapshot(
+    `[Error: MySQL provider requires a database/schema name to fetch schema information.]`
+  );
+});

@@ -27,10 +27,6 @@ interface RawColumnInfo {
   description: string | null;
 }
 
-const DEFAULT_CONFIGURATION: ZodDbsConfig = {
-  port: 3306,
-};
-
 /**
  * Provider to interact with MySQL database and retrieve schema information.
  * Supports MySQL version 8 and above.
@@ -40,8 +36,18 @@ export class MySqlProvider extends ZodDbsBaseProvider {
     super({
       name: 'mysql',
       displayName: 'MySQL',
-      defaultConfiguration: DEFAULT_CONFIGURATION,
+      defaultConfiguration: {
+        port: 3306,
+      },
     });
+  }
+
+  public override initConfiguration(config: ZodDbsConfig): ZodDbsConfig {
+    return {
+      ...this.defaultConfiguration,
+      schemaName: config.schemaName ?? config.database,
+      ...config,
+    };
   }
 
   createClient = (options: ZodDbsConnectionConfig) => {
@@ -73,7 +79,12 @@ export class MySqlProvider extends ZodDbsBaseProvider {
   public override async fetchSchemaInfo(
     config: ZodDbsProviderConfig
   ): Promise<ZodDbsColumnInfo[]> {
-    const { schemaName = 'public' } = config;
+    const { schemaName } = config;
+
+    if (!schemaName)
+      throw new Error(
+        'MySQL provider requires a database/schema name to fetch schema information.'
+      );
 
     config.onProgress?.('connecting');
     const client = await this.createClient(config);

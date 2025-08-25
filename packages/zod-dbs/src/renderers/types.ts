@@ -95,7 +95,7 @@ export interface ZodDbsImport {
  */
 export interface ZodDbsTableRenderModel {
   /** The schema name where this table resides */
-  schemaName: string;
+  schemaName?: string;
   /** The type of relation (table, view, etc.) */
   type: ZodDbsTableType;
   /** The original table name */

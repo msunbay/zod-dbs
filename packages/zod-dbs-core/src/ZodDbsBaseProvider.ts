@@ -34,12 +34,15 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
     this.defaultConfiguration = options.defaultConfiguration;
   }
 
+  protected initConfiguration(config: ZodDbsConfig): ZodDbsConfig {
+    return { ...this.defaultConfiguration, ...config };
+  }
+
   protected async createSchemaInfo(
     tables: ZodDbsTable[],
     config: ZodDbsProviderConfig
   ): Promise<ZodDbsSchemaInfo> {
-    const { schemaName = 'public' } = config;
-    const result: ZodDbsSchemaInfo = { name: schemaName, tables };
+    const result: ZodDbsSchemaInfo = { tables };
 
     if (config.onTableModelCreated) {
       const modifiedTables = [];
@@ -118,10 +121,9 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
     config: ZodDbsProviderConfig
   ): Promise<ZodDbsTable[]> {
     const tablesMap = new Map<string, ZodDbsTable>();
-    const { schemaName = 'public' } = config;
 
     for (const column of columns) {
-      const key = `${schemaName}:${column.tableName}`;
+      const key = `${column.schemaName}:${column.tableName}`;
       let table = tablesMap.get(key);
 
       let columnModel = this.createColumnModel(column);
@@ -134,7 +136,7 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
         table = {
           type: column.tableType,
           name: column.tableName,
-          schemaName,
+          schemaName: column.schemaName,
           columns: [],
         };
 
@@ -152,7 +154,7 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
       return a.name.localeCompare(b.name);
     });
 
-    logDebug(`Found ${tables.length} tables in schema '${schemaName}'`);
+    logDebug(`Found ${tables.length} tables`);
 
     return tables;
   }
@@ -160,10 +162,12 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
   async getSchemaInformation(
     config: ZodDbsProviderConfig
   ): Promise<ZodDbsSchemaInfo> {
-    const columns = await this.fetchSchemaInfo(config);
-    const filteredColumns = this.filterColumns(columns, config);
-    const tables = await this.createTableModels(filteredColumns, config);
+    const finalConfig = this.initConfiguration(config);
 
-    return await this.createSchemaInfo(tables, config);
+    const columns = await this.fetchSchemaInfo(finalConfig);
+    const filteredColumns = this.filterColumns(columns, finalConfig);
+    const tables = await this.createTableModels(filteredColumns, finalConfig);
+
+    return await this.createSchemaInfo(tables, finalConfig);
   }
 }

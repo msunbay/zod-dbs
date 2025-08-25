@@ -39,7 +39,10 @@ describe('MySqlProvider', () => {
     expect(onProgress).toHaveBeenNthCalledWith(1, 'connecting');
     expect(onProgress).toHaveBeenNthCalledWith(2, 'fetchingSchema');
 
-    expect(createClient).toHaveBeenCalledWith(config);
+    expect(createClient).toHaveBeenCalledWith({
+      ...config,
+      schemaName: config.database,
+    });
     expect(mockClient.connect).toHaveBeenCalledBefore(mockClient.query);
     expect(mockClient.query).toHaveBeenCalledBefore(mockClient.end);
     expect(mockClient.end).toHaveBeenCalled();
@@ -57,7 +60,6 @@ describe('MySqlProvider', () => {
         maxLen: undefined,
         description: undefined,
         tableType: 'table',
-        schemaName: '',
       },
     ];
 
@@ -82,7 +84,6 @@ describe('MySqlProvider', () => {
 
     expect(result).toMatchInlineSnapshot(`
       {
-        "name": "custom_schema",
         "tables": [
           {
             "columns": [
@@ -106,7 +107,7 @@ describe('MySqlProvider', () => {
               },
             ],
             "name": "users",
-            "schemaName": "custom_schema",
+            "schemaName": "test",
             "type": "table",
           },
         ],

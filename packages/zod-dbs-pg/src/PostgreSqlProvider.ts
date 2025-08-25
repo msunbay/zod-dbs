@@ -58,7 +58,7 @@ export class PostgreSqlProvider extends ZodDbsBaseProvider {
 
   protected createColumnInfo(
     column: RawColumnInfo,
-    schemaName: string
+    schemaName?: string
   ): ZodDbsColumnInfo {
     const parsedColumn: ZodDbsColumnInfo = {
       maxLen: column.maxLen ?? undefined,
@@ -97,7 +97,7 @@ export class PostgreSqlProvider extends ZodDbsBaseProvider {
   public override async fetchSchemaInfo(
     config: ZodDbsProviderConfig
   ): Promise<ZodDbsColumnInfo[]> {
-    const { schemaName = 'public' } = config;
+    const { schemaName } = config;
 
     config.onProgress?.('connecting');
     const client = await this.createClient(config);
