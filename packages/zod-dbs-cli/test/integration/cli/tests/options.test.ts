@@ -130,11 +130,7 @@ it('outputs error on invalid provider', async () => {
     });
   } catch (err: any) {
     expect(err.status).toBe(1);
-    expect(err).toMatchInlineSnapshot(`
-      [Error: Command failed: node /Users/magnus2/Projects/zod-dbs/packages/zod-dbs-cli/index.js --provider apple --help
-      Failed to import provider apple: Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'zod-dbs-apple' imported from /Users/magnus2/Projects/zod-dbs/packages/zod-dbs-cli/dist/provider.js
-      ]
-    `);
+    expect(err.message).toContain(`Failed to import provider apple`);
   }
 });
 
@@ -145,10 +141,8 @@ it('outputs error on missing required argument', async () => {
     });
   } catch (err: any) {
     expect(err.status).toBe(1);
-    expect(err).toMatchInlineSnapshot(`
-      [Error: Command failed: node /Users/magnus2/Projects/zod-dbs/packages/zod-dbs-cli/index.js --provider snowflake
-      error: required option '--account <value>' not specified
-      ]
-    `);
+    expect(err.message).toContain(
+      `error: required option '--account <value>' not specified`
+    );
   }
 });
