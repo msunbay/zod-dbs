@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
+import dotenv from 'dotenv';
 
 import type {
   ZodDbsDatabaseClient,
@@ -9,6 +10,26 @@ import type {
 
 import { createClient } from '../../src/client.js';
 import { SnowflakeProvider } from '../../src/SnowflakeProvider.js';
+
+dotenv.config({
+  path: path.resolve(import.meta.dirname, './.env'),
+  quiet: true,
+});
+
+const SNOWFLAKE_CONFIG = {
+  host: process.env.SNOWFLAKE_HOST,
+  password: process.env.SNOWFLAKE_PASSWORD,
+  token: process.env.SNOWFLAKE_TOKEN,
+  user: process.env.SNOWFLAKE_USER,
+  database: process.env.SNOWFLAKE_DATABASE,
+  schemaName: process.env.SNOWFLAKE_SCHEMA_NAME,
+  account: process.env.SNOWFLAKE_ACCOUNT,
+  role: process.env.SNOWFLAKE_ROLE,
+} as ZodDbsProviderConfig;
+
+export interface TestDbContext {
+  client: ZodDbsDatabaseClient;
+}
 
 export const createProvider = (): ZodDbsProvider => new SnowflakeProvider();
 
@@ -27,25 +48,12 @@ export const getConnectionConfig = (): ZodDbsProviderConfig => {
     database: client.config.database,
     user: client.config.user,
     password: client.config.password,
-    schemaName: process.env.SNOWFLAKE_SCHEMA,
+    schemaName: client.config.schemaName,
   } as any;
 };
 
 export async function setupTestDb() {
-  // No container for Snowflake; use env credentials
-  const host = process.env.SNOWFLAKE_HOST;
-  const user = process.env.SNOWFLAKE_USER;
-  const password = process.env.SNOWFLAKE_PASSWORD;
-  const database = process.env.SNOWFLAKE_DATABASE;
-  const schema = process.env.SNOWFLAKE_SCHEMA;
-
-  if (!host || !user || !password || !database || !schema) {
-    throw new Error(
-      'Snowflake integration requires SNOWFLAKE_HOST, USER, PASSWORD, DATABASE, SCHEMA'
-    );
-  }
-
-  const client = await createClient({ host, user, password, database } as any);
+  const client = await createClient(SNOWFLAKE_CONFIG);
   await client.connect();
 
   // Optionally apply schema if requested

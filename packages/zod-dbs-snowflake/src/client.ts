@@ -1,30 +1,23 @@
+import sdk from 'snowflake-sdk';
+
 import type {
   ZodDbsConnectionConfig,
   ZodDbsDatabaseClient,
 } from 'zod-dbs-core';
 
-// Lazy import to avoid hard dependency at build time; users must install snowflake-sdk.
-let sdk: any;
-
 export async function createClient(
   options: ZodDbsConnectionConfig
 ): Promise<ZodDbsDatabaseClient> {
-  if (!sdk) {
-    try {
-      sdk = await import('snowflake-sdk');
-    } catch (e) {
-      throw new Error('snowflake-sdk is required as a peer dependency');
-    }
-  }
-
   const connection = sdk.createConnection({
-    account: (options as any).account,
+    host: options.host,
+    account: options.account,
     username: options.user,
     password: options.password,
-    warehouse: (options as any).warehouse,
     database: options.database,
-    schema: (options as any).schemaName,
-    role: (options as any).role,
+    schema: options.schemaName,
+    token: options.token,
+    warehouse: options.warehouse,
+    role: options.role,
     // Snowflake uses TLS on 443 by default
   });
 
@@ -33,7 +26,7 @@ export async function createClient(
       connection.execute({
         sqlText: sql,
         binds,
-        complete: (err: any, _stmt: any, rows: T) => {
+        complete: (err: any, _stmt: any, rows: any) => {
           if (err) return reject(err);
           resolve(rows);
         },
@@ -51,11 +44,7 @@ export async function createClient(
         connection.destroy((/* err */) => resolve());
       }),
     config: {
-      host: options.host,
-      port: options.port,
-      database: options.database,
-      user: options.user,
-      password: options.password,
+      ...options,
       protocol: 'snowflake',
     },
   };

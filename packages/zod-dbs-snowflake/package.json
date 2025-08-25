@@ -24,6 +24,7 @@
     "dist"
   ],
   "devDependencies": {
+    "dotenv": "^17.2.1",
     "snowflake-sdk": "^2.2.0"
   },
   "dependencies": {

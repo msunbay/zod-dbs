@@ -15,7 +15,7 @@ import { logDebug } from './utils/debug.js';
 export interface ZodDbsProviderOptions {
   name: string;
   displayName?: string;
-  defaultConfiguration?: ZodDbsConfig;
+  defaultConfiguration?: Partial<ZodDbsConfig>;
 }
 
 /**

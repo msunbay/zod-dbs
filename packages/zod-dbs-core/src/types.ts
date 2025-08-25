@@ -237,13 +237,15 @@ export interface ZodDbsConnectionConfig {
   password?: string;
   /** Whether to use SSL connection */
   ssl?: boolean | ZodDbsSslConfig;
+  /**
+   * Optional schema name (e.g., 'public' for PostgreSQL)
+   */
+  schemaName?: string;
 }
 
 export interface ZodDbsProviderConfig
   extends ZodDbsConnectionConfig,
     ZodDbsHooks {
-  /** Database schema name to process (default: 'public') */
-  schemaName?: string;
   /** Regex pattern(s) to include only specific tables */
   include?: string | string[];
   /** Regex pattern(s) to exclude specific tables */
