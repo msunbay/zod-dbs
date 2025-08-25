@@ -1,6 +1,6 @@
 {
   "name": "zod-dbs-cli",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "Opinionated Zod schema generator for databases",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

@@ -1,6 +1,6 @@
 {
   "name": "zod-dbs-snowflake",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Snowflake provider for zod-dbs",
   "main": "./dist/index.js",
   "type": "module",
