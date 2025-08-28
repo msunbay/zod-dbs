@@ -16,6 +16,7 @@ it('outputs default options', async () => {
     Generates Zod schemas from database schema.
 
     Options:
+      -V, --version                         output the version number
       --provider <name>                     Database provider to use (e.g. pg,
                                             mysql, sqlite, mssql, mongodb)
       -o,--output-dir <path>                Output directory for generated schemas
@@ -73,6 +74,7 @@ it('includes provider specific options', async () => {
     Generates Zod schemas from database schema.
 
     Options:
+      -V, --version                         output the version number
       --provider <name>                     Database provider to use (e.g. pg,
                                             mysql, sqlite, mssql, mongodb)
       -o,--output-dir <path>                Output directory for generated schemas
