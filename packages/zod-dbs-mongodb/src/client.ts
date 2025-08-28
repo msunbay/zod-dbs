@@ -4,12 +4,35 @@ import type { ZodDbsConnectionConfig } from 'zod-dbs-core';
 
 import { ZodDbsMongoDbClient } from './types.js';
 
+const createConnectionUri = (config: ZodDbsConnectionConfig) => {
+  let uri = `mongodb://`;
+
+  if (config.user) {
+    uri += encodeURIComponent(config.user);
+    if (config.password) {
+      uri += `:${encodeURIComponent(config.password)}`;
+    }
+
+    uri += '@';
+  }
+
+  uri += config.host || 'localhost';
+  uri += `:${config.port || 27017}`;
+
+  return uri;
+};
+
 export async function createClient(
   config: ZodDbsConnectionConfig
 ): Promise<ZodDbsMongoDbClient> {
-  // Prefer explicit URI (e.g., from Testcontainers getConnectionString) to include replica set params
-  const uri = `mongodb://${config.user ? `${encodeURIComponent(config.user)}${config.password ? `:${encodeURIComponent(config.password)}` : ''}@` : ''}${config.host || 'localhost'}:${config.port || 27017}`;
-  const client = new MongoClient(uri, {});
+  console.log('Creating MongoDB client with config:', config);
+  const uri = createConnectionUri(config);
+  console.log('MongoDB connection URI:', uri);
+
+  const client = new MongoClient(uri, {
+    directConnection: config.directConnection,
+    replicaSet: config.replicaSet,
+  });
 
   let connected = false;
 
@@ -31,9 +54,8 @@ export async function createClient(
         connected = false;
       }
     },
-    // Expose driver for provider-specific logic
     get driver() {
       return client;
     },
-  } as ZodDbsMongoDbClient;
+  };
 }

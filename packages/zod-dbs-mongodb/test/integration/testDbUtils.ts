@@ -4,17 +4,17 @@ import {
   StartedMongoDBContainer,
 } from '@testcontainers/mongodb';
 
-import type { ZodDbsDatabaseClient, ZodDbsProviderConfig } from 'zod-dbs-core';
+import type { ZodDbsProviderConfig } from 'zod-dbs-core';
 
 import { createClient } from '../../src/client.js';
+import { ZodDbsMongoDbClient } from '../../src/types.js';
 
 export interface TestDbContext {
   container: StartedMongoDBContainer;
-  client: ZodDbsDatabaseClient & { driver: any };
+  client: ZodDbsMongoDbClient;
 }
 
 let _clientInstance: TestDbContext['client'] | null = null;
-let _connection: (ZodDbsProviderConfig & { uri?: string }) | null = null;
 
 export const getClient = () => {
   if (!_clientInstance) throw new Error('Client not initialized');
@@ -22,8 +22,8 @@ export const getClient = () => {
 };
 
 export const getConnectionConfig = (): ZodDbsProviderConfig => {
-  if (!_connection) throw new Error('Connection not initialized');
-  return { ..._connection } as ZodDbsProviderConfig;
+  if (!_clientInstance) throw new Error('Connection not initialized');
+  return _clientInstance.config;
 };
 
 export const getCliPath = (): string => {
@@ -36,13 +36,24 @@ export async function setupTestDb(): Promise<TestDbContext> {
 
   // Prefer the connection string from Testcontainers to handle replica set params, then add db name
   const baseUri = container.getConnectionString();
+  console.log('MongoDB Testcontainer URI:', baseUri, {
+    database,
+    baseUri,
+  });
+
   const url = new URL(baseUri);
   url.pathname = `/${database}`;
   url.searchParams.set('replicaSet', 'rs0');
   url.searchParams.set('directConnection', 'true');
-  const uri = url.toString();
 
-  const client = (await createClient({ uri } as any)) as any;
+  const client = await createClient({
+    host: container.getHost(),
+    port: container.getFirstMappedPort(),
+    database,
+    replicaSet: 'rs0',
+    directConnection: true,
+  });
+
   await client.connect();
 
   // Seed: create a collection with validator
@@ -69,10 +80,7 @@ export async function setupTestDb(): Promise<TestDbContext> {
     },
   });
 
-  _clientInstance = Object.assign(client, {
-    config: { ...client.config, uri, database },
-  });
-  _connection = { database, uri } as any;
+  _clientInstance = client;
 
   return { container, client: _clientInstance! };
 }
