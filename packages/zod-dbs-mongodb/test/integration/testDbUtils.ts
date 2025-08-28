@@ -33,19 +33,6 @@ export const getCliPath = (): string => {
 export async function setupTestDb(): Promise<TestDbContext> {
   const container = await new MongoDBContainer('mongo:7').start();
   const database = 'testdb';
-
-  // Prefer the connection string from Testcontainers to handle replica set params, then add db name
-  const baseUri = container.getConnectionString();
-  console.log('MongoDB Testcontainer URI:', baseUri, {
-    database,
-    baseUri,
-  });
-
-  const url = new URL(baseUri);
-  url.pathname = `/${database}`;
-  url.searchParams.set('replicaSet', 'rs0');
-  url.searchParams.set('directConnection', 'true');
-
   const client = await createClient({
     host: container.getHost(),
     port: container.getFirstMappedPort(),

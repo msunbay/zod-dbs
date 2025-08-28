@@ -25,9 +25,7 @@ const createConnectionUri = (config: ZodDbsConnectionConfig) => {
 export async function createClient(
   config: ZodDbsConnectionConfig
 ): Promise<ZodDbsMongoDbClient> {
-  console.log('Creating MongoDB client with config:', config);
   const uri = createConnectionUri(config);
-  console.log('MongoDB connection URI:', uri);
 
   const client = new MongoClient(uri, {
     directConnection: config.directConnection,
