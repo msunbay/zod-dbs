@@ -67,6 +67,7 @@ zod-dbs automates this process by generating type-safe validation schemas direct
 - Oracle: [zod-dbs-oracle](./packages/zod-dbs-oracle/README.md) (experimental)
 - SQLite: [zod-dbs-sqlite](./packages/zod-dbs-sqlite/README.md) (experimental)
 - Snowflake: [zod-dbs-snowflake](./packages/zod-dbs-snowflake/README.md) (experimental)
+- MongoDB: [zod-dbs-mongodb](./packages/zod-dbs-mongodb/README.md) (experimental)
 
 ## Installation
 
@@ -176,7 +177,7 @@ Negative flags (`--no-*`) disable a feature that is enabled by default.
 
 | Option                                 | Description                                                                                       | Default         |
 | -------------------------------------- | ------------------------------------------------------------------------------------------------- | --------------- |
-| `--provider <string>`                  | DB connection provider (pg, mysql, mssql, oracle, sqlite)                                         |                 |
+| `--provider <string>`                  | DB connection provider (pg, mysql, mssql, oracle, sqlite, snowflake, mongodb)                     |                 |
 | `--connection-string <string>`         | DB connection string (overrides individual host/port/user/etc).                                   |                 |
 | `-o, --output-dir <path>`              | Output directory for generated files.                                                             | `./zod-schemas` |
 | `--clean-output`                       | Delete the output directory before generation.                                                    | `false`         |
