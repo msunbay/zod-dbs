@@ -26,6 +26,7 @@
   "license": "ISC",
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^4.6.2",
+    "@testcontainers/mongodb": "^10.28.0",
     "@types/debug": "^4.1.12",
     "@types/mustache": "^4.2.6",
     "@types/node": "^20",

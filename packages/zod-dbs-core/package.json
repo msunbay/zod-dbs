@@ -3,6 +3,7 @@
   "version": "1.0.13",
   "description": "Shared core functionality for zod-dbs packages",
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "type": "module",
   "scripts": {
     "build": "rm -rf ./dist && tsc --project tsconfig.build.json",
