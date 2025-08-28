@@ -30,4 +30,5 @@ export interface ZodDbsCliConfig extends ZodDbsConfig {
 export interface ZodDbsCliOptions {
   overrides?: Partial<ZodDbsCliConfig>;
   appName?: string;
+  appVersion?: string;
 }

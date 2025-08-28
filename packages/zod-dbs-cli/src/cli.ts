@@ -23,10 +23,11 @@ import { getAppVersion } from './utils/version.js';
 
 export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
   const config = await getConfiguration(cliOptions);
-  const appVersion = await getAppVersion();
+  const appVersion = cliOptions.appVersion ?? (await getAppVersion());
   const appName = cliOptions.appName || 'zod-dbs';
 
   program.name(appName);
+  program.version(appVersion);
   program.description('Generates Zod schemas from database schema.');
 
   const provider = await loadProvider(cliOptions.overrides?.provider, config);
