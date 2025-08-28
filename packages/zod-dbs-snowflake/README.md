@@ -31,7 +31,7 @@ npx zod-dbs --provider snowflake \
   --database <db> --schema-name <schema>
 ```
 
-### CLI Options
+### Provider Specific CLI Options
 
 | Option                | Description                        | Required |
 | --------------------- | ---------------------------------- | -------- |
