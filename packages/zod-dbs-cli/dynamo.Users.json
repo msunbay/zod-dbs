@@ -1,0 +1,7 @@
+[
+    {"id":{"S":"038444a7-33bf-4079-a25e-c230670b2ab9"},"sort":{"S":"v1"},"email":{"S":"user1@example.com"},"profile":{"M":{"displayName":{"S":"User 1"},"age":{"N":"21"}}}},
+    {"id":{"S":"9db502ab-de29-4cc9-8db4-447fbe75bf30"},"sort":{"S":"v4"},"email":{"S":"user4@example.com"},"profile":{"M":{"displayName":{"S":"User 4"},"age":{"N":"24"}}},"tags":{"L":[{"S":"alpha"},{"S":"beta"}]}},
+    {"id":{"S":"d55a6921-6f6b-4825-a035-bf93a5bf16e5"},"sort":{"S":"v2"},"email":{"S":"user2@example.com"},"profile":{"M":{"displayName":{"S":"User 2"},"age":{"N":"22"}}},"tags":{"L":[{"S":"alpha"},{"S":"beta"}]}},
+    {"id":{"S":"015d1a66-e07f-494d-b72e-5f89ccef3061"},"sort":{"S":"v0"},"email":{"S":"user0@example.com"},"profile":{"M":{"displayName":{"S":"User 0"},"age":{"N":"20"}}},"tags":{"L":[{"S":"alpha"},{"S":"beta"}]}},
+    {"id":{"S":"34367c25-0d44-445b-944a-23f10ee8953b"},"sort":{"S":"v3"},"email":{"S":"user3@example.com"},"profile":{"M":{"displayName":{"S":"User 3"},"age":{"N":"23"}}}}
+]

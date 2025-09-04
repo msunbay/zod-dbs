@@ -5,7 +5,19 @@ export interface ZodDbsMongoDbClient extends ZodDbsDatabaseClient {
 }
 
 declare module 'zod-dbs-core' {
-  interface ZodDbsConnectionConfig {
+  interface ZodDbsProviderConfig {
+    /**
+     * The hostname of the MongoDB server (default: 'localhost').
+     */
+    host?: string;
+    /**
+     * The port number of the MongoDB server (default: 27017).
+     */
+    port?: number;
+    /**
+     * The name of the database to connect to (if any).
+     */
+    database?: string;
     /**
      * The replica set name to connect to (if any).
      */

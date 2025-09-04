@@ -3,7 +3,6 @@ import { logDebug, sql, ZodDbsBaseProvider } from 'zod-dbs-core';
 import type {
   ZodDbsColumnInfo,
   ZodDbsConfig,
-  ZodDbsConnectionConfig,
   ZodDbsProviderConfig,
   ZodDbsTableType,
 } from 'zod-dbs-core';
@@ -78,11 +77,13 @@ export class SqliteProvider extends ZodDbsBaseProvider {
     super({
       name: 'sqlite',
       displayName: 'SQLite',
-      defaultConfiguration: DEFAULT_CONFIGURATION,
+      configurationDefaults: DEFAULT_CONFIGURATION,
     });
   }
 
-  createClient = (options: ZodDbsConnectionConfig) => createClient(options);
+  protected createClient = (options: ZodDbsProviderConfig) => {
+    return createClient(options);
+  };
 
   protected createColumnInfo(
     table: RawTableRow,

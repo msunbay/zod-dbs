@@ -1,12 +1,9 @@
 import oracledb from 'oracledb';
 
-import type {
-  ZodDbsConnectionConfig,
-  ZodDbsDatabaseClient,
-} from 'zod-dbs-core';
+import type { ZodDbsDatabaseClient, ZodDbsProviderConfig } from 'zod-dbs-core';
 
 export async function createClient(
-  config: ZodDbsConnectionConfig
+  config: ZodDbsProviderConfig
 ): Promise<ZodDbsDatabaseClient> {
   let pool: any | null = null;
   let conn: any | null = null;

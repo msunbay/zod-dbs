@@ -18,6 +18,7 @@
     "test:integration:pg": "vitest --project integration:pg run",
     "test:integration:mysql": "vitest --project integration:mysql run",
     "test:integration:mongodb": "vitest --project integration:mongodb run",
+    "test:integration:dynamodb": "vitest --project integration:dynamodb run",
     "test:integration:schema": "vitest --project integration:schema run",
     "test:types": "tsc --noEmit"
   },
@@ -34,12 +35,14 @@
     "dist"
   ],
   "devDependencies": {
+    "@aws-sdk/client-dynamodb": "^3.879.0",
     "@testcontainers/mysql": "^11.5.1",
     "@testcontainers/postgresql": "^11.5.1",
-    "zod-dbs-pg": "workspace:*",
+    "zod-dbs-dynamodb": "workspace:*",
+    "zod-dbs-mongodb": "workspace:*",
     "zod-dbs-mysql": "workspace:*",
-    "zod-dbs-snowflake": "workspace:*",
-    "zod-dbs-mongodb": "workspace:*"
+    "zod-dbs-pg": "workspace:*",
+    "zod-dbs-snowflake": "workspace:*"
   },
   "dependencies": {
     "chalk": "^5.4.1",

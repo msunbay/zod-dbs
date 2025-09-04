@@ -1,4 +1,23 @@
-import { ZodDbsConnectionConfig } from '../types.js';
+/**
+ * Configuration for database connection.
+ */
+interface ZodDbsConnectionConfig {
+  protocol?: string; // e.g., 'postgresql', 'mysql', etc.
+  /** Database port (default: 5432) */
+  port?: number;
+  /** Database host (default: localhost) */
+  host?: string;
+  /** Database name to connect to */
+  database?: string;
+  /** Username for authentication */
+  user?: string;
+  /** Password for authentication */
+  password?: string;
+  /**
+   * Optional schema name (e.g., 'public' for PostgreSQL)
+   */
+  schemaName?: string;
+}
 
 export const createConnectionString = (
   options: ZodDbsConnectionConfig
@@ -36,6 +55,9 @@ export const createConnectionString = (
   return connectionString;
 };
 
+/**
+ * Parses database connection strings, e.g., 'postgresql://user:pass@localhost:5432/dbname'
+ */
 export const parseConnectionString = (
   connectionString: string
 ): ZodDbsConnectionConfig => {
@@ -43,7 +65,7 @@ export const parseConnectionString = (
   const user = url.username;
   const password = url.password;
   const host = url.hostname;
-  const port = url.port ? parseInt(url.port, 10) : 5432; // Default PostgreSQL port
+  const port = url.port ? parseInt(url.port, 10) : undefined;
   const database = url.pathname.slice(1); // Remove leading '/'
   const protocol = url.protocol.replace(':', ''); // Remove trailing ':'
 

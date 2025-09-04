@@ -1,0 +1,35 @@
+{
+  "name": "zod-dbs-dynamodb",
+  "version": "0.0.1",
+  "description": "DynamoDB provider for zod-dbs",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "rm -rf ./dist && tsc --project tsconfig.build.json",
+    "test:integration": "vitest --project integration run",
+    "test:types": "tsc --noEmit"
+  },
+  "author": "msolvaag",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/msolvaag/zod-dbs.git",
+  "directory": "packages/zod-dbs-dynamodb"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "zod-dbs-core": "workspace:*"
+  },
+  "peerDependencies": {
+    "@aws-sdk/client-dynamodb": ">=3"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-dynamodb": "^3.879.0"
+  }
+}

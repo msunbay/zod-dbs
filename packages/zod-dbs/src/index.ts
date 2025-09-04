@@ -26,7 +26,6 @@ export type {
   ZodDbsCasing,
   ZodDbsFieldCasing,
   ZodDbsSslConfig,
-  ZodDbsConnectionConfig,
   ZodDbsDatabaseClient,
   ZodDbsProviderConfig,
 } from 'zod-dbs-core';

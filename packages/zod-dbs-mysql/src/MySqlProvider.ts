@@ -3,7 +3,6 @@ import { logDebug, sql, ZodDbsBaseProvider } from 'zod-dbs-core';
 import type {
   ZodDbsColumnInfo,
   ZodDbsConfig,
-  ZodDbsConnectionConfig,
   ZodDbsProviderConfig,
 } from 'zod-dbs-core';
 
@@ -36,7 +35,7 @@ export class MySqlProvider extends ZodDbsBaseProvider {
     super({
       name: 'mysql',
       displayName: 'MySQL',
-      defaultConfiguration: {
+      configurationDefaults: {
         port: 3306,
       },
     });
@@ -44,13 +43,13 @@ export class MySqlProvider extends ZodDbsBaseProvider {
 
   public override initConfiguration(config: ZodDbsConfig): ZodDbsConfig {
     return {
-      ...this.defaultConfiguration,
+      ...this.configurationDefaults,
       schemaName: config.schemaName ?? config.database,
       ...config,
     };
   }
 
-  createClient = (options: ZodDbsConnectionConfig) => {
+  createClient = (options: ZodDbsProviderConfig) => {
     return createClient(options);
   };
 

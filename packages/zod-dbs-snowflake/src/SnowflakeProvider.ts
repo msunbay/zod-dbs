@@ -3,7 +3,6 @@ import { logDebug, sql, ZodDbsBaseProvider } from 'zod-dbs-core';
 import type {
   ZodDbsColumnInfo,
   ZodDbsColumnType,
-  ZodDbsConnectionConfig,
   ZodDbsProviderConfig,
   ZodDbsTableType,
 } from 'zod-dbs-core';
@@ -28,10 +27,6 @@ export class SnowflakeProvider extends ZodDbsBaseProvider {
     super({
       name: 'snowflake',
       displayName: 'Snowflake',
-      defaultConfiguration: {
-        port: 443,
-        ssl: true,
-      },
       options: [
         {
           name: 'account',
@@ -62,7 +57,7 @@ export class SnowflakeProvider extends ZodDbsBaseProvider {
     });
   }
 
-  createClient = (options: ZodDbsConnectionConfig) => createClient(options);
+  createClient = (options: ZodDbsProviderConfig) => createClient(options);
 
   protected createColumnInfo(
     row: RawColumnRow,

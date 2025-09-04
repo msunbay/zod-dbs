@@ -68,6 +68,7 @@ zod-dbs automates this process by generating type-safe validation schemas direct
 - SQLite: [zod-dbs-sqlite](./packages/zod-dbs-sqlite/README.md) (experimental)
 - Snowflake: [zod-dbs-snowflake](./packages/zod-dbs-snowflake/README.md) (experimental)
 - MongoDB: [zod-dbs-mongodb](./packages/zod-dbs-mongodb/README.md) (experimental)
+- DynamoDB: [zod-dbs-dynamodb](./packages/zod-dbs-dynamo/README.md) (experimental)
 
 ## Installation
 

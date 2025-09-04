@@ -1,24 +1,15 @@
 import { ZodDbsConfig, ZodDbsProvider, ZodDbsRenderer } from 'zod-dbs-core';
 
-export type ZodDbsProviderName =
-  | 'pg'
-  | 'mysql'
-  | 'mmsql'
-  | 'oracle'
-  | 'mongodb'
-  | 'snowflake'
-  | `zod-dbs-${string}`;
-
 /**
  * Configuration options for the zod-dbs CLI.
  */
 export interface ZodDbsCliConfig extends ZodDbsConfig {
   /**
    * The database provider to use.
-   * This should match the name of the package, e.g. 'pg' for 'zod-dbs-pg'.
+   * This should match the suffix of the package name, e.g. 'pg' or the full name 'zod-dbs-pg'.
    * Optionally you can pass a custom provider instance.
    */
-  provider: ZodDbsProviderName | ZodDbsProvider;
+  provider: string | ZodDbsProvider;
 
   /**
    * Optional custom renderer to use for generating schemas.

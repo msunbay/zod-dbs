@@ -3,7 +3,6 @@ import { logDebug, sql, ZodDbsBaseProvider } from 'zod-dbs-core';
 import type {
   ZodDbsColumnInfo,
   ZodDbsConfig,
-  ZodDbsConnectionConfig,
   ZodDbsProviderConfig,
   ZodDbsTableType,
 } from 'zod-dbs-core';
@@ -48,11 +47,58 @@ export class PostgreSqlProvider extends ZodDbsBaseProvider {
     super({
       name: 'pg',
       displayName: 'PostgreSQL',
-      defaultConfiguration: DEFAULT_CONFIGURATION,
+      configurationDefaults: DEFAULT_CONFIGURATION,
+      options: [
+        {
+          name: 'connection-string',
+          type: 'string',
+          description:
+            'Full database connection string (overrides other connection options)',
+        },
+        {
+          name: 'host',
+          type: 'string',
+          description: 'Database host',
+          default: 'localhost',
+        },
+        {
+          name: 'port',
+          type: 'number',
+          description: 'Database server port',
+          default: 5432,
+        },
+        {
+          name: 'user',
+          type: 'string',
+          description: 'Database user',
+        },
+        {
+          name: 'password',
+          type: 'string',
+          description: 'Database password',
+        },
+        {
+          name: 'database',
+          type: 'string',
+          description: 'Database name',
+        },
+        {
+          name: 'schema-name',
+          type: 'string',
+          description: 'Database schema to introspect',
+          default: 'public',
+        },
+        {
+          name: 'ssl',
+          type: 'boolean',
+          description: 'Use SSL connection',
+          default: false,
+        },
+      ],
     });
   }
 
-  async createClient(options: ZodDbsConnectionConfig) {
+  protected async createClient(options: ZodDbsProviderConfig) {
     return await createClient(options);
   }
 

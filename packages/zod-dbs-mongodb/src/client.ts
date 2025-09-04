@@ -1,12 +1,12 @@
 import { MongoClient } from 'mongodb';
 import { createConnectionString, logDebug } from 'zod-dbs-core';
 
-import type { ZodDbsConnectionConfig } from 'zod-dbs-core';
+import type { ZodDbsProviderConfig } from 'zod-dbs-core';
 
 import { ZodDbsMongoDbClient } from './types.js';
 
 export async function createClient(
-  config: ZodDbsConnectionConfig
+  config: ZodDbsProviderConfig
 ): Promise<ZodDbsMongoDbClient> {
   const uri = createConnectionString({
     protocol: 'mongodb',
@@ -28,7 +28,7 @@ export async function createClient(
   let connected = false;
 
   return {
-    config: { ...config, protocol: 'mongodb' },
+    config,
     async connect() {
       if (!connected) {
         await client.connect();

@@ -153,6 +153,14 @@ export interface ZodDbsProvider {
    */
   options?: ZodDbsProviderOption[];
   /**
+   * Default configuration values for this provider
+   * */
+  configurationDefaults?: Partial<ZodDbsConfig>;
+  /**
+   * Configuration overrides that will always be applied for this provider
+   *  */
+  configurationOverrides?: Partial<ZodDbsConfig>;
+  /**
    * Fetches schema information from the database.
    */
   getSchemaInformation: (
@@ -244,39 +252,16 @@ export interface ZodDbsDatabaseClient {
   connect: () => Promise<void>;
   query: <T>(query: string, params?: any[]) => Promise<T>;
   end: () => Promise<void>;
-  config: ZodDbsConnectionConfig;
+  config: ZodDbsProviderConfig;
 }
 
-/**
- * Configuration for database connection.
- */
-export interface ZodDbsConnectionConfig {
-  protocol?: string; // e.g., 'postgresql', 'mysql', etc.
-  /** Database port (default: 5432) */
-  port?: number;
-  /** Database host (default: localhost) */
-  host?: string;
-  /** Database name to connect to */
-  database?: string;
-  /** Username for authentication */
-  user?: string;
-  /** Password for authentication */
-  password?: string;
-  /** Whether to use SSL connection */
-  ssl?: boolean | ZodDbsSslConfig;
-  /**
-   * Optional schema name (e.g., 'public' for PostgreSQL)
-   */
-  schemaName?: string;
-}
-
-export interface ZodDbsProviderConfig
-  extends ZodDbsConnectionConfig,
-    ZodDbsHooks {
+export interface ZodDbsProviderConfig extends ZodDbsHooks {
   /** Regex pattern(s) to include only specific tables */
   include?: string | string[];
   /** Regex pattern(s) to exclude specific tables */
   exclude?: string | string[];
+  /** If true, will log debug information to the console */
+  debug?: boolean;
 }
 
 /**

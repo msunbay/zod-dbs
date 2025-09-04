@@ -1,17 +1,17 @@
 import mssql from 'mssql';
-import { ZodDbsConnectionConfig, ZodDbsDatabaseClient } from 'zod-dbs-core';
+import { ZodDbsDatabaseClient, ZodDbsProviderConfig } from 'zod-dbs-core';
 
 export const createClient = async (
-  options: ZodDbsConnectionConfig
+  config: ZodDbsProviderConfig
 ): Promise<ZodDbsDatabaseClient> => {
   return {
     connect: async () => {
       await mssql.connect({
-        server: options.host || 'localhost',
-        port: options.port,
-        user: options.user,
-        password: options.password,
-        database: options.database,
+        server: config.host || 'localhost',
+        port: config.port,
+        user: config.user,
+        password: config.password,
+        database: config.database,
         options: { trustServerCertificate: true },
       });
     },
@@ -22,9 +22,6 @@ export const createClient = async (
     end: async () => {
       await Promise.resolve();
     },
-    config: {
-      ...options,
-      protocol: 'mssql',
-    },
+    config,
   };
 };

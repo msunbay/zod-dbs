@@ -1,12 +1,9 @@
 import Database from 'better-sqlite3';
 
-import type {
-  ZodDbsConnectionConfig,
-  ZodDbsDatabaseClient,
-} from 'zod-dbs-core';
+import type { ZodDbsDatabaseClient, ZodDbsProviderConfig } from 'zod-dbs-core';
 
 export const createClient = async (
-  options: ZodDbsConnectionConfig
+  options: ZodDbsProviderConfig
 ): Promise<ZodDbsDatabaseClient> => {
   const dbPath = options.database || ':memory:';
   const db = new Database(dbPath, { fileMustExist: false, readonly: false });
@@ -32,7 +29,6 @@ export const createClient = async (
       return Promise.resolve();
     },
     config: {
-      protocol: 'sqlite',
       database: dbPath,
     },
   };

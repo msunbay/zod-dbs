@@ -3,7 +3,6 @@ import { logDebug, ZodDbsBaseProvider } from 'zod-dbs-core';
 import type {
   ZodDbsColumn,
   ZodDbsColumnInfo,
-  ZodDbsConnectionConfig,
   ZodDbsProvider,
   ZodDbsProviderConfig,
   ZodDbsTable,
@@ -26,13 +25,33 @@ export class MongoDbProvider
     super({
       name: 'mongodb',
       displayName: 'MongoDB',
-      defaultConfiguration: {
+      configurationDefaults: {
         port: 27017,
         host: 'localhost',
+      },
+      configurationOverrides: {
         defaultNullsToUndefined: false,
         stringifyJson: false,
       },
       options: [
+        {
+          name: 'host',
+          type: 'string',
+          description: 'MongoDB host',
+          default: 'localhost',
+        },
+        {
+          name: 'port',
+          type: 'number',
+          description: 'MongoDB port',
+          default: 27017,
+        },
+        {
+          name: 'database',
+          type: 'string',
+          description: 'MongoDB database name',
+          required: true,
+        },
         {
           name: 'sample-size',
           type: 'number',
@@ -55,7 +74,7 @@ export class MongoDbProvider
     });
   }
 
-  createClient = (options: ZodDbsConnectionConfig) => createClient(options);
+  createClient = (options: ZodDbsProviderConfig) => createClient(options);
 
   protected createColumnInfo(args: {
     collection: string;

@@ -16,7 +16,8 @@ import { logDebug } from './utils/debug.js';
 export interface ZodDbsProviderOptions {
   name: string;
   displayName?: string;
-  defaultConfiguration?: Partial<ZodDbsConfig>;
+  configurationDefaults?: Partial<ZodDbsConfig>;
+  configurationOverrides?: Partial<ZodDbsConfig>;
   options?: ZodDbsProviderOption[];
 }
 
@@ -28,18 +29,20 @@ export interface ZodDbsProviderOptions {
 export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
   name: string;
   displayName?: string;
-  defaultConfiguration?: ZodDbsConfig;
+  configurationDefaults?: Partial<ZodDbsConfig>;
+  configurationOverrides?: Partial<ZodDbsConfig>;
   options: ZodDbsProviderOption[];
 
   constructor(options: ZodDbsProviderOptions) {
     this.name = options.name;
     this.displayName = options.displayName;
-    this.defaultConfiguration = options.defaultConfiguration;
+    this.configurationDefaults = options.configurationDefaults;
+    this.configurationOverrides = options.configurationOverrides;
     this.options = options.options || [];
   }
 
   protected initConfiguration(config: ZodDbsConfig): ZodDbsConfig {
-    return { ...this.defaultConfiguration, ...config };
+    return { ...this.configurationDefaults, ...config };
   }
 
   protected async createSchemaInfo(

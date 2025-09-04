@@ -1,6 +1,9 @@
 import { cosmiconfig } from 'cosmiconfig';
-import { convertCaseFormat, DEFAULT_CONFIGURATION } from 'zod-dbs';
-import { ZodDbsConnectionConfig } from 'zod-dbs-core';
+import {
+  convertCaseFormat,
+  DEFAULT_CONFIGURATION,
+  ZodDbsConfig,
+} from 'zod-dbs';
 
 import { ZodDbsCliConfig, ZodDbsCliOptions } from './types.js';
 
@@ -10,11 +13,11 @@ const getEnvVar = (prefix: string, name: string) =>
   process.env[getEnvVarName(prefix, name)];
 
 // Build an overrides object containing only values explicitly supplied via env vars.
-function getEnvOverrides(appName: string): Partial<ZodDbsConnectionConfig> {
+function getEnvOverrides(appName: string): Partial<ZodDbsConfig> {
   // Normalize appName to ENV prefix: replace non-alphanumerics with underscores and uppercase.
   // Example: 'zod-dbs' -> 'ZOD_DBS'
   const envVarPrefix = convertCaseFormat(appName, 'snake_case').toUpperCase();
-  const overrides: Partial<ZodDbsConnectionConfig> = {};
+  const overrides: Record<string, string | number | boolean> = {};
 
   const host = getEnvVar(envVarPrefix, 'HOST');
   const user = getEnvVar(envVarPrefix, 'USER');

@@ -1,10 +1,6 @@
 import { logDebug, sql, ZodDbsBaseProvider } from 'zod-dbs-core';
 
-import type {
-  ZodDbsColumnInfo,
-  ZodDbsConnectionConfig,
-  ZodDbsProviderConfig,
-} from 'zod-dbs-core';
+import type { ZodDbsColumnInfo, ZodDbsProviderConfig } from 'zod-dbs-core';
 
 import { createClient } from './client.js';
 import { parseEnumValues } from './utils.js';
@@ -35,14 +31,14 @@ export class MsSqlServerProvider extends ZodDbsBaseProvider {
     super({
       name: 'mssql',
       displayName: 'Microsoft SQL Server',
-      defaultConfiguration: {
+      configurationDefaults: {
         port: 1433,
         schemaName: 'dbo',
       },
     });
   }
 
-  createClient = (options: ZodDbsConnectionConfig) => {
+  createClient = (options: ZodDbsProviderConfig) => {
     return createClient(options);
   };
 

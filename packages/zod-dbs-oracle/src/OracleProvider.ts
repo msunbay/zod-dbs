@@ -3,7 +3,6 @@ import { sql, ZodDbsBaseProvider } from 'zod-dbs-core';
 import type {
   ZodDbsColumnInfo,
   ZodDbsColumnType,
-  ZodDbsConnectionConfig,
   ZodDbsProviderConfig,
   ZodDbsTableType,
 } from 'zod-dbs-core';
@@ -46,11 +45,46 @@ export class OracleProvider extends ZodDbsBaseProvider {
     super({
       name: 'oracle',
       displayName: 'Oracle',
-      defaultConfiguration: DEFAULT_CONFIGURATION,
+      configurationDefaults: DEFAULT_CONFIGURATION,
+      options: [
+        {
+          name: 'host',
+          type: 'string',
+          description: 'Database host',
+          default: 'localhost',
+        },
+        {
+          name: 'port',
+          type: 'number',
+          description: 'Database port',
+          default: 1521,
+        },
+        {
+          name: 'user',
+          type: 'string',
+          description: 'Database user',
+        },
+        {
+          name: 'password',
+          type: 'string',
+          description: 'Database password',
+        },
+        {
+          name: 'database',
+          type: 'string',
+          description: 'Database service name (e.g., ORCLPDB1)',
+        },
+        {
+          name: 'schema-name',
+          type: 'string',
+          description:
+            'Schema name to introspect (defaults to the user name if not provided)',
+        },
+      ],
     });
   }
 
-  async createClient(options: ZodDbsConnectionConfig) {
+  async createClient(options: ZodDbsProviderConfig) {
     return await createClient(options);
   }
 

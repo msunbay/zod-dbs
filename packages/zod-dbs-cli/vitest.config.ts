@@ -46,6 +46,17 @@ export default defineConfig({
       },
       {
         test: {
+          name: 'integration:dynamodb',
+          environment: 'node',
+          include: ['test/integration/dynamodb/tests/**/*.test.ts'],
+          globals: true,
+          hookTimeout: 60000,
+          testTimeout: 20000,
+          setupFiles: ['./test/integration/dynamodb/bootstrap.ts'],
+        },
+      },
+      {
+        test: {
           name: 'integration:schema',
           environment: 'node',
           include: ['test/integration/schema/tests/**/*.test.ts'],

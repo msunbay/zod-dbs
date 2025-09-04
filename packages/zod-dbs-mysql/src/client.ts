@@ -1,15 +1,15 @@
 import { createConnection } from 'mysql2/promise';
-import { ZodDbsConnectionConfig, ZodDbsDatabaseClient } from 'zod-dbs-core';
+import { ZodDbsDatabaseClient, ZodDbsProviderConfig } from 'zod-dbs-core';
 
 export const createClient = async (
-  options: ZodDbsConnectionConfig
+  config: ZodDbsProviderConfig
 ): Promise<ZodDbsDatabaseClient> => {
   const client = await createConnection({
-    host: options.host,
-    port: options.port,
-    user: options.user,
-    password: options.password,
-    database: options.database,
+    host: config.host,
+    port: config.port,
+    user: config.user,
+    password: config.password,
+    database: config.database,
   });
 
   return {
@@ -29,7 +29,6 @@ export const createClient = async (
       database: client.config.database,
       user: client.config.user,
       password: client.config.password,
-      protocol: 'mysql',
     },
   };
 };
