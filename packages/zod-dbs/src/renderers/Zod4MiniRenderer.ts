@@ -14,7 +14,11 @@ export class Zod4MiniRenderer extends Zod4Renderer {
     column: ZodDbsColumnBaseRenderModel,
     config: ZodDbsConfig
   ): string {
-    let zodType = this.renderZodType(column.type, config, true);
+    let zodType = this.renderZodType({
+      zodType: column.type,
+      config,
+      isReadField: true,
+    });
 
     if (column.isEnum) {
       zodType = `z.enum(${column.enumConstantName})`;
@@ -54,7 +58,12 @@ export class Zod4MiniRenderer extends Zod4Renderer {
     column: ZodDbsColumnBaseRenderModel,
     config: ZodDbsConfig
   ): string {
-    let zodType = this.renderZodType(column.type, config, false);
+    let zodType = this.renderZodType({
+      zodType: column.type,
+      config,
+      isReadField: false,
+    });
+
     const baseType = this.getBaseType(column.type);
 
     if (baseType === 'string' && !column.isEnum) {

@@ -2,26 +2,10 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-import {
-  getConnectionConfig,
-  getOutputDir,
-  getOutputFiles,
-  setupTestDb,
-  teardownTestDb,
-  TestDbContext,
-} from '../../testDbUtils.js';
-
-let ctx: TestDbContext;
+import { getOutputFiles } from '../../utils.js';
+import { getConnectionConfig, getOutputDir } from '../testDbUtils.js';
 
 const cliPath = path.resolve(import.meta.dirname, '../../../../index.js');
-
-beforeAll(async () => {
-  ctx = await setupTestDb();
-});
-
-afterAll(async () => {
-  await teardownTestDb(ctx);
-});
 
 it('CLI generates correct zod schemas with env vars', async () => {
   const outputDir = getOutputDir('cli', 'envVars');

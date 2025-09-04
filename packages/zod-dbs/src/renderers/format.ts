@@ -108,7 +108,7 @@ export const formatTableRecordName = ({
   return convertCaseFormat(name, casing);
 };
 
-export const formatJsonSchemaName = ({
+export const formatObjectSchemaName = ({
   tableName,
   columnName,
   casing = 'PascalCase',
@@ -167,4 +167,13 @@ export const formatEnumTypeName = ({
     : pascalCase(colName);
 
   return convertCaseFormat(`${pascalTableName}${pascalColName}`, casing);
+};
+
+export const formatPropertyName = (
+  columnName: string,
+  casing: ZodDbsFieldCasing = 'camelCase'
+): string => {
+  // Remove leading underscores
+  const normalizedColumnName = columnName.replace(/^_+/, '');
+  return convertCaseFormat(normalizedColumnName, casing);
 };

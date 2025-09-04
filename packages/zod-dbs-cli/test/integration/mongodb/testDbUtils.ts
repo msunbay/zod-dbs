@@ -1,13 +1,13 @@
-import path from 'path';
 import {
   MongoDBContainer,
   StartedMongoDBContainer,
 } from '@testcontainers/mongodb';
+import { createConnectionString } from 'zod-dbs-core';
+import { createClient, ZodDbsMongoDbClient } from 'zod-dbs-mongodb';
 
 import type { ZodDbsProviderConfig } from 'zod-dbs-core';
 
-import { createClient } from '../../src/client.js';
-import { ZodDbsMongoDbClient } from '../../src/types.js';
+import { getProviderOutputDir } from '../utils.js';
 
 export interface TestDbContext {
   container: StartedMongoDBContainer;
@@ -26,18 +26,24 @@ export const getConnectionConfig = (): ZodDbsProviderConfig => {
   return _clientInstance.config;
 };
 
+export const getClientConnectionString = (): string => {
+  return createConnectionString(getConnectionConfig());
+};
+
 export async function setupTestDb(): Promise<TestDbContext> {
   const container = await new MongoDBContainer('mongo:7').start();
-  const database = 'testdb';
+
   const client = await createClient({
     host: container.getHost(),
     port: container.getFirstMappedPort(),
-    database,
+    database: 'testdb',
     replicaSet: 'rs0',
     directConnection: true,
   });
 
   await client.connect();
+
+  await seedTestData(client);
 
   _clientInstance = client;
 
@@ -54,4 +60,31 @@ export async function teardownTestDb(ctx?: TestDbContext) {
 }
 
 export const getOutputDir = (testSuite: string, subPath = ''): string =>
-  path.resolve(import.meta.dirname, `./output/`, testSuite, subPath);
+  getProviderOutputDir('mongodb', testSuite, subPath);
+
+export const seedTestData = async (client: ZodDbsMongoDbClient) => {
+  const db = client.driver.db(client.config.database);
+
+  // Seed: create a collection with validator
+  await db.createCollection('users', {
+    validator: {
+      $jsonSchema: {
+        bsonType: 'object',
+        required: ['_id', 'email', 'createdAt'],
+        properties: {
+          _id: { bsonType: 'objectId' },
+          email: { bsonType: 'string' },
+          createdAt: { bsonType: 'date' },
+          profile: {
+            bsonType: 'object',
+            properties: {
+              displayName: { bsonType: 'string' },
+              age: { bsonType: 'int' },
+            },
+          },
+          tags: { bsonType: 'array', items: { bsonType: 'string' } },
+        },
+      },
+    },
+  });
+};

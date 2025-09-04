@@ -46,7 +46,7 @@ import { z } from 'zod';
 
 
 /**
- * Base read schema for the "public.mv_user_posts" table.
+ * Base read schema for the "public.mv_user_posts" materialized_view.
  * Validates raw rows read from the database (no casing transforms applied yet).
  */
 export const MvUserPostsBaseSchema = z.object({
@@ -73,13 +73,13 @@ export const MvUserPostsBaseSchema = z.object({
 });
 
 /**
- * The base record type for the "public.mv_user_posts" table.
+ * The base record type for the "public.mv_user_posts" materialized_view.
  * This type represents the raw database record without case transforms.
  */
 export type MvUserPostBaseRecord = z.output<typeof MvUserPostsBaseSchema>;
 
 /**
- * Read transform for the "public.mv_user_posts" table.
+ * Read transform for the "public.mv_user_posts" materialized_view.
  * Maps database fields to app case properties.
  */
 export const transformMvUserPostBaseRecord = (data: MvUserPostBaseRecord): {
@@ -97,7 +97,7 @@ export const transformMvUserPostBaseRecord = (data: MvUserPostBaseRecord): {
 });
 
 /**
- * Read schema for the "public.mv_user_posts" table (after casing transform).
+ * Read schema for the "public.mv_user_posts" materialized_view (after casing transform).
  */
 export const MvUserPostsSchema = MvUserPostsBaseSchema.transform(transformMvUserPostBaseRecord);
 
@@ -5504,7 +5504,7 @@ import { z } from 'zod';
 
 
 /**
- * Base read schema for the "public.view_user_posts" table.
+ * Base read schema for the "public.view_user_posts" view.
  * Validates raw rows read from the database (no casing transforms applied yet).
  */
 export const ViewUserPostsBaseSchema = z.object({
@@ -5531,13 +5531,13 @@ export const ViewUserPostsBaseSchema = z.object({
 });
 
 /**
- * The base record type for the "public.view_user_posts" table.
+ * The base record type for the "public.view_user_posts" view.
  * This type represents the raw database record without case transforms.
  */
 export type ViewUserPostBaseRecord = z.output<typeof ViewUserPostsBaseSchema>;
 
 /**
- * Read transform for the "public.view_user_posts" table.
+ * Read transform for the "public.view_user_posts" view.
  * Maps database fields to app case properties.
  */
 export const transformViewUserPostBaseRecord = (data: ViewUserPostBaseRecord): {
@@ -5555,7 +5555,7 @@ export const transformViewUserPostBaseRecord = (data: ViewUserPostBaseRecord): {
 });
 
 /**
- * Read schema for the "public.view_user_posts" table (after casing transform).
+ * Read schema for the "public.view_user_posts" view (after casing transform).
  */
 export const ViewUserPostsSchema = ViewUserPostsBaseSchema.transform(transformViewUserPostBaseRecord);
 

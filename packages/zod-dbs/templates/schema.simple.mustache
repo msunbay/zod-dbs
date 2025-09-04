@@ -10,7 +10,7 @@ export const {{constantName}} = [{{#values}}'{{value}}'{{^last}}, {{/last}}{{/va
 {{/enums}}
 
 /**
- * Read schema for the "{{schemaName}}.{{tableName}}" table.
+ * Read schema for the "{{fullName}}" {{type}}.
  * Validates raw rows read from the database.
  */
 export const {{tableReadSchemaName}} = z.object({
@@ -25,7 +25,7 @@ export const {{tableReadSchemaName}} = z.object({
 
 {{#isWritable}}
 /**
- * Insert schema for the "{{schemaName}}.{{tableName}}" table.
+ * Insert schema for the "{{fullName}}" {{type}}.
  */
 export const {{tableInsertSchemaName}} = z.object({
 {{#writableColumns}}
@@ -38,7 +38,7 @@ export const {{tableInsertSchemaName}} = z.object({
 });
 
 /**
- * Update schema for the "{{schemaName}}.{{tableName}}" table.
+ * Update schema for the "{{fullName}}" {{type}}.
  */
 export const {{tableUpdateSchemaName}} = {{tableInsertSchemaName}}.partial();
 
@@ -61,7 +61,7 @@ export interface {{tableReadRecordName}} {
 {{#isWritable}}
 
 /**
- * Insertable record for the "{{schemaName}}.{{tableName}}" table.
+ * Insertable record for the "{{fullName}}" {{type}}.
  */
 export interface {{tableInsertRecordName}} {
 {{#writableColumns}}
@@ -76,7 +76,7 @@ export interface {{tableInsertRecordName}} {
 }
 
 /**
- * Updatable record for the "{{schemaName}}.{{tableName}}" table.
+ * Updatable record for the "{{fullName}}" {{type}}.
  */
 export type {{tableUpdateRecordName}} = Partial<{{tableInsertRecordName}}>;
 {{/isWritable}}

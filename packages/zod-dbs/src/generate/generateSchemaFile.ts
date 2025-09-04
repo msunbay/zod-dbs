@@ -18,15 +18,17 @@ async function generateSchemaFile(
     return;
   }
 
-  const output = await renderer.renderSchemaFile(table, config);
+  const files = await renderer.renderSchemaFiles(table, config);
 
-  const folderPath = `${config.outputDir}/${getOutputFolder(table.type)}/${table.name}`;
-  await ensureFolder(folderPath);
+  for (const file of files) {
+    const folderPath = `${config.outputDir}/${getOutputFolder(table.type)}/${table.name}`;
+    await ensureFolder(folderPath);
 
-  const fileName = `${folderPath}/schema.ts`;
-  await promises.writeFile(fileName, output, 'utf8');
+    const fileName = `${folderPath}/${file.name}.ts`;
+    await promises.writeFile(fileName, file.content, 'utf8');
 
-  logDebug(`Generated "${fileName}"`);
+    logDebug(`Generated "${fileName}"`);
+  }
 }
 
 async function generateSchemaIndexFile(

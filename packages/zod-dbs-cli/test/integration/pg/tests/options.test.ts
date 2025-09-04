@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 
-import { getCliPath } from '../../testDbUtils.js';
+import { getCliPath } from '../../utils.js';
 
 const cliPath = getCliPath();
 
@@ -116,9 +116,9 @@ it('includes provider specific options', async () => {
       --port <number>                       Database port
       --account <value>                     Snowflake account identifier (e.g.,
                                             xy12345.eu-central-1)
-      --token [value]                       JWT token for authentication
-      --role [value]                        Role to assume after connecting
-      --warehouse [value]                   Virtual warehouse to use for the session
+      --token <value>                       JWT token for authentication
+      --role <value>                        Role to assume after connecting
+      --warehouse <value>                   Virtual warehouse to use for the session
       --debug                               Enable debug logging (default: false)
       -h, --help                            display help for command
     "

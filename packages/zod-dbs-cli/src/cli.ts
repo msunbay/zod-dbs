@@ -189,27 +189,36 @@ const addProviderOptions = (program: Command, provider: ZodDbsProvider) => {
   if (!provider.options) return;
 
   for (const option of provider.options) {
-    const flag = option.required
-      ? `--${option.name} <value>`
-      : `--${option.name} [value]`;
+    const flag = `--${option.name} <value>`;
     const description = option.description;
-    const addOption = option.required
-      ? program.requiredOption.bind(program)
-      : program.option.bind(program);
+
+    let cliOption = new Option(flag, description);
+
+    if (option.default !== undefined) {
+      cliOption = cliOption.default(option.default);
+    }
 
     if (option.allowedValues) {
-      program.addOption(
-        new Option(flag, description)
-          .choices(option.allowedValues)
-          .makeOptionMandatory(option.required)
-      );
-    } else if (option.type === 'boolean') {
-      addOption(flag, description);
-    } else if (option.type === 'number') {
-      addOption(flag, description, (value) => parseInt(value, 10));
-    } else {
-      addOption(flag, description);
+      cliOption = cliOption.choices(option.allowedValues);
     }
+
+    if (option.required) {
+      cliOption = cliOption.makeOptionMandatory();
+    }
+
+    if (option.type === 'number') {
+      cliOption = cliOption.argParser((value) => parseInt(value, 10));
+    }
+
+    if (option.type === 'boolean') {
+      cliOption = cliOption.argParser((value) => {
+        if (typeof value === 'boolean') return value;
+        const val = value.toLowerCase();
+        return val === '1' || val === 'true' || val === 'yes';
+      });
+    }
+
+    program.addOption(cliOption);
   }
 };
 

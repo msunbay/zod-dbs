@@ -13,12 +13,35 @@ export default defineConfig({
       },
       {
         test: {
-          name: 'integration:cli',
+          name: 'integration:pg',
           environment: 'node',
-          include: ['test/integration/cli/tests/**/*.test.ts'],
+          include: ['test/integration/pg/tests/**/*.test.ts'],
           globals: true,
           hookTimeout: 60000,
           testTimeout: 20000,
+          setupFiles: ['./test/integration/pg/bootstrap.ts'],
+        },
+      },
+      {
+        test: {
+          name: 'integration:mysql',
+          environment: 'node',
+          include: ['test/integration/mysql/tests/**/*.test.ts'],
+          globals: true,
+          hookTimeout: 60000,
+          testTimeout: 20000,
+          setupFiles: ['./test/integration/mysql/bootstrap.ts'],
+        },
+      },
+      {
+        test: {
+          name: 'integration:mongodb',
+          environment: 'node',
+          include: ['test/integration/mongodb/tests/**/*.test.ts'],
+          globals: true,
+          hookTimeout: 60000,
+          testTimeout: 20000,
+          setupFiles: ['./test/integration/mongodb/bootstrap.ts'],
         },
       },
       {

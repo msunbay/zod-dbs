@@ -14,8 +14,10 @@
   "scripts": {
     "build": "rm -rf ./dist && tsc --project tsconfig.build.json",
     "test:unit": "vitest --project unit run",
-    "test:integration": "pnpm run test:integration:cli && pnpm run test:integration:schema",
-    "test:integration:cli": "vitest --project integration:cli run",
+    "test:integration": "pnpm run test:integration:pg && pnpm run test:integration:mysql && pnpm run test:integration:mongodb && pnpm run test:integration:schema",
+    "test:integration:pg": "vitest --project integration:pg run",
+    "test:integration:mysql": "vitest --project integration:mysql run",
+    "test:integration:mongodb": "vitest --project integration:mongodb run",
     "test:integration:schema": "vitest --project integration:schema run",
     "test:types": "tsc --noEmit"
   },
@@ -36,7 +38,8 @@
     "@testcontainers/postgresql": "^11.5.1",
     "zod-dbs-pg": "workspace:*",
     "zod-dbs-mysql": "workspace:*",
-    "zod-dbs-snowflake": "workspace:*"
+    "zod-dbs-snowflake": "workspace:*",
+    "zod-dbs-mongodb": "workspace:*"
   },
   "dependencies": {
     "chalk": "^5.4.1",

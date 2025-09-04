@@ -3,7 +3,7 @@ import { ZodDbsTable } from 'zod-dbs-core';
 import {
   formatEnumConstantName,
   formatEnumTypeName,
-  formatJsonSchemaName,
+  formatObjectSchemaName,
   formatRecordTransformName,
   formatTableRecordName,
   formatTableSchemaName,
@@ -390,7 +390,7 @@ describe('format', () => {
 
   describe('formatJsonSchemaName', () => {
     it('should format JSON schema name with default PascalCase', () => {
-      const result = formatJsonSchemaName({
+      const result = formatObjectSchemaName({
         tableName: 'user_posts',
         columnName: 'metadata',
       });
@@ -398,7 +398,7 @@ describe('format', () => {
     });
 
     it('should handle plural table names by singularizing', () => {
-      const result = formatJsonSchemaName({
+      const result = formatObjectSchemaName({
         tableName: 'users',
         columnName: 'preferences',
       });
@@ -406,7 +406,7 @@ describe('format', () => {
     });
 
     it('should handle camelCase column names', () => {
-      const result = formatJsonSchemaName({
+      const result = formatObjectSchemaName({
         tableName: 'users',
         columnName: 'userPreferences',
       });
@@ -414,7 +414,7 @@ describe('format', () => {
     });
 
     it('should respect camelCase casing', () => {
-      const result = formatJsonSchemaName({
+      const result = formatObjectSchemaName({
         tableName: 'user_posts',
         columnName: 'metadata',
         casing: 'camelCase',
@@ -423,7 +423,7 @@ describe('format', () => {
     });
 
     it('should respect snake_case casing', () => {
-      const result = formatJsonSchemaName({
+      const result = formatObjectSchemaName({
         tableName: 'UserPosts',
         columnName: 'MetaData',
         casing: 'snake_case',
@@ -432,7 +432,7 @@ describe('format', () => {
     });
 
     it('should handle complex table and column names', () => {
-      const result = formatJsonSchemaName({
+      const result = formatObjectSchemaName({
         tableName: 'user_account_settings',
         columnName: 'notification_preferences',
       });
@@ -610,7 +610,10 @@ describe('format', () => {
     });
 
     it('should handle names with underscores only', () => {
-      const result = formatJsonSchemaName({ tableName: '_', columnName: '_' });
+      const result = formatObjectSchemaName({
+        tableName: '_',
+        columnName: '_',
+      });
       expect(result).toBe('Schema');
     });
   });

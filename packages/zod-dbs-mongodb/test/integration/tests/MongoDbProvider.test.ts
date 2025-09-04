@@ -1,28 +1,43 @@
-import type { ZodDbsConnectionConfig } from 'zod-dbs-core';
+import type { ZodDbsProviderConfig } from 'zod-dbs-core';
 
 import { MongoDbProvider } from '../../../src/MongoDbProvider.js';
-import {
-  getConnectionConfig,
-  setupTestDb,
-  teardownTestDb,
-  TestDbContext,
-} from '../testDbUtils.js';
+import { getClient, getConnectionConfig } from '../testDbUtils.js';
 
-let ctx: TestDbContext;
-let connectionOptions: ZodDbsConnectionConfig;
+let baseConfig: ZodDbsProviderConfig;
 
 beforeAll(async () => {
-  ctx = await setupTestDb();
-  connectionOptions = getConnectionConfig();
-});
+  baseConfig = getConnectionConfig();
+  const client = getClient();
 
-afterAll(async () => {
-  await teardownTestDb(ctx);
+  const db = client.driver.db(baseConfig.database);
+
+  // Seed: create a collection with validator
+  await db.createCollection('users', {
+    validator: {
+      $jsonSchema: {
+        bsonType: 'object',
+        required: ['_id', 'email', 'createdAt'],
+        properties: {
+          _id: { bsonType: 'objectId' },
+          email: { bsonType: 'string' },
+          createdAt: { bsonType: 'date' },
+          profile: {
+            bsonType: 'object',
+            properties: {
+              displayName: { bsonType: 'string' },
+              age: { bsonType: 'int' },
+            },
+          },
+          tags: { bsonType: 'array', items: { bsonType: 'string' } },
+        },
+      },
+    },
+  });
 });
 
 it('returns raw schema column information', async () => {
   const provider = new MongoDbProvider();
-  const info = await provider.fetchSchemaInfo(connectionOptions);
+  const info = await provider.fetchSchemaInfo(baseConfig);
 
   expect(info).toBeDefined();
   expect(info.length).toBeGreaterThan(0);
@@ -39,7 +54,7 @@ it('returns raw schema column information', async () => {
 
 it('returns schema models', async () => {
   const provider = new MongoDbProvider();
-  const info = await provider.getSchemaInformation(connectionOptions);
+  const info = await provider.getSchemaInformation(baseConfig);
 
   expect(info).toBeDefined();
   expect(info.tables).toBeDefined();

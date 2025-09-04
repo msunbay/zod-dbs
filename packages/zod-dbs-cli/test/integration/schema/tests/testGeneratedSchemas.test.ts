@@ -1,6 +1,6 @@
 /**
- * Note that this file relies on the generated files from the integration/cli/tests/basic.test.ts test suite.
- * After initial checkout or if the test files are deleted, run the `pnpm run test:integration:cli` command first.
+ * Note that this file relies on the generated files from the integration/pg/tests/basic.test.ts test suite.
+ * After initial checkout or if the test files are deleted, run the `pnpm run test:integration:pg` command first.
  */
 import { sql } from 'zod-dbs-core';
 
@@ -8,12 +8,12 @@ import {
   UserInsertRecord,
   UsersTableInsertSchema,
   UsersTableSchema,
-} from '../../output/basic/tables/users/index.js';
+} from '../../output/pg/basic/tables/users/index.js';
 import {
   setupTestDb,
   teardownTestDb,
   TestDbContext,
-} from '../../testDbUtils.js';
+} from '../../pg/testDbUtils.js';
 
 let ctx: TestDbContext;
 

@@ -2,31 +2,14 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-import {
-  getClientConnectionString,
-  getCliPath,
-  getOutputDir,
-  getOutputFiles,
-  setupTestDb,
-  teardownTestDb,
-  TestDbContext,
-} from '../../testDbUtils.js';
-
-let ctx: TestDbContext;
+import { getCliPath, getOutputFiles } from '../../utils.js';
+import { getClientConnectionString, getOutputDir } from '../testDbUtils.js';
 
 const cliPath = getCliPath();
 
-beforeAll(async () => {
-  ctx = await setupTestDb('mysql');
-});
-
-afterAll(async () => {
-  await teardownTestDb(ctx);
-});
-
 it('CLI generates correct zod schemas with basic options', async () => {
   const connectionString = getClientConnectionString();
-  const outputDir = getOutputDir('mysql', 'basic');
+  const outputDir = getOutputDir('basic');
 
   execSync(
     `node ${cliPath} --provider mysql --connection-string "${connectionString}" --output-dir "${outputDir}" --silent --module-resolution esm --schema-name test`,

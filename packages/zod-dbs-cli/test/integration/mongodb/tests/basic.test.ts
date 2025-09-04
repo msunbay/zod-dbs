@@ -2,34 +2,17 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-import {
-  getClientConnectionString,
-  getCliPath,
-  getOutputDir,
-  getOutputFiles,
-  setupTestDb,
-  teardownTestDb,
-  TestDbContext,
-} from '../../testDbUtils.js';
-
-let ctx: TestDbContext;
+import { getCliPath, getOutputFiles } from '../../utils.js';
+import { getClientConnectionString, getOutputDir } from '../testDbUtils.js';
 
 const cliPath = getCliPath();
-
-beforeAll(async () => {
-  ctx = await setupTestDb();
-});
-
-afterAll(async () => {
-  await teardownTestDb(ctx);
-});
 
 it('CLI generates correct zod schemas with basic options', async () => {
   const connectionString = getClientConnectionString();
   const outputDir = getOutputDir('basic');
 
   execSync(
-    `node ${cliPath} --provider pg --connection-string "${connectionString}" --output-dir "${outputDir}" --silent --module-resolution esm --schema-name public`,
+    `node ${cliPath} --provider mongodb --connection-string "${connectionString}" --direct-connection true --replica-set rs0 --output-dir "${outputDir}" --silent --module-resolution esm`,
     { stdio: 'inherit' }
   );
 

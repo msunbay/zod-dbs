@@ -28,6 +28,7 @@ export type ZodDbsTableType =
   | 'view' // Database view
   | 'materialized_view' // Materialized view
   | 'foreign_table' // Foreign data wrapper table
+  | 'object' // Custom object definition
   | 'unknown'; // Unknown or unsupported type
 
 /**
@@ -89,6 +90,10 @@ export interface ZodDbsColumnInfo {
    * If isDeprecated is true, this provides the reason for deprecation.
    */
   isDeprecatedReason?: string;
+  /**
+   * Object structure for JSON or object column types.
+   */
+  objectDefinition?: ZodDbsTable;
 }
 
 export interface ZodDbsColumn extends ZodDbsColumnInfo {
@@ -155,14 +160,21 @@ export interface ZodDbsProvider {
   ) => Promise<ZodDbsSchemaInfo>;
 }
 
+export interface ZodDbsRenderedFile {
+  /** The file name (without extension) */
+  name: string;
+  /** The file content */
+  content: string;
+}
+
 export interface ZodDbsRenderer {
   /**
    * Renders the TypeScript code for the generated Zod schemas and types for a given table.
    */
-  renderSchemaFile: (
+  renderSchemaFiles: (
     table: ZodDbsTable,
     config: ZodDbsConfig
-  ) => string | Promise<string>;
+  ) => Promise<ZodDbsRenderedFile[]>;
 }
 
 /**
@@ -191,6 +203,7 @@ export type ZodDbsColumnType =
   | 'date' // Date object
   | 'uuid' // String with UUID validation
   | 'json' // JSON object
+  | 'object' // Generic object
   | 'unknown' // Unknown type
   | 'any'; // Any type (fallback)
 

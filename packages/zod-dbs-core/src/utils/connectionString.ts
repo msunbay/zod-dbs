@@ -3,16 +3,37 @@ import { ZodDbsConnectionConfig } from '../types.js';
 export const createConnectionString = (
   options: ZodDbsConnectionConfig
 ): string => {
-  const { host, port, database, user, password, protocol } = options;
+  const {
+    host = 'localhost',
+    port,
+    database,
+    user,
+    password,
+    protocol = 'db',
+  } = options;
 
-  if (!user) throw new Error('User is required for connection string.');
-  if (!password) throw new Error('Password is required for connection string.');
-  if (!host) throw new Error('Host is required for connection string.');
-  if (!port) throw new Error('Port is required for connection string.');
-  if (!database) throw new Error('Database is required for connection string.');
-  if (!protocol) throw new Error('Protocol is required for connection string.');
+  let connectionString = `${protocol}://`;
 
-  return `${protocol}://${user}:${password}@${host}:${port}/${database}`;
+  if (user) {
+    connectionString += user;
+    if (password) {
+      connectionString += `:${password}`;
+    }
+
+    connectionString += `@${host}`;
+  } else {
+    connectionString += host;
+  }
+
+  if (port) {
+    connectionString += `:${port}`;
+  }
+
+  if (database) {
+    connectionString += `/${database}`;
+  }
+
+  return connectionString;
 };
 
 export const parseConnectionString = (

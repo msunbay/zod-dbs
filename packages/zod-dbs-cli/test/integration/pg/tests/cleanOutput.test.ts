@@ -2,28 +2,13 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-import {
-  deleteOutputFiles,
-  getClientConnectionString,
-  getCliPath,
-  getOutputDir,
-  getOutputFiles,
-  setupTestDb,
-  teardownTestDb,
-  TestDbContext,
-} from '../../testDbUtils.js';
-
-let ctx: TestDbContext;
+import { deleteOutputFiles, getCliPath, getOutputFiles } from '../../utils.js';
+import { getClientConnectionString, getOutputDir } from '../testDbUtils.js';
 
 const cliPath = getCliPath();
 const outputDir = getOutputDir('cleanOutput');
 
-beforeAll(async () => {
-  ctx = await setupTestDb();
-});
-
 afterAll(async () => {
-  await teardownTestDb(ctx);
   await deleteOutputFiles(outputDir);
 });
 

@@ -1,27 +1,10 @@
 import { execSync } from 'child_process';
 import fs from 'fs';
 
-import {
-  getClientConnectionString,
-  getCliPath,
-  getOutputDir,
-  getOutputFiles,
-  setupTestDb,
-  teardownTestDb,
-  TestDbContext,
-} from '../../testDbUtils.js';
-
-let ctx: TestDbContext;
+import { getCliPath, getOutputFiles } from '../../utils.js';
+import { getClientConnectionString, getOutputDir } from '../testDbUtils.js';
 
 const cliPath = getCliPath();
-
-beforeAll(async () => {
-  ctx = await setupTestDb();
-});
-
-afterAll(async () => {
-  await teardownTestDb(ctx);
-});
 
 it('CLI works with --no-case-transform option', async () => {
   const outputDir = getOutputDir('noCaseTransform');
