@@ -161,8 +161,6 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
 
     spinner.done();
   } catch (error) {
-    console.log('Error:');
-
     spinner.fail();
 
     logError(toError(error).message);
