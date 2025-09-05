@@ -129,7 +129,6 @@ export interface ZodDbsProviderOption {
   name: string;
   type: 'string' | 'number' | 'boolean';
   description: string;
-  default?: string | number | boolean;
   required?: boolean;
   allowedValues?: string[];
 }

@@ -2,7 +2,6 @@ import { logDebug, sql, ZodDbsBaseProvider } from 'zod-dbs-core';
 
 import type {
   ZodDbsColumnInfo,
-  ZodDbsConfig,
   ZodDbsProviderConfig,
   ZodDbsTableType,
 } from 'zod-dbs-core';
@@ -22,11 +21,6 @@ interface RawColumnRow {
   dflt_value: string | null;
   pk: 0 | 1;
 }
-
-const DEFAULT_CONFIGURATION: ZodDbsConfig = {
-  database: ':memory:',
-  schemaName: 'main',
-};
 
 const parseMaxLen = (declType: string | null): number | undefined => {
   if (!declType) return undefined;
@@ -77,7 +71,23 @@ export class SqliteProvider extends ZodDbsBaseProvider {
     super({
       name: 'sqlite',
       displayName: 'SQLite',
-      configurationDefaults: DEFAULT_CONFIGURATION,
+      configurationDefaults: {
+        database: ':memory:',
+        schemaName: 'main',
+      },
+      options: [
+        {
+          name: 'database',
+          type: 'string',
+          description:
+            'Path to SQLite database file (or :memory: for in-memory)',
+        },
+        {
+          name: 'schema-name',
+          type: 'string',
+          description: 'Database schema to introspect',
+        },
+      ],
     });
   }
 

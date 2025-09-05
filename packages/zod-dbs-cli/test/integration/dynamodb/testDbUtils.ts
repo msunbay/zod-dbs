@@ -1,9 +1,8 @@
 import { randomUUID } from 'node:crypto';
 import { CreateTableCommand, PutItemCommand } from '@aws-sdk/client-dynamodb';
 import { GenericContainer, StartedTestContainer } from 'testcontainers';
+import { ZodDbsProviderConfig } from 'zod-dbs-core';
 import { createClient, ZodDbsDynamoClient } from 'zod-dbs-dynamodb';
-
-import type { ZodDbsProviderConfig } from 'zod-dbs-core';
 
 import { getProviderOutputDir } from '../utils.js';
 
@@ -12,16 +11,18 @@ export interface TestDbContext {
   client: ZodDbsDynamoClient;
 }
 
-let _clientInstance: ZodDbsDynamoClient;
+export const getTestContext = () => {
+  const g: any = globalThis as any;
 
-export const getClient = () => {
-  if (!_clientInstance) throw new Error('Client not initialized');
-  return _clientInstance;
+  if (!g.__DYNAMODB_CTX__) {
+    throw new Error('Test context not initialized');
+  }
+
+  return g.__DYNAMODB_CTX__ as TestDbContext;
 };
 
 export const getConnectionConfig = (): ZodDbsProviderConfig => {
-  if (!_clientInstance) throw new Error('Connection not initialized');
-  return _clientInstance.config;
+  return getTestContext().client.config;
 };
 
 export async function setupTestDb(): Promise<TestDbContext> {
@@ -43,8 +44,6 @@ export async function setupTestDb(): Promise<TestDbContext> {
 
   await client.connect();
   await seedTestData(client);
-
-  _clientInstance = client;
 
   return { container, client };
 }

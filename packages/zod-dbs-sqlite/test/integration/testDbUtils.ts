@@ -1,30 +1,13 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { ZodDbsProviderConfig } from 'zod-dbs-core';
+import { ZodDbsDatabaseClient } from 'zod-dbs-core';
 
 import { createClient } from '../../src/client.js';
 
 export interface TestDbContext {
-  client: any;
+  client: ZodDbsDatabaseClient;
   dbPath: string;
 }
-
-let _clientInstance: any | null = null;
-
-export const getClient = (): any => {
-  if (!_clientInstance) {
-    throw new Error('Client has not been initialized. Call setupTestDb first.');
-  }
-  return _clientInstance;
-};
-
-export const getConnectionConfig = (): ZodDbsProviderConfig => {
-  const client = getClient();
-  return {
-    database: client.config.database,
-    schemaName: 'main',
-  } as ZodDbsProviderConfig;
-};
 
 export const getCliPath = (): string => {
   return path.resolve(import.meta.dirname, '../../index.js');
@@ -45,7 +28,6 @@ export async function setupTestDb(): Promise<TestDbContext> {
   const schemaSql = await fs.readFile(schemaPath, 'utf8');
   await client.query(schemaSql);
 
-  _clientInstance = client;
   return { client, dbPath };
 }
 

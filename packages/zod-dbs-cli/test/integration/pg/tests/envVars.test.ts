@@ -3,13 +3,13 @@ import fs from 'fs';
 import path from 'path';
 
 import { getOutputFiles } from '../../utils.js';
-import { getConnectionConfig, getOutputDir } from '../testDbUtils.js';
+import { getOutputDir, getTestContext } from '../testDbUtils.js';
 
 const cliPath = path.resolve(import.meta.dirname, '../../../../index.js');
 
 it('CLI generates correct zod schemas with env vars', async () => {
   const outputDir = getOutputDir('cli', 'envVars');
-  const config = getConnectionConfig();
+  const config = getTestContext().client.config;
 
   process.env.ZOD_DBS_USER = config.user;
   process.env.ZOD_DBS_PASSWORD = config.password;
@@ -18,8 +18,8 @@ it('CLI generates correct zod schemas with env vars', async () => {
   process.env.ZOD_DBS_DATABASE = config.database;
 
   execSync(
-    `node ${cliPath} --provider pg --output-dir "${outputDir}" --silent --module-resolution esm --schema-name public`,
-    { stdio: 'inherit' }
+    `node ${cliPath} --provider pg --output-dir "${outputDir}" --silent  --module-resolution esm --schema-name public`,
+    { stdio: 'pipe' }
   );
 
   const outputFiles = await getOutputFiles(outputDir);

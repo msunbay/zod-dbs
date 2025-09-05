@@ -11,6 +11,7 @@ export const importProvider = async (
     );
 
   if (typeof provider !== 'string') {
+    logDebug('Using provided provider instance:', provider);
     return provider;
   }
 

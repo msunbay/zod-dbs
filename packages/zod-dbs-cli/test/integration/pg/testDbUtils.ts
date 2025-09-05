@@ -1,11 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { PostgreSqlContainer } from '@testcontainers/postgresql';
-import {
-  createConnectionString,
-  ZodDbsDatabaseClient,
-  ZodDbsProviderConfig,
-} from 'zod-dbs-core';
+import { createConnectionString, ZodDbsDatabaseClient } from 'zod-dbs-core';
 import { createClient } from 'zod-dbs-pg';
 
 import { getProviderOutputDir } from '../utils.js';
@@ -15,31 +11,18 @@ export interface TestDbContext {
   client: ZodDbsDatabaseClient;
 }
 
-let _clientInstance: ZodDbsDatabaseClient | null = null;
+export const getTestContext = () => {
+  const g: any = globalThis as any;
 
-export const getClient = (): ZodDbsDatabaseClient => {
-  if (!_clientInstance) {
-    throw new Error('Client has not been initialized. Call setupTestDb first.');
+  if (!g.__PG_CTX__) {
+    throw new Error('Test context not initialized');
   }
-  return _clientInstance;
-};
 
-export const getConnectionConfig = (): ZodDbsProviderConfig => {
-  const client = getClient();
-
-  return {
-    host: client.config.host,
-    port: client.config.port,
-    database: client.config.database,
-    user: client.config.user,
-    password: client.config.password,
-    schemaName: 'test',
-    protocol: client.config.protocol || 'postgresql',
-  };
+  return g.__PG_CTX__ as TestDbContext;
 };
 
 export const getClientConnectionString = (): string => {
-  return createConnectionString(getConnectionConfig());
+  return createConnectionString(getTestContext().client.config);
 };
 
 export async function setupTestDb(): Promise<TestDbContext> {
@@ -58,8 +41,6 @@ export async function setupTestDb(): Promise<TestDbContext> {
     user: container.getUsername(),
     password: container.getPassword(),
   });
-
-  _clientInstance = client;
 
   await client.connect();
 

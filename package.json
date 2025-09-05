@@ -13,7 +13,7 @@
     "start": "pnpm run build && node index.js",
     "dev": "tsx dev.ts",
     "test": "pnpm run build && pnpm run test:unit && pnpm run test:integration && pnpm run test:types",
-    "test:unit": "pnpm run --parallel -r test:unit",
+    "test:unit": "pnpm run -r test:unit",
     "test:integration": "pnpm run -r test:integration",
     "test:types": "pnpm run -r test:types",
     "format": "prettier --write ."

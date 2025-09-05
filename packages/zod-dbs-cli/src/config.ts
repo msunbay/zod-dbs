@@ -4,13 +4,35 @@ import {
   DEFAULT_CONFIGURATION,
   ZodDbsConfig,
 } from 'zod-dbs';
+import { enableDebug, logDebug } from 'zod-dbs-core';
 
 import { ZodDbsCliConfig, ZodDbsCliOptions } from './types.js';
+import { hasArgument } from './utils/args.js';
 
 const getEnvVarName = (prefix: string, name: string) => `${prefix}_${name}`;
 
-const getEnvVar = (prefix: string, name: string) =>
-  process.env[getEnvVarName(prefix, name)];
+const getEnvVar = (prefix: string, name: string) => {
+  const varName = getEnvVarName(prefix, name);
+  const value = process.env[varName];
+
+  logDebug(`Reading env var ${varName}: ${value ?? '<not set>'}`);
+
+  return value;
+};
+
+/**
+ * Enables debug mode if the ZOD_DBS_DEBUG env var is set to 'true' or '1',
+ * or if the --debug CLI argument is present.
+ */
+export const enableDebugMode = () => {
+  const debug = getEnvVar('ZOD_DBS', 'DEBUG');
+  const enabled = debug === 'true' || debug === '1' || hasArgument('--debug');
+
+  if (enabled) {
+    enableDebug();
+    logDebug('Debug mode enabled');
+  }
+};
 
 // Build an overrides object containing only values explicitly supplied via env vars.
 function getEnvOverrides(appName: string): Partial<ZodDbsConfig> {
@@ -33,6 +55,9 @@ function getEnvOverrides(appName: string): Partial<ZodDbsConfig> {
   if (database) overrides.database = database;
   if (port) overrides.port = parseInt(port);
   if (ssl !== undefined) overrides.ssl = ssl === 'true';
+
+  logDebug('Environment variable overrides:', overrides);
+
   return overrides;
 }
 

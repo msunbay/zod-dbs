@@ -171,6 +171,8 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
   ): Promise<ZodDbsSchemaInfo> {
     const finalConfig = this.initConfiguration(config);
 
+    logDebug(`Starting schema introspection for provider`, { finalConfig });
+
     const columns = await this.fetchSchemaInfo(finalConfig);
     const filteredColumns = this.filterColumns(columns, finalConfig);
     const tables = await this.createTableModels(filteredColumns, finalConfig);

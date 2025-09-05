@@ -1,4 +1,4 @@
-import { ZodDbsConnectionConfig } from 'zod-dbs-core';
+import { ZodDbsProviderConfig } from 'zod-dbs-core';
 
 import { OracleProvider } from '../../../src/OracleProvider.js';
 import {
@@ -9,7 +9,7 @@ import {
 } from '../testDbUtils.js';
 
 let ctx: TestDbContext;
-let connectionConfig: ZodDbsConnectionConfig;
+let connectionConfig: ZodDbsProviderConfig;
 
 beforeAll(async () => {
   ctx = await setupTestDb();

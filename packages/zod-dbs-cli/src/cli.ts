@@ -1,7 +1,6 @@
 import { Command, Option, program } from 'commander';
 import { generateZodSchemas } from 'zod-dbs';
 import {
-  enableDebug,
   logDebug,
   parseConnectionString,
   toError,
@@ -10,7 +9,7 @@ import {
 
 import type { ZodDbsCliConfig, ZodDbsCliOptions } from './types.js';
 
-import { getConfiguration } from './config.js';
+import { enableDebugMode, getConfiguration } from './config.js';
 import { importProvider } from './provider.js';
 import { getArgumentValue } from './utils/args.js';
 import { logAppName, logError, logSetting } from './utils/logger.js';
@@ -18,7 +17,12 @@ import { createProgressHandler } from './utils/progress.js';
 import { getAppVersion } from './utils/version.js';
 
 export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
+  enableDebugMode();
+  logDebug('Starting zod-dbs CLI with options:', cliOptions);
+
   let config = await getConfiguration(cliOptions);
+  logDebug('Initial configuration:', config);
+
   const appVersion = cliOptions.appVersion ?? (await getAppVersion());
   const appName = cliOptions.appName || 'zod-dbs';
 
@@ -27,6 +31,8 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
   program.description('Generates Zod schemas from database schema.');
 
   const provider = await loadProvider(cliOptions.overrides?.provider, config);
+
+  logDebug('Provider default configuration:', provider.configurationDefaults);
 
   // Merge provider-specific default config with file config
   config = {
@@ -69,10 +75,7 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
     'Include only tables matching this regex'
   );
   outputOptions.option('--silent', 'Suppress all console output');
-  outputOptions.option('--debug', 'Enable debug logging', () => {
-    enableDebug();
-    return true;
-  });
+  outputOptions.option('--debug', 'Enable debug logging');
   outputOptions.option(
     '--json-schema-import-location <path>',
     'Path to import JSON schemas'
@@ -139,7 +142,7 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
       ...provider.configurationOverrides, // ensure overrides are always applied
     };
 
-    logDebug('CLI configuration:', cliConfig);
+    logDebug('Final configuration:', cliConfig);
 
     if (!cliConfig.silent) {
       logAppName(`${appName} CLI v${appVersion}`);
@@ -158,6 +161,8 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
 
     spinner.done();
   } catch (error) {
+    console.log('Error:');
+
     spinner.fail();
 
     logError(toError(error).message);
@@ -201,10 +206,6 @@ const addProviderOptions = (program: Command, provider: ZodDbsProvider) => {
     const description = option.description;
 
     let cliOption = new Option(flag, description);
-
-    if (option.default !== undefined) {
-      cliOption = cliOption.default(option.default);
-    }
 
     if (option.allowedValues) {
       cliOption = cliOption.choices(option.allowedValues);

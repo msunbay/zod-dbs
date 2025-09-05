@@ -22,6 +22,10 @@ export class DynamoDbProvider
     super({
       name: 'dynamo',
       displayName: 'DynamoDB',
+      configurationDefaults: {
+        region: 'us-east-1',
+        sampleSize: 50,
+      },
       configurationOverrides: {
         defaultNullsToUndefined: false,
         stringifyJson: false,
@@ -31,7 +35,6 @@ export class DynamoDbProvider
           name: 'region',
           type: 'string',
           description: 'AWS region for DynamoDB',
-          default: 'us-east-1',
         },
         {
           name: 'endpoint',
@@ -43,7 +46,6 @@ export class DynamoDbProvider
           type: 'number',
           description:
             'Number of items to sample per table when inferring schema',
-          default: 50,
         },
       ],
     });

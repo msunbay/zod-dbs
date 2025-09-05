@@ -12,7 +12,7 @@ it('CLI generates correct zod schemas with basic options', async () => {
   const outputDir = getOutputDir('basic');
 
   execSync(
-    `node ${cliPath} --provider mongodb --connection-string "${connectionString}" --direct-connection true --replica-set rs0 --output-dir "${outputDir}" --silent --module-resolution esm`,
+    `node ${cliPath} --provider mongodb --connection-string "${connectionString}" --direct-connection --replica-set rs0 --output-dir "${outputDir}" --silent --module-resolution esm`,
     { stdio: 'inherit' }
   );
 

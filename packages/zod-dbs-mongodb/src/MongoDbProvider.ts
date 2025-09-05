@@ -28,6 +28,7 @@ export class MongoDbProvider
       configurationDefaults: {
         port: 27017,
         host: 'localhost',
+        sampleSize: 50,
       },
       configurationOverrides: {
         defaultNullsToUndefined: false,
@@ -35,29 +36,31 @@ export class MongoDbProvider
       },
       options: [
         {
+          name: 'connection-string',
+          type: 'string',
+          description:
+            'Full database connection string (overrides other connection options)',
+        },
+        {
           name: 'host',
           type: 'string',
           description: 'MongoDB host',
-          default: 'localhost',
         },
         {
           name: 'port',
           type: 'number',
           description: 'MongoDB port',
-          default: 27017,
         },
         {
           name: 'database',
           type: 'string',
           description: 'MongoDB database name',
-          required: true,
         },
         {
           name: 'sample-size',
           type: 'number',
           description:
             'Number of documents to sample per collection when no validator exists',
-          default: 50,
         },
         {
           name: 'direct-connection',

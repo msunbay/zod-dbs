@@ -29,6 +29,7 @@ export const getConnectionConfig = (): ZodDbsProviderConfig => {
 export async function setupTestDb(): Promise<TestDbContext> {
   const container = await new MongoDBContainer('mongo:7').start();
   const database = 'testdb';
+
   const client = await createClient({
     host: container.getHost(),
     port: container.getFirstMappedPort(),

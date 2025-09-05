@@ -5,8 +5,6 @@ import {
 import { createConnectionString } from 'zod-dbs-core';
 import { createClient, ZodDbsMongoDbClient } from 'zod-dbs-mongodb';
 
-import type { ZodDbsProviderConfig } from 'zod-dbs-core';
-
 import { getProviderOutputDir } from '../utils.js';
 
 export interface TestDbContext {
@@ -14,20 +12,20 @@ export interface TestDbContext {
   client: ZodDbsMongoDbClient;
 }
 
-let _clientInstance: TestDbContext['client'] | null = null;
+export const getTestContext = () => {
+  const g: any = globalThis as any;
 
-export const getClient = () => {
-  if (!_clientInstance) throw new Error('Client not initialized');
-  return _clientInstance;
+  if (!g.__MONGO_CTX__) {
+    throw new Error('Test context not initialized');
+  }
+
+  return g.__MONGO_CTX__ as TestDbContext;
 };
-
-export const getConnectionConfig = (): ZodDbsProviderConfig => {
-  if (!_clientInstance) throw new Error('Connection not initialized');
-  return _clientInstance.config;
-};
-
 export const getClientConnectionString = (): string => {
-  return createConnectionString(getConnectionConfig());
+  return createConnectionString({
+    ...getTestContext().client.config,
+    protocol: 'mongodb',
+  });
 };
 
 export async function setupTestDb(): Promise<TestDbContext> {
@@ -45,9 +43,7 @@ export async function setupTestDb(): Promise<TestDbContext> {
 
   await seedTestData(client);
 
-  _clientInstance = client;
-
-  return { container, client: _clientInstance! };
+  return { container, client };
 }
 
 export async function teardownTestDb(ctx?: TestDbContext) {

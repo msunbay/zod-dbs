@@ -10,10 +10,10 @@ import { createClient } from '../../src/client.js';
 
 export interface TestDbContext {
   container: StartedMSSQLServerContainer;
-  client: any;
+  client: ZodDbsDatabaseClient;
 }
 
-let _clientInstance: any | null = null;
+let _clientInstance: ZodDbsDatabaseClient | null = null;
 
 export const getClient = (): ZodDbsDatabaseClient => {
   if (!_clientInstance) {
@@ -23,20 +23,7 @@ export const getClient = (): ZodDbsDatabaseClient => {
 };
 
 export const getConnectionConfig = (): ZodDbsProviderConfig => {
-  const client = getClient();
-
-  return {
-    host: client.config.host,
-    port: client.config.port,
-    database: client.config.database,
-    user: client.config.user,
-    password: client.config.password,
-    schemaName: 'dbo',
-  };
-};
-
-export const getCliPath = (): string => {
-  return path.resolve(import.meta.dirname, '../../index.js');
+  return getClient().config;
 };
 
 export async function setupTestDb(): Promise<TestDbContext> {
@@ -69,9 +56,9 @@ export async function setupTestDb(): Promise<TestDbContext> {
   return { container, client };
 }
 
-export async function teardownTestDb(ctx: TestDbContext) {
-  await ctx.client.end();
-  await ctx.container.stop();
+export async function teardownTestDb(ctx?: TestDbContext) {
+  await ctx?.client.end();
+  await ctx?.container.stop();
 }
 
 export const getOutputDir = (testSuite: string, subPath = ''): string =>

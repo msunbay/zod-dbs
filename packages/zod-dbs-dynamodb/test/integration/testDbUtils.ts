@@ -36,8 +36,6 @@ export async function setupTestDb(): Promise<TestDbContext> {
   const endpoint = `http://${host}:${port}`;
 
   const client = await createClient({
-    host,
-    port,
     endpoint,
     region: 'us-east-1',
   });

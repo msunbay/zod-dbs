@@ -2,7 +2,6 @@ import { logDebug, sql, ZodDbsBaseProvider } from 'zod-dbs-core';
 
 import type {
   ZodDbsColumnInfo,
-  ZodDbsConfig,
   ZodDbsProviderConfig,
   ZodDbsTableType,
 } from 'zod-dbs-core';
@@ -29,15 +28,6 @@ interface RawColumnInfo {
   enumValues?: string[] | null;
 }
 
-const DEFAULT_CONFIGURATION: ZodDbsConfig = {
-  user: 'postgres',
-  password: 'postgres',
-  host: 'localhost',
-  port: 5432,
-  database: 'postgres',
-  schemaName: 'public',
-};
-
 /**
  * Provider to interact with PostgreSQL database and retrieve schema information.
  * Supports PostgreSQL version 9.3 and above.
@@ -47,7 +37,14 @@ export class PostgreSqlProvider extends ZodDbsBaseProvider {
     super({
       name: 'pg',
       displayName: 'PostgreSQL',
-      configurationDefaults: DEFAULT_CONFIGURATION,
+      configurationDefaults: {
+        user: 'postgres',
+        password: 'postgres',
+        host: 'localhost',
+        port: 5432,
+        database: 'postgres',
+        schemaName: 'public',
+      },
       options: [
         {
           name: 'connection-string',
@@ -59,13 +56,11 @@ export class PostgreSqlProvider extends ZodDbsBaseProvider {
           name: 'host',
           type: 'string',
           description: 'Database host',
-          default: 'localhost',
         },
         {
           name: 'port',
           type: 'number',
           description: 'Database server port',
-          default: 5432,
         },
         {
           name: 'user',
@@ -86,13 +81,11 @@ export class PostgreSqlProvider extends ZodDbsBaseProvider {
           name: 'schema-name',
           type: 'string',
           description: 'Database schema to introspect',
-          default: 'public',
         },
         {
           name: 'ssl',
           type: 'boolean',
           description: 'Use SSL connection',
-          default: false,
         },
       ],
     });

@@ -24,10 +24,6 @@ interface RawColumnRow {
 
 const CHECK_CONSTRAINT_SEPARATOR = ' ||| ';
 
-const DEFAULT_CONFIGURATION = {
-  port: 1521,
-};
-
 function parseCheckConstraints(raw: string): string[] {
   return raw
     .split(CHECK_CONSTRAINT_SEPARATOR)
@@ -45,19 +41,20 @@ export class OracleProvider extends ZodDbsBaseProvider {
     super({
       name: 'oracle',
       displayName: 'Oracle',
-      configurationDefaults: DEFAULT_CONFIGURATION,
+      configurationDefaults: {
+        port: 1521,
+        host: 'localhost',
+      },
       options: [
         {
           name: 'host',
           type: 'string',
           description: 'Database host',
-          default: 'localhost',
         },
         {
           name: 'port',
           type: 'number',
           description: 'Database port',
-          default: 1521,
         },
         {
           name: 'user',

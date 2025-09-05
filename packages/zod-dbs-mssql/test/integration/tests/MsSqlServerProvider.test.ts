@@ -1,19 +1,10 @@
-import { ZodDbsConnectionConfig } from 'zod-dbs-core';
-
 import { MsSqlServerProvider } from '../../../src/MsSqlServerProvider.js';
-import {
-  getConnectionConfig,
-  setupTestDb,
-  teardownTestDb,
-  TestDbContext,
-} from '../testDbUtils.js';
+import { setupTestDb, teardownTestDb, TestDbContext } from '../testDbUtils.js';
 
 let ctx: TestDbContext;
-let connectionConfig: ZodDbsConnectionConfig;
 
 beforeAll(async () => {
   ctx = await setupTestDb();
-  connectionConfig = getConnectionConfig();
 });
 
 afterAll(async () => {
@@ -23,7 +14,10 @@ afterAll(async () => {
 it('returns raw schema column information', async () => {
   const provider = new MsSqlServerProvider();
 
-  const info = await provider.fetchSchemaInfo(connectionConfig);
+  const info = await provider.fetchSchemaInfo({
+    ...ctx.client.config,
+    schemaName: 'dbo',
+  });
 
   expect(info).toBeDefined();
   expect(info).toMatchSnapshot('rawColumns');
@@ -33,7 +27,7 @@ it('returns schema models', async () => {
   const provider = new MsSqlServerProvider();
 
   const info = await provider.getSchemaInformation({
-    ...connectionConfig,
+    ...ctx.client.config,
     include: ['users'],
   });
 

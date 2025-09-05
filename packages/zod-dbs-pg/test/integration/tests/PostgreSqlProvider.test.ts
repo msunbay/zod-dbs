@@ -1,4 +1,4 @@
-import { ZodDbsConnectionConfig } from 'zod-dbs-core';
+import { ZodDbsProviderConfig } from 'zod-dbs-core';
 
 import { PostgreSqlProvider } from '../../../src/PostgreSqlProvider.js';
 import {
@@ -9,7 +9,7 @@ import {
 } from '../testDbUtils.js';
 
 let ctx: TestDbContext;
-let connectionOptions: ZodDbsConnectionConfig;
+let connectionOptions: ZodDbsProviderConfig;
 
 beforeAll(async () => {
   ctx = await setupTestDb();

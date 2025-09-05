@@ -37,7 +37,47 @@ export class MySqlProvider extends ZodDbsBaseProvider {
       displayName: 'MySQL',
       configurationDefaults: {
         port: 3306,
+        host: 'localhost',
       },
+      options: [
+        {
+          name: 'connection-string',
+          type: 'string',
+          description:
+            'Full database connection string (overrides other connection options)',
+        },
+        {
+          name: 'host',
+          type: 'string',
+          description: 'Database host',
+        },
+        {
+          name: 'port',
+          type: 'number',
+          description: 'Database server port',
+        },
+        {
+          name: 'user',
+          type: 'string',
+          description: 'Database user',
+        },
+        {
+          name: 'password',
+          type: 'string',
+          description: 'Database password',
+        },
+        {
+          name: 'database',
+          type: 'string',
+          description: 'Database name to connect to',
+        },
+        {
+          name: 'schema-name',
+          type: 'string',
+          description:
+            'Database schema name (usually same as database name, optional)',
+        },
+      ],
     });
   }
 

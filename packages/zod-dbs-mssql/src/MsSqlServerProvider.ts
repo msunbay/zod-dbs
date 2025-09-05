@@ -32,9 +32,48 @@ export class MsSqlServerProvider extends ZodDbsBaseProvider {
       name: 'mssql',
       displayName: 'Microsoft SQL Server',
       configurationDefaults: {
+        host: 'localhost',
         port: 1433,
         schemaName: 'dbo',
       },
+      options: [
+        {
+          name: 'connection-string',
+          type: 'string',
+          description:
+            'Full database connection string (overrides other connection options)',
+        },
+        {
+          name: 'host',
+          type: 'string',
+          description: 'Database host',
+        },
+        {
+          name: 'port',
+          type: 'number',
+          description: 'Database server port',
+        },
+        {
+          name: 'user',
+          type: 'string',
+          description: 'Database user',
+        },
+        {
+          name: 'password',
+          type: 'string',
+          description: 'Database password',
+        },
+        {
+          name: 'database',
+          type: 'string',
+          description: 'Database name',
+        },
+        {
+          name: 'schema-name',
+          type: 'string',
+          description: 'Database schema to introspect',
+        },
+      ],
     });
   }
 
@@ -68,6 +107,12 @@ export class MsSqlServerProvider extends ZodDbsBaseProvider {
     config: ZodDbsProviderConfig
   ): Promise<ZodDbsColumnInfo[]> {
     const { schemaName } = config;
+
+    if (!schemaName) {
+      throw new Error(
+        "MsSqlServerProvider requires a 'schemaName' in the configuration"
+      );
+    }
 
     config.onProgress?.('connecting');
     const client = await this.createClient(config);
