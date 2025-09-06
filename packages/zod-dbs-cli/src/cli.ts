@@ -6,7 +6,7 @@ import type { ZodDbsCliConfig, ZodDbsCliOptions } from './types.js';
 
 import { enableDebugMode, getConfiguration } from './config.js';
 import { importProvider } from './provider.js';
-import { getArgumentValue } from './utils/args.js';
+import { getArgumentValue, isSilentMode } from './utils/args.js';
 import { logAppName, logError, logSetting } from './utils/logger.js';
 import { createProgressHandler } from './utils/progress.js';
 import { getAppVersion } from './utils/version.js';
@@ -17,7 +17,11 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
 
   const appVersion = cliOptions.appVersion ?? (await getAppVersion());
   const appName = cliOptions.appName || 'zod-dbs';
-  logAppName(`${appName} CLI v${appVersion}`);
+  const silent = isSilentMode();
+
+  if (!silent) {
+    logAppName(`${appName} CLI v${appVersion}`);
+  }
 
   const config = await getConfiguration(cliOptions);
 
@@ -36,6 +40,12 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
 
   const outputOptions = program.optionsGroup('Output options:');
 
+  const parseBooleanOption = (value: string) => {
+    if (value.toLowerCase() === 'true') return true;
+    if (value.toLowerCase() === 'false') return false;
+    throw new Error(`Invalid boolean value: ${value}`);
+  };
+
   outputOptions.option('--config-name <name>', 'Name of configuration file');
   outputOptions.option(
     '-o,--output-dir <path>',
@@ -44,7 +54,7 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
   outputOptions.addOption(
     new Option(
       '--module-resolution <type>',
-      'Module resolution type for generated files'
+      'Module resolution type for generated files. (defaults to commonjs)'
     ).choices(['commonjs', 'esm'])
   );
   outputOptions.option(
@@ -66,54 +76,69 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
     'Path to import JSON schemas'
   );
   outputOptions.addOption(
-    new Option('--zod-version <value>', 'Zod version to use').choices([
-      '3',
-      '4',
-      '4-mini',
-    ])
+    new Option(
+      '--zod-version <value>',
+      'Zod version to use. (defaults to 3)'
+    ).choices(['3', '4', '4-mini'])
   );
-  outputOptions.option(
-    '--case-transform <true|false>',
-    'Whether to do case transformations / conversions for generated schemas'
+  outputOptions.addOption(
+    new Option(
+      '--case-transform <true|false>',
+      'Whether to do case transformations / conversions for generated schemas. (defaults to true)'
+    ).argParser(parseBooleanOption)
   );
-  outputOptions.option(
-    '--singularization <true|false>',
-    'Whether to use singularization of type and enum names'
+  outputOptions.addOption(
+    new Option(
+      '--singularization <true|false>',
+      'Whether to use singularization of type and enum names. (defaults to true)'
+    ).argParser(parseBooleanOption)
   );
-  outputOptions.option(
-    '--coerce-dates <true|false>',
-    'Whether to use z.coerce.date() for date fields in read schemas'
+  outputOptions.addOption(
+    new Option(
+      '--coerce-dates <true|false>',
+      'Whether to use z.coerce.date() for date fields in read schemas. (defaults to true)'
+    ).argParser(parseBooleanOption)
   );
-  outputOptions.option(
-    '--stringify-json <true|false>',
-    'Whether to JSON.stringify() on json fields in write schemas'
+  outputOptions.addOption(
+    new Option(
+      '--stringify-json <true|false>',
+      'Whether to JSON.stringify() on json fields in write schemas. (defaults to true)'
+    ).argParser(parseBooleanOption)
   );
-  outputOptions.option(
-    '--stringify-dates <true|false>',
-    'Whether to convert dates to ISO strings in write schemas'
+  outputOptions.addOption(
+    new Option(
+      '--stringify-dates <true|false>',
+      'Whether to convert dates to ISO strings in write schemas. (defaults to false)'
+    ).argParser(parseBooleanOption)
   );
-  outputOptions.option(
-    '--default-empty-array <true|false>',
-    'Whether to use empty arrays as defaults for nullable array fields'
+  outputOptions.addOption(
+    new Option(
+      '--default-empty-array <true|false>',
+      'Whether to use empty arrays as defaults for nullable array fields. (defaults to false)'
+    ).argParser(parseBooleanOption)
   );
-  outputOptions.option(
-    '--default-unknown <true|false>',
-    'Whether to use "unknown" instead of "any" for unresolved types'
+  outputOptions.addOption(
+    new Option(
+      '--default-unknown <true|false>',
+      'Whether to use "unknown" instead of "any" for unresolved types. (defaults to false)'
+    ).argParser(parseBooleanOption)
   );
-  outputOptions.option(
-    '--default-nulls-to-undefined <true|false>',
-    'Whether to transform null values to undefined in generated read schemas'
+  outputOptions.addOption(
+    new Option(
+      '--default-nulls-to-undefined <true|false>',
+      'Whether to transform null values to undefined in generated read schemas. (defaults to true)'
+    ).argParser(parseBooleanOption)
   );
   outputOptions.addOption(
     new Option(
       '--object-name-casing <type>',
-      'Casing for generated object/type names'
+      'Casing for generated object/type names. (defaults to PascalCase)'
     ).choices(['PascalCase', 'camelCase', 'snake_case'])
   );
   outputOptions.addOption(
     new Option(
       '--field-name-casing <type>',
-      'Casing for field/property names in schemas & records'
+      'Casing for field/property names in schemas & records. (defaults to camelCase)'
     ).choices(['camelCase', 'snake_case', 'PascalCase', 'passthrough'])
   );
 

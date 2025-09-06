@@ -2,7 +2,8 @@ import type { ZodDbsCliConfig } from './src/types.js';
 
 const config: ZodDbsCliConfig = {
   provider: {
-    name: 'test',
+    name: 'test-provider',
+    displayName: 'Test Provider',
     getSchemaInformation: async () => {
       return { tables: [] };
     },

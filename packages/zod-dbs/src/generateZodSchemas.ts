@@ -54,6 +54,8 @@ export const generateZodSchemas = async ({
     ...config,
   };
 
+  logDebug('Using generation configuration:', generateConfig);
+
   const {
     outputDir = DEFAULT_OUTPUT_DIR,
     cleanOutput,

@@ -15,3 +15,7 @@ export const hasArgument = (name: string): boolean => {
   const key = name.startsWith('--') ? name : `--${name}`;
   return argv.includes(key) || argv.some((arg) => arg.startsWith(`${key}=`));
 };
+
+export const isSilentMode = (): boolean => {
+  return hasArgument('--silent');
+};

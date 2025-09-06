@@ -13,7 +13,7 @@ import {
   setupTestDb,
   teardownTestDb,
   TestDbContext,
-} from '../../pg/testDbUtils.js';
+} from '../../providers/pg/testDbUtils.js';
 
 let ctx: TestDbContext;
 

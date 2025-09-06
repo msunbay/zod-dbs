@@ -1,0 +1,46 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`outputs provider help 1`] = `
+"
+zod-dbs CLI v1.0.21
+
+Usage: zod-dbs [options]
+
+Generates Zod schemas from database schema.
+
+Options:
+  -V, --version                              output the version number
+  -p,--provider <name>                       Database provider to use
+  -h, --help                                 display help for command
+
+DynamoDB options:
+  --region <value>                           AWS region for DynamoDB
+  --access-key-id <value>                    AWS Access Key ID (for local or custom endpoints)
+  --secret-access-key <value>                AWS Secret Access Key (for local or custom endpoints)
+  --session-token <value>                    AWS Session Token (for local or custom endpoints)
+  --endpoint <value>                         Override endpoint (e.g., for local DynamoDB)
+  --sample-size <value>                      Number of items to sample per table when inferring schema
+
+Output options:
+  --config-name <name>                       Name of configuration file
+  -o,--output-dir <path>                     Output directory for generated schemas
+  --module-resolution <type>                 Module resolution type for generated files (choices: "commonjs", "esm")
+  --clean-output                             Clean output directory before generating schemas
+  --exclude <regex>                          Exclude tables matching this regex
+  --include <regex>                          Include only tables matching this regex
+  --silent                                   Suppress all console output
+  --debug                                    Enable debug logging
+  --json-schema-import-location <path>       Path to import JSON schemas
+  --zod-version <value>                      Zod version to use (choices: "3", "4", "4-mini")
+  --case-transform <true|false>              Whether to do case transformations / conversions for generated schemas
+  --singularization <true|false>             Whether to use singularization of type and enum names
+  --coerce-dates <true|false>                Whether to use z.coerce.date() for date fields in read schemas
+  --stringify-json <true|false>              Whether to JSON.stringify() on json fields in write schemas
+  --stringify-dates <true|false>             Whether to convert dates to ISO strings in write schemas
+  --default-empty-array <true|false>         Whether to use empty arrays as defaults for nullable array fields
+  --default-unknown <true|false>             Whether to use "unknown" instead of "any" for unresolved types
+  --default-nulls-to-undefined <true|false>  Whether to transform null values to undefined in generated read schemas
+  --object-name-casing <type>                Casing for generated object/type names (choices: "PascalCase", "camelCase", "snake_case")
+  --field-name-casing <type>                 Casing for field/property names in schemas & records (choices: "camelCase", "snake_case", "PascalCase", "passthrough")
+"
+`;

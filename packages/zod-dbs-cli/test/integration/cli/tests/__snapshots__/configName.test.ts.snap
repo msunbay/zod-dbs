@@ -4,22 +4,13 @@ exports[`CLI accepts custom config file name 1`] = `
 "
 zod-dbs CLI v1.0.21
 
-- zodVersion: 4
+- provider: test-provider (Test Provider)
 - outputDir: ./test/integration/output/customConfigFile
-- moduleResolution: commonjs
-- cleanOutput: false
-- fieldNameCasing: camelCase
-- objectNameCasing: PascalCase
-- caseTransform: true
-- singularization: true
-- coerceDates: true
-- defaultNullsToUndefined: true
-- provider: [object Object]
 - include: users,posts
 - exclude: ^temp_
+- zodVersion: 4
 - stringifyDates: true
 - defaultEmptyArray: true
-- stringifyJson: true
 - configName: test
 
 "

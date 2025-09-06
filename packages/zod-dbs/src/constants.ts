@@ -15,4 +15,5 @@ export const DEFAULT_CONFIGURATION: ZodDbsConfig = {
   singularization: true,
   coerceDates: true,
   defaultNullsToUndefined: true,
+  stringifyJson: true,
 };
