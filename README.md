@@ -163,9 +163,12 @@ npx zod-dbs --include '^(user|account)' --output-dir ./src/output
 
 Note that if you use both `--exclude` and `--include` options together, the `--include` option is applied first, then the `--exclude` option is applied to the included tables.
 
-### All Options
+### CLI Options
 
-All CLI options except `--provider` are optional. Each provider applies sensible defaults. E.g. `zod-pg` defaults `schema-name` to `public` and `port` to `5432`.
+The `--provider` option is always required and each provider defines its own options for the CLI.
+To view provider options run: `zod-dbs --provider [provider] --help`, or view the provider documentation.
+
+Order of precedence for options:
 
 - CLI flags (highest precedence)
 - Environment variables (connection fields)
@@ -174,12 +177,9 @@ All CLI options except `--provider` are optional. Each provider applies sensible
 
 Negative flags (`--no-*`) disable a feature that is enabled by default.
 
-**Note that some options are provider-specific and not listed here. See the provider documentation for details.**
-
 | Option                                 | Description                                                                                       | Default         |
 | -------------------------------------- | ------------------------------------------------------------------------------------------------- | --------------- |
 | `--provider <string>`                  | DB connection provider (pg, mysql, mssql, oracle, sqlite, snowflake, mongodb)                     |                 |
-| `--connection-string <string>`         | DB connection string (overrides individual host/port/user/etc).                                   |                 |
 | `-o, --output-dir <path>`              | Output directory for generated files.                                                             | `./zod-schemas` |
 | `--clean-output`                       | Delete the output directory before generation.                                                    | `false`         |
 | `--no-coerce-dates`                    | Disable using `z.coerce.date()` for date columns in read schemas (coercion enabled by default).   | `false`         |
@@ -195,13 +195,6 @@ Negative flags (`--no-*`) disable a feature that is enabled by default.
 | `--json-schema-import-location <path>` | Path to import custom JSON field schemas from.                                                    |                 |
 | `--module-resolution <type>`           | Module resolution: `commonjs` or `esm`.                                                           | `commonjs`      |
 | `--zod-version <version>`              | Target Zod variant: `3`, `4`, or `4-mini`.                                                        | `3`             |
-| `--schema-name <name>`                 | Database schema to introspect.                                                                    | `public`        |
-| `--host <host>`                        | DB host (ignored if connection string provided).                                                  | `localhost`     |
-| `--port <number>`                      | DB port (ignored if connection string provided).                                                  | `5432`          |
-| `--user <user>`                        | DB user (ignored if connection string provided).                                                  | `postgres`      |
-| `--password <password>`                | DB password (ignored if connection string provided).                                              |                 |
-| `--database <name>`                    | DB name (ignored if connection string provided).                                                  | `postgres`      |
-| `--ssl`                                | Use SSL for connection.                                                                           | `false`         |
 | `--silent`                             | Suppress console output (still writes files).                                                     | `false`         |
 | `--debug`                              | Enable verbose debug logging.                                                                     | `false`         |
 | `--help`                               | Show help and exit.                                                                               |                 |
@@ -252,28 +245,6 @@ module.exports = {
 
   outputDir: './src/generated',
 };
-```
-
-### SSL Support
-
-To connect to databases that require SSL, use the `--ssl` flag. For more advanced SSL configurations (e.g., providing certificates), you can provide parameters using the `ssl` option in a configuration file.
-
-Note that the exact SSL options depend on the database provider you are using. Refer to the documentation of the specific provider for supported SSL options.
-
-```ts
-import type { ZodDbsCliConfig } from 'zod-dbs-cli';
-
-const config: ZodDbsCliConfig = {
-  provider: 'pg',
-  ssl: {
-    rejectUnauthorized: false,
-    ca: fs.readFileSync('/path/to/ca.crt').toString(),
-    key: fs.readFileSync('/path/to/client.key').toString(),
-    cert: fs.readFileSync('/path/to/client.crt').toString(),
-  },
-};
-
-export default config;
 ```
 
 ## Programmatic usage

@@ -37,6 +37,21 @@ export class DynamoDbProvider
           description: 'AWS region for DynamoDB',
         },
         {
+          name: 'access-key-id',
+          type: 'string',
+          description: 'AWS Access Key ID (for local or custom endpoints)',
+        },
+        {
+          name: 'secret-access-key',
+          type: 'string',
+          description: 'AWS Secret Access Key (for local or custom endpoints)',
+        },
+        {
+          name: 'session-token',
+          type: 'string',
+          description: 'AWS Session Token (for local or custom endpoints)',
+        },
+        {
           name: 'endpoint',
           type: 'string',
           description: 'Override endpoint (e.g., for local DynamoDB)',

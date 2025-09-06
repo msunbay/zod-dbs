@@ -8,7 +8,7 @@ PostgreSQL provider for [zod-dbs](https://github.com/msolvaag/zod-dbs).
 npm install zod-dbs-pg
 ```
 
-> Note: This package has a peer dependency on `pg`. If you don't already have it, install it:
+> Note: This package has a peer dependency on `pg`. If you don't already have it, you might need to install it (depending on your environment, package manager, etc):
 
 ```bash
 npm install pg
@@ -22,6 +22,19 @@ npm install zod-dbs-cli zod-dbs-pg
 npx zod-dbs --provider pg
 ```
 
+### CLI Options
+
+| Option                | Description                                                       |
+| --------------------- | ----------------------------------------------------------------- |
+| `--connection-string` | PostgreSQL connection string (overrides other connection options) |
+| `--host <str>`        | Database host (default: localhost)                                |
+| `--port <num>`        | Database port (default: 5432)                                     |
+| `--database <str>`    | Database name                                                     |
+| `--user <str>`        | Database user                                                     |
+| `--password <str>`    | Database password                                                 |
+| `--schema-name <str>` | Name of the schema to introspect (default: public)                |
+| `--ssl`               | Use SSL for the connection                                        |
+
 ## Programmatic Usage
 
 ```bash
@@ -30,9 +43,9 @@ npm install zod-dbs zod-dbs-pg
 
 ```ts
 import { generateZodSchemas } from 'zod-dbs';
-import { PostgreSqlProvider } from 'zod-dbs-pg';
+import { createProvider } from 'zod-dbs-pg';
 
-const provider = new PostgreSqlProvider();
+const provider = createProvider();
 
 await generateZodSchemas({
   provider,
@@ -40,6 +53,26 @@ await generateZodSchemas({
     // See zod-dbs documentation for available options
   },
 });
+```
+
+## SSL Support
+
+To connect to databases that require SSL, use the `--ssl` flag. For more advanced SSL configurations (e.g., providing certificates), you can provide parameters using the `ssl` option in a configuration file.
+
+```ts
+import type { ZodDbsCliConfig } from 'zod-dbs-cli';
+
+const config: ZodDbsCliConfig = {
+  provider: 'pg',
+  ssl: {
+    rejectUnauthorized: false,
+    ca: fs.readFileSync('/path/to/ca.crt').toString(),
+    key: fs.readFileSync('/path/to/client.key').toString(),
+    cert: fs.readFileSync('/path/to/client.crt').toString(),
+  },
+};
+
+export default config;
 ```
 
 ## Compatibility

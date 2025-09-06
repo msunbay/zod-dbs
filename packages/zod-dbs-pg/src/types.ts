@@ -1,3 +1,5 @@
+import type { ConnectionOptions } from 'tls';
+
 declare module 'zod-dbs-core' {
   interface ZodDbsProviderConfig {
     host?: string;
@@ -6,7 +8,7 @@ declare module 'zod-dbs-core' {
     password?: string;
     database?: string;
     schemaName?: string;
-    ssl?: boolean | object;
+    ssl?: boolean | ConnectionOptions;
   }
 }
 
