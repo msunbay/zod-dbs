@@ -7,7 +7,6 @@ export const DEFAULT_CONFIGURATION: ZodDbsConfig = {
   zodVersion: '3',
   outputDir: DEFAULT_OUTPUT_DIR,
   moduleResolution: 'commonjs',
-  cleanOutput: false,
 
   fieldNameCasing: 'camelCase',
   objectNameCasing: 'PascalCase',

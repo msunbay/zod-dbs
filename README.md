@@ -20,7 +20,7 @@
   - [With environment variables](#with-environment-variables)
   - [Using .env files](#using-env-files)
   - [Exclude / Include Tables](#exclude--include-tables)
-  - [All Options](#all-options)
+  - [CLI Options](#cli-options)
   - [Configuration File](#configuration-file)
   - [SSL Support](#ssl-support)
 - [Programmatic usage](#programmatic-usage)
@@ -68,7 +68,7 @@ zod-dbs automates this process by generating type-safe validation schemas direct
 - SQLite: [zod-dbs-sqlite](./packages/zod-dbs-sqlite/README.md) (experimental)
 - Snowflake: [zod-dbs-snowflake](./packages/zod-dbs-snowflake/README.md) (experimental)
 - MongoDB: [zod-dbs-mongodb](./packages/zod-dbs-mongodb/README.md) (experimental)
-- DynamoDB: [zod-dbs-dynamodb](./packages/zod-dbs-dynamo/README.md) (experimental)
+- DynamoDB: [zod-dbs-dynamodb](./packages/zod-dbs-dynamodb/README.md) (experimental)
 
 ## Installation
 
@@ -166,7 +166,7 @@ Note that if you use both `--exclude` and `--include` options together, the `--i
 ### CLI Options
 
 The `--provider` option is always required and each provider defines its own options for the CLI.
-To view provider options run: `zod-dbs --provider [provider] --help`, or view the provider documentation.
+To view all options run: `zod-dbs --provider [provider] --help`, or view the provider documentation.
 
 Order of precedence for options:
 
@@ -179,13 +179,16 @@ Negative flags (`--no-*`) disable a feature that is enabled by default.
 
 | Option                                 | Description                                                                                       | Default         |
 | -------------------------------------- | ------------------------------------------------------------------------------------------------- | --------------- |
-| `--provider <string>`                  | DB connection provider (pg, mysql, mssql, oracle, sqlite, snowflake, mongodb)                     |                 |
+| `--provider <string>`                  | DB connection provider (e.g pg, mysql, mssql, oracle, ...)                                        |                 |
+| `--config-name <name>`                 | Name (without periods) of configuration file to use.                                              | `zod-dbs`       |
 | `-o, --output-dir <path>`              | Output directory for generated files.                                                             | `./zod-schemas` |
 | `--clean-output`                       | Delete the output directory before generation.                                                    | `false`         |
 | `--no-coerce-dates`                    | Disable using `z.coerce.date()` for date columns in read schemas (coercion enabled by default).   | `false`         |
 | `--no-stringify-json`                  | Disable `JSON.stringify()` transforms for `json` fields in write schemas.                         | `false`         |
 | `--stringify-dates`                    | Add `.toISOString()` transforms for date fields in write schemas.                                 | `false`         |
 | `--default-empty-array`                | Default nullable array fields to `[]` in write schemas.                                           | `false`         |
+| `--default-unknown`                    | Use `unknown` instead of `any` for unresolved/unknown types.                                      | `false`         |
+| `--no-default-nulls-to-undefined`      | Disable transforming null values to undefined in generated read schemas.                          | `false`         |
 | `--object-name-casing <value>`         | Casing for object/type names (one of: `PascalCase`, `camelCase`, `snake_case`).                   | `PascalCase`    |
 | `--field-name-casing <value>`          | Casing for field/property names (one of: `PascalCase`, `camelCase`, `snake_case`, `passthrough`). | `camelCase`     |
 | `--no-case-transform`                  | Disable transforming property name casing (skips base schema + transform helpers).                | `false`         |
@@ -209,6 +212,9 @@ In addition to CLI options, you can use configuration files to set your options.
 
 ```typescript
 import type { ZodDbsCliConfig } from 'zod-dbs-cli';
+
+// Makes the provider configuration types available
+import 'zod-dbs-pg';
 
 const config: ZodDbsCliConfig = {
   provider: 'pg',

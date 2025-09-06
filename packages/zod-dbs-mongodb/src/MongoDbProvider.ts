@@ -29,8 +29,6 @@ export class MongoDbProvider
         port: 27017,
         host: 'localhost',
         sampleSize: 50,
-      },
-      configurationOverrides: {
         defaultNullsToUndefined: false,
         stringifyJson: false,
       },

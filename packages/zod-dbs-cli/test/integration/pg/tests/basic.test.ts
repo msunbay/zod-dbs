@@ -11,10 +11,12 @@ it('CLI generates correct zod schemas with basic options', async () => {
   const connectionString = getClientConnectionString();
   const outputDir = getOutputDir('basic');
 
-  execSync(
-    `node ${cliPath} --provider pg --connection-string "${connectionString}" --output-dir "${outputDir}" --silent --module-resolution esm --schema-name public`,
-    { stdio: 'inherit' }
+  const output = execSync(
+    `node ${cliPath} --provider pg --connection-string "${connectionString}" --output-dir "${outputDir}" --module-resolution esm --schema-name public`,
+    { stdio: 'pipe' }
   );
+
+  expect(output.toString()).toMatchSnapshot('CLI output');
 
   const outputFiles = await getOutputFiles(outputDir);
 

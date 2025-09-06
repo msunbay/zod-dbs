@@ -17,7 +17,6 @@ export interface ZodDbsProviderOptions {
   name: string;
   displayName?: string;
   configurationDefaults?: Partial<ZodDbsConfig>;
-  configurationOverrides?: Partial<ZodDbsConfig>;
   options?: ZodDbsProviderOption[];
 }
 
@@ -30,14 +29,12 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
   name: string;
   displayName?: string;
   configurationDefaults?: Partial<ZodDbsConfig>;
-  configurationOverrides?: Partial<ZodDbsConfig>;
   options: ZodDbsProviderOption[];
 
   constructor(options: ZodDbsProviderOptions) {
     this.name = options.name;
     this.displayName = options.displayName;
     this.configurationDefaults = options.configurationDefaults;
-    this.configurationOverrides = options.configurationOverrides;
     this.options = options.options || [];
   }
 

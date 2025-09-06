@@ -1,7 +1,13 @@
 import chalk from 'chalk';
 
-export const logSetting = (name: string, value: string) => {
-  console.info(`- ${chalk.white(name)}: ${chalk.blue(value)}`);
+import { maskSensitiveValue } from './mask.js';
+
+export const logSetting = (name: string, value: string | boolean) => {
+  let displayValue = value.toString();
+
+  console.info(
+    `- ${chalk.white(name)}: ${chalk.blue(maskSensitiveValue(name, displayValue))}`
+  );
 };
 
 export const logAppName = (message: string) => {

@@ -22,7 +22,10 @@ export const getTestContext = () => {
 };
 
 export const getClientConnectionString = (): string => {
-  return createConnectionString(getTestContext().client.config);
+  return createConnectionString({
+    ...getTestContext().client.config,
+    protocol: 'postgresql',
+  });
 };
 
 export async function setupTestDb(): Promise<TestDbContext> {

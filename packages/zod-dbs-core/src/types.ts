@@ -152,14 +152,6 @@ export interface ZodDbsProvider {
    */
   options?: ZodDbsProviderOption[];
   /**
-   * Default configuration values for this provider
-   * */
-  configurationDefaults?: Partial<ZodDbsConfig>;
-  /**
-   * Configuration overrides that will always be applied for this provider
-   *  */
-  configurationOverrides?: Partial<ZodDbsConfig>;
-  /**
    * Fetches schema information from the database.
    */
   getSchemaInformation: (

@@ -4,8 +4,8 @@ import { getCliPath } from '../../utils.js';
 
 const cliPath = getCliPath();
 
-it('outputs provider options', async () => {
-  const output = execSync(`node ${cliPath} --provider dynamodb --help`, {
+it('outputs provider help', async () => {
+  const output = execSync(`node ${cliPath} --provider pg --help`, {
     stdio: 'pipe',
   });
 

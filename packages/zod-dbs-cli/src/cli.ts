@@ -1,11 +1,6 @@
 import { Command, Option, program } from 'commander';
 import { generateZodSchemas } from 'zod-dbs';
-import {
-  logDebug,
-  parseConnectionString,
-  toError,
-  ZodDbsProvider,
-} from 'zod-dbs-core';
+import { logDebug, toError, ZodDbsProvider } from 'zod-dbs-core';
 
 import type { ZodDbsCliConfig, ZodDbsCliOptions } from './types.js';
 
@@ -20,25 +15,17 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
   enableDebugMode();
   logDebug('Starting zod-dbs CLI with options:', cliOptions);
 
-  let config = await getConfiguration(cliOptions);
-  logDebug('Initial configuration:', config);
-
   const appVersion = cliOptions.appVersion ?? (await getAppVersion());
   const appName = cliOptions.appName || 'zod-dbs';
+  logAppName(`${appName} CLI v${appVersion}`);
+
+  const config = await getConfiguration(cliOptions);
 
   program.name(appName);
   program.version(appVersion);
   program.description('Generates Zod schemas from database schema.');
 
   const provider = await loadProvider(cliOptions.overrides?.provider, config);
-
-  logDebug('Provider default configuration:', provider.configurationDefaults);
-
-  // Merge provider-specific default config with file config
-  config = {
-    ...provider.configurationDefaults,
-    ...config,
-  };
 
   if (!cliOptions.overrides?.provider) {
     program.option('-p,--provider <name>', 'Database provider to use');
@@ -49,18 +36,16 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
 
   const outputOptions = program.optionsGroup('Output options:');
 
+  outputOptions.option('--config-name <name>', 'Name of configuration file');
   outputOptions.option(
     '-o,--output-dir <path>',
-    'Output directory for generated schemas',
-    config.outputDir
+    'Output directory for generated schemas'
   );
   outputOptions.addOption(
     new Option(
       '--module-resolution <type>',
       'Module resolution type for generated files'
-    )
-      .choices(['commonjs', 'esm'])
-      .default(config.moduleResolution)
+    ).choices(['commonjs', 'esm'])
   );
   outputOptions.option(
     '--clean-output',
@@ -81,37 +66,43 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
     'Path to import JSON schemas'
   );
   outputOptions.addOption(
-    new Option('--zod-version <value>', 'Zod version to use')
-      .choices(['3', '4', '4-mini'])
-      .default(config.zodVersion)
+    new Option('--zod-version <value>', 'Zod version to use').choices([
+      '3',
+      '4',
+      '4-mini',
+    ])
   );
   outputOptions.option(
-    '--no-case-transform',
-    'Disable case transformations / conversions for generated schemas'
+    '--case-transform <true|false>',
+    'Whether to do case transformations / conversions for generated schemas'
   );
   outputOptions.option(
-    '--no-singularization',
-    'Disable singularization of type and enum names'
+    '--singularization <true|false>',
+    'Whether to use singularization of type and enum names'
   );
   outputOptions.option(
-    '--no-coerce-dates',
-    'Disable using z.coerce.date() for date fields in read schemas'
+    '--coerce-dates <true|false>',
+    'Whether to use z.coerce.date() for date fields in read schemas'
   );
   outputOptions.option(
-    '--no-stringify-json',
-    'Disable JSON.stringify() on json fields in write schemas'
+    '--stringify-json <true|false>',
+    'Whether to JSON.stringify() on json fields in write schemas'
   );
   outputOptions.option(
-    '--stringify-dates',
-    'Convert dates to ISO strings in write schemas'
+    '--stringify-dates <true|false>',
+    'Whether to convert dates to ISO strings in write schemas'
   );
   outputOptions.option(
-    '--default-empty-array',
-    'Provide empty arrays as defaults for nullable array fields'
+    '--default-empty-array <true|false>',
+    'Whether to use empty arrays as defaults for nullable array fields'
   );
   outputOptions.option(
-    '--default-unknown',
+    '--default-unknown <true|false>',
     'Whether to use "unknown" instead of "any" for unresolved types'
+  );
+  outputOptions.option(
+    '--default-nulls-to-undefined <true|false>',
+    'Whether to transform null values to undefined in generated read schemas'
   );
   outputOptions.addOption(
     new Option(
@@ -131,21 +122,14 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
   const spinner = createProgressHandler(options.silent);
 
   try {
-    const connectionConfig = options.connectionString
-      ? parseConnectionString(options.connectionString)
-      : options;
-
     const cliConfig: ZodDbsCliConfig = {
       ...config,
       ...options,
-      ...connectionConfig,
-      ...provider.configurationOverrides, // ensure overrides are always applied
     };
 
     logDebug('Final configuration:', cliConfig);
 
     if (!cliConfig.silent) {
-      logAppName(`${appName} CLI v${appVersion}`);
       logSettings(cliConfig);
       console.log();
     }
@@ -223,7 +207,7 @@ const addProviderOptions = (program: Command, provider: ZodDbsProvider) => {
 
 const logSettings = (config: ZodDbsCliConfig) => {
   for (const [key, value] of Object.entries(config)) {
-    if (value !== undefined) {
+    if (value !== undefined && value !== null) {
       logSetting(key, value);
     }
   }

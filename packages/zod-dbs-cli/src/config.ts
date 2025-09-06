@@ -1,13 +1,9 @@
 import { cosmiconfig } from 'cosmiconfig';
-import {
-  convertCaseFormat,
-  DEFAULT_CONFIGURATION,
-  ZodDbsConfig,
-} from 'zod-dbs';
-import { enableDebug, logDebug } from 'zod-dbs-core';
+import { convertCaseFormat, ZodDbsConfig } from 'zod-dbs';
+import { enableDebug, logDebug, toError } from 'zod-dbs-core';
 
 import { ZodDbsCliConfig, ZodDbsCliOptions } from './types.js';
-import { hasArgument } from './utils/args.js';
+import { getArgumentValue, hasArgument } from './utils/args.js';
 
 const getEnvVarName = (prefix: string, name: string) => `${prefix}_${name}`;
 
@@ -61,18 +57,44 @@ function getEnvOverrides(appName: string): Partial<ZodDbsConfig> {
   return overrides;
 }
 
+const loadConfigFile = async (name: string, suffix?: string) => {
+  const configName = suffix ? `${name}-${suffix}` : name;
+
+  logDebug(`Searching for configuration: ${configName}`);
+
+  try {
+    const explorer = cosmiconfig(configName);
+
+    const result = await explorer.search();
+
+    logDebug(`Loaded configuration from file ${configName}:`, result?.config);
+
+    if (!result?.config && suffix) {
+      throw new Error('No configuration found');
+    }
+
+    return result?.config;
+  } catch (error) {
+    logDebug(`Failed to load configuration from file ${configName}:`, error);
+
+    throw new Error(
+      `Failed to load configuration from file "${configName}": ${toError(error).message}`
+    );
+  }
+};
+
 export const getConfiguration = async ({
   appName = 'zod-dbs',
   overrides,
 }: ZodDbsCliOptions = {}): Promise<ZodDbsCliConfig> => {
-  const explorer = cosmiconfig(appName);
-  const result = await explorer.search();
+  const configSuffix = getArgumentValue('--config-name');
+
+  const config = await loadConfigFile(appName, configSuffix);
   const envOverrides = getEnvOverrides(appName);
 
   // Precedence (lowest -> highest): base defaults < config file < env overrides
   return {
-    ...DEFAULT_CONFIGURATION,
-    ...result?.config,
+    ...config,
     ...envOverrides,
     ...overrides,
   };

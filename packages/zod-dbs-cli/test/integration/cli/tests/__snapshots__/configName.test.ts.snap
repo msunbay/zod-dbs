@@ -1,0 +1,26 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CLI accepts custom config file name 1`] = `
+"
+zod-dbs CLI v1.0.21
+
+- zodVersion: 4
+- outputDir: ./test/integration/output/customConfigFile
+- moduleResolution: commonjs
+- cleanOutput: false
+- fieldNameCasing: camelCase
+- objectNameCasing: PascalCase
+- caseTransform: true
+- singularization: true
+- coerceDates: true
+- defaultNullsToUndefined: true
+- provider: [object Object]
+- include: users,posts
+- exclude: ^temp_
+- stringifyDates: true
+- defaultEmptyArray: true
+- stringifyJson: true
+- configName: test
+
+"
+`;

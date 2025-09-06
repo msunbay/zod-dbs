@@ -9,6 +9,7 @@ export const createClient = async (
   config: ZodDbsProviderConfig
 ): Promise<ZodDbsDatabaseClient> => {
   const client = new Client({
+    connectionString: config.connectionString,
     user: config.user,
     password: config.password,
     host: config.host,

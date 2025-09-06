@@ -13,6 +13,16 @@ export default defineConfig({
       },
       {
         test: {
+          name: 'integration:cli',
+          environment: 'node',
+          include: ['test/integration/cli/tests/**/*.test.ts'],
+          globals: true,
+          hookTimeout: 60000,
+          testTimeout: 20000,
+        },
+      },
+      {
+        test: {
           name: 'integration:pg',
           environment: 'node',
           include: ['test/integration/pg/tests/**/*.test.ts'],
