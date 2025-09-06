@@ -1,6 +1,6 @@
 {
   "name": "zod-dbs-core",
-  "version": "1.0.13",
+  "version": "2.0.0",
   "description": "Shared core functionality for zod-dbs packages",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
