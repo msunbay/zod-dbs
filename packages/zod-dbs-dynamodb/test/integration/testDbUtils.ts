@@ -43,6 +43,8 @@ export async function setupTestDb(): Promise<TestDbContext> {
   const client = await createClient({
     endpoint,
     region: 'us-east-1',
+    accessKeyId: 'test',
+    secretAccessKey: 'test',
   });
 
   await client.connect();

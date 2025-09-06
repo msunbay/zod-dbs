@@ -20,5 +20,12 @@ declare module 'zod-dbs-core' {
      * Default: 50
      */
     sampleSize?: number;
+
+    /**
+     * Explicit AWS credentials (useful for DynamoDB Local or custom endpoints).
+     */
+    accessKeyId?: string;
+    secretAccessKey?: string;
+    sessionToken?: string;
   }
 }
