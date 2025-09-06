@@ -35,6 +35,11 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
     program.option('-p,--provider <name>', 'Database provider to use');
   }
 
+  program.option(
+    '--config-name <name>',
+    'Name of configuration file. E.g. "development" will load "zod-dbs-development.ts"'
+  );
+
   // Add provider-specific dynamic options before parsing the full CLI
   addProviderOptions(program, provider);
 
@@ -46,7 +51,6 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
     throw new Error(`Invalid boolean value: ${value}`);
   };
 
-  outputOptions.option('--config-name <name>', 'Name of configuration file');
   outputOptions.option(
     '-o,--output-dir <path>',
     'Output directory for generated schemas'

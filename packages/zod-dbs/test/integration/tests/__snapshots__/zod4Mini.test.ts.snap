@@ -125,7 +125,7 @@ export const UsersTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    profile: z.optional(z.nullable(z.json())),
+    profile: z.pipe(z.optional(z.nullable(z.json())), z.transform((value) => value ? JSON.stringify(value) : value)),
      /**
       * dataType: timestamptz
       * defaultValue: now()

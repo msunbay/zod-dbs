@@ -109,11 +109,11 @@ export const UsersTableBaseSchema = z.object({
      /**
       * dataType: object
       */
-    profile: UserProfileSchema.nullable().optional(),
+    profile: UserProfileSchema.nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: array
       */
-    tags: z.array(z.any()).nullable().optional(),
+    tags: z.array(z.any()).nullable().transform((value) => value ?? undefined).optional(),
 });
 
 /**

@@ -89,6 +89,11 @@ export const getConfiguration = async ({
 }: ZodDbsCliOptions = {}): Promise<ZodDbsCliConfig> => {
   const configSuffix = getArgumentValue('--config-name');
 
+  if (configSuffix?.includes('.'))
+    throw new Error(
+      'Invalid config name: should not include file extension or period.'
+    );
+
   const config = await loadConfigFile(appName, configSuffix);
   const envOverrides = getEnvOverrides(appName);
 

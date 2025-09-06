@@ -142,7 +142,7 @@ export const PostsTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    metadata: z.any().nullable().optional(),
+    metadata: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: timestamptz
       */

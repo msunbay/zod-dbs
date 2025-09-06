@@ -1,8 +1,13 @@
-import { logDebug, ZodDbsBaseProvider } from 'zod-dbs-core';
+import {
+  logDebug,
+  parseConnectionString,
+  ZodDbsBaseProvider,
+} from 'zod-dbs-core';
 
 import type {
   ZodDbsColumn,
   ZodDbsColumnInfo,
+  ZodDbsConfig,
   ZodDbsProvider,
   ZodDbsProviderConfig,
   ZodDbsTable,
@@ -73,6 +78,23 @@ export class MongoDbProvider
         },
       ],
     });
+  }
+
+  protected initConfiguration(config: ZodDbsConfig): ZodDbsConfig {
+    const withDefaults = super.initConfiguration(config);
+
+    if (withDefaults.connectionString) {
+      // If connection string is provided, try to parse out the database name if not explicitly set
+      if (!withDefaults.database) {
+        const { database } = parseConnectionString(
+          withDefaults.connectionString
+        );
+
+        withDefaults.database = database;
+      }
+    }
+
+    return withDefaults;
   }
 
   createClient = (options: ZodDbsProviderConfig) => createClient(options);

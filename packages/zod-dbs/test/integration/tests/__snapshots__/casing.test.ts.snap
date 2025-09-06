@@ -165,7 +165,7 @@ export const PostsTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    metadata: z.any().nullable().optional(),
+    metadata: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: timestamptz
       */
@@ -468,7 +468,7 @@ export const UsersTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    profile: z.any().nullable().optional(),
+    profile: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: timestamptz
       * defaultValue: now()
@@ -758,7 +758,7 @@ export const UsersTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    profile: z.any().nullable().optional(),
+    profile: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: timestamptz
       * defaultValue: now()
@@ -1047,7 +1047,7 @@ export const UsersTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    profile: z.any().nullable().optional(),
+    profile: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: timestamptz
       * defaultValue: now()

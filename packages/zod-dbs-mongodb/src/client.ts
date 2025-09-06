@@ -8,11 +8,13 @@ import { ZodDbsMongoDbClient } from './types.js';
 export async function createClient(
   config: ZodDbsProviderConfig
 ): Promise<ZodDbsMongoDbClient> {
-  const uri = createConnectionString({
-    protocol: 'mongodb',
-    ...config,
-    database: undefined,
-  });
+  const uri =
+    config.connectionString ??
+    createConnectionString({
+      protocol: 'mongodb',
+      ...config,
+      database: undefined,
+    });
 
   logDebug('Creating MongoDB client', {
     uri,

@@ -7,6 +7,10 @@ export interface ZodDbsMongoDbClient extends ZodDbsDatabaseClient {
 declare module 'zod-dbs-core' {
   interface ZodDbsProviderConfig {
     /**
+     * Optional full MongoDB connection string. If provided, this takes precedence over other connection parameters.
+     */
+    connectionString?: string;
+    /**
      * The hostname of the MongoDB server (default: 'localhost').
      */
     host?: string;

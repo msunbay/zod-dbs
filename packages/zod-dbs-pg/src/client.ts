@@ -39,7 +39,6 @@ export const createClient = async (
       user: client.user,
       password: client.password,
       ssl: client.ssl,
-      protocol: 'postgresql',
     },
   } satisfies ZodDbsDatabaseClient;
 };

@@ -239,11 +239,11 @@ export const AuditLogsTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    oldValues: z.any().nullable().optional(),
+    oldValues: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: jsonb
       */
-    newValues: z.any().nullable().optional(),
+    newValues: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: timestamptz
       * defaultValue: now()
@@ -1788,7 +1788,7 @@ export const FilesTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    metadata: z.any().nullable().optional(),
+    metadata: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: _text
       */
@@ -2533,7 +2533,7 @@ export const InventoryTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    supplierInfo: z.any().nullable().optional(),
+    supplierInfo: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: _text
       */
@@ -2871,7 +2871,7 @@ export const NetworkLogsTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    headers: z.any().nullable().optional(),
+    headers: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
 });
 
 /**
@@ -3249,7 +3249,7 @@ export const OrdersTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    metadata: z.any().nullable().optional(),
+    metadata: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: timestamptz
       * defaultValue: now()
@@ -3879,7 +3879,7 @@ export const PostsTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    metadata: z.any().nullable().optional(),
+    metadata: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: timestamptz
       */
@@ -5005,7 +5005,7 @@ export const UsersTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    profile: z.any().nullable().optional(),
+    profile: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: timestamptz
       * defaultValue: now()
