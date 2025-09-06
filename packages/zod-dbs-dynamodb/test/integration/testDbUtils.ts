@@ -31,6 +31,11 @@ export async function setupTestDb(): Promise<TestDbContext> {
     .withExposedPorts(8000)
     .start();
 
+  process.env.AWS_ACCESS_KEY_ID = 'not-used';
+  process.env.AWS_SECRET_ACCESS_KEY = 'not-used';
+  process.env.AWS_REGION = 'us-east-1';
+  process.env.AWS_EC2_METADATA_DISABLED = 'true';
+
   const host = container.getHost();
   const port = container.getMappedPort(8000);
   const endpoint = `http://${host}:${port}`;
