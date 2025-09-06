@@ -23,7 +23,7 @@ export const loadMustacheTemplate = async (
 
 export const renderMustacheTemplate = async (
   templateName: string,
-  data: Record<string, any>,
+  data: object,
   partials: Record<string, string> = {}
 ): Promise<string> => {
   const templateContent = await loadMustacheTemplate(templateName);

@@ -539,7 +539,7 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
 
   protected async renderTemplate(
     templateName: string,
-    model: any
+    model: ZodDbsTableRenderModel
   ): Promise<string> {
     return await renderMustacheTemplate(templateName, model);
   }
