@@ -194,9 +194,6 @@ importers:
         specifier: workspace:*
         version: link:../zod-dbs-core
     devDependencies:
-      '@testcontainers/postgresql':
-        specifier: ^11.5.1
-        version: 11.5.1
       '@types/pg':
         specifier: ^8.15.4
         version: 8.15.5
