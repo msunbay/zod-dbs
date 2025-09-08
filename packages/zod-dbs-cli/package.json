@@ -13,17 +13,16 @@
   },
   "scripts": {
     "build": "rm -rf ./dist && tsc --project tsconfig.build.json",
+    "test": "pnpm run test:unit && pnpm run test:integration",
     "test:unit": "vitest --project unit run",
-    "test:integration": "pnpm run test:integration:cli && pnpm run test:integration:schema",
-    "test:integration:cli": "vitest --project integration:cli run",
-    "test:integration:schema": "vitest --project integration:schema run",
+    "test:integration": "vitest --project integration run",
     "test:types": "tsc --noEmit"
   },
   "author": "Magnus Solvåg",
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/msolvaag/zod-dbs.git"
+    "url": "git+https://github.com/msunbay/zod-dbs.git"
   },
   "publishConfig": {
     "access": "public"
@@ -31,13 +30,6 @@
   "files": [
     "dist"
   ],
-  "devDependencies": {
-    "@testcontainers/mysql": "^11.5.1",
-    "@testcontainers/postgresql": "^11.5.1",
-    "zod-dbs-pg": "workspace:*",
-    "zod-dbs-mysql": "workspace:*",
-    "zod-dbs-snowflake": "workspace:*"
-  },
   "dependencies": {
     "chalk": "^5.4.1",
     "commander": "^14.0.0",

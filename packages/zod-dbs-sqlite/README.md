@@ -1,6 +1,6 @@
 # zod-dbs-sqlite
 
-SQLite provider for [zod-dbs](https://github.com/msolvaag/zod-dbs).
+SQLite provider for [zod-dbs](https://github.com/msunbay/zod-dbs).
 
 ## Installation
 

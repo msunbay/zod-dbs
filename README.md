@@ -20,7 +20,7 @@
   - [With environment variables](#with-environment-variables)
   - [Using .env files](#using-env-files)
   - [Exclude / Include Tables](#exclude--include-tables)
-  - [All Options](#all-options)
+  - [CLI Options](#cli-options)
   - [Configuration File](#configuration-file)
   - [SSL Support](#ssl-support)
 - [Programmatic usage](#programmatic-usage)
@@ -51,6 +51,9 @@
 ## Requirements
 
 - **Node.js 20+**
+- **TypeScript 4+**
+
+Note that zod-dbs should work with Bun and Deno.
 
 ## Why zod-dbs?
 
@@ -68,6 +71,7 @@ zod-dbs automates this process by generating type-safe validation schemas direct
 - SQLite: [zod-dbs-sqlite](./packages/zod-dbs-sqlite/README.md) (experimental)
 - Snowflake: [zod-dbs-snowflake](./packages/zod-dbs-snowflake/README.md) (experimental)
 - MongoDB: [zod-dbs-mongodb](./packages/zod-dbs-mongodb/README.md) (experimental)
+- DynamoDB: [zod-dbs-dynamodb](./packages/zod-dbs-dynamodb/README.md) (experimental)
 
 ## Installation
 
@@ -162,48 +166,45 @@ npx zod-dbs --include '^(user|account)' --output-dir ./src/output
 
 Note that if you use both `--exclude` and `--include` options together, the `--include` option is applied first, then the `--exclude` option is applied to the included tables.
 
-### All Options
+### CLI Options
 
-All CLI options except `--provider` are optional. Each provider applies sensible defaults. E.g. `zod-pg` defaults `schema-name` to `public` and `port` to `5432`.
+Unless you specify the provider through a config file, the `--provider` option is required as each provider defines its own options for the CLI.
+To view options run: `zod-dbs --provider [provider] --help`, or view the provider documentation.
+
+Order of precedence for options:
 
 - CLI flags (highest precedence)
 - Environment variables (connection fields)
-- Config file (`zod-dbs.config.{js,ts,json}`)
+- Config file (`zod-dbs.config.{ts,js,json}`)
 - Built-in defaults
 
-Negative flags (`--no-*`) disable a feature that is enabled by default.
+Booleans are passed explicitly as <true|false> for clarity.
 
-**Note that some options are provider-specific and not listed here. See the provider documentation for details.**
-
-| Option                                 | Description                                                                                       | Default         |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------- | --------------- |
-| `--provider <string>`                  | DB connection provider (pg, mysql, mssql, oracle, sqlite, snowflake, mongodb)                     |                 |
-| `--connection-string <string>`         | DB connection string (overrides individual host/port/user/etc).                                   |                 |
-| `-o, --output-dir <path>`              | Output directory for generated files.                                                             | `./zod-schemas` |
-| `--clean-output`                       | Delete the output directory before generation.                                                    | `false`         |
-| `--no-coerce-dates`                    | Disable using `z.coerce.date()` for date columns in read schemas (coercion enabled by default).   | `false`         |
-| `--no-stringify-json`                  | Disable `JSON.stringify()` transforms for `json` fields in write schemas.                         | `false`         |
-| `--stringify-dates`                    | Add `.toISOString()` transforms for date fields in write schemas.                                 | `false`         |
-| `--default-empty-array`                | Default nullable array fields to `[]` in write schemas.                                           | `false`         |
-| `--object-name-casing <value>`         | Casing for object/type names (one of: `PascalCase`, `camelCase`, `snake_case`).                   | `PascalCase`    |
-| `--field-name-casing <value>`          | Casing for field/property names (one of: `PascalCase`, `camelCase`, `snake_case`, `passthrough`). | `camelCase`     |
-| `--no-case-transform`                  | Disable transforming property name casing (skips base schema + transform helpers).                | `false`         |
-| `--no-singularization`                 | Preserve plural table / enum names (singularization on by default).                               | `false`         |
-| `--include <regex>`                    | Include only tables matching this regex (applied before exclude).                                 |                 |
-| `--exclude <regex>`                    | Exclude tables matching this regex.                                                               |                 |
-| `--json-schema-import-location <path>` | Path to import custom JSON field schemas from.                                                    |                 |
-| `--module-resolution <type>`           | Module resolution: `commonjs` or `esm`.                                                           | `commonjs`      |
-| `--zod-version <version>`              | Target Zod variant: `3`, `4`, or `4-mini`.                                                        | `3`             |
-| `--schema-name <name>`                 | Database schema to introspect.                                                                    | `public`        |
-| `--host <host>`                        | DB host (ignored if connection string provided).                                                  | `localhost`     |
-| `--port <number>`                      | DB port (ignored if connection string provided).                                                  | `5432`          |
-| `--user <user>`                        | DB user (ignored if connection string provided).                                                  | `postgres`      |
-| `--password <password>`                | DB password (ignored if connection string provided).                                              |                 |
-| `--database <name>`                    | DB name (ignored if connection string provided).                                                  | `postgres`      |
-| `--ssl`                                | Use SSL for connection.                                                                           | `false`         |
-| `--silent`                             | Suppress console output (still writes files).                                                     | `false`         |
-| `--debug`                              | Enable verbose debug logging.                                                                     | `false`         |
-| `--help`                               | Show help and exit.                                                                               |                 |
+| Option                                       | Description                                                                                  | Default         |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------- | --------------- |
+| `--provider <string>`                        | DB connection provider (e.g. pg, mysql, mssql, oracle, sqlite, snowflake, mongodb, dynamodb) |                 |
+| `--config-name <name>`                       | Name of configuration file. E.g. development uses `zod-dbs-development.{ts,js,json}`         |                 |
+| `--output-dir <path>`                        | Output directory for generated files.                                                        | `./zod-schemas` |
+| `--clean-output`                             | Delete the output directory before generation.                                               | `false`         |
+| `--include <regex>`                          | Include only tables matching this regex (applied before exclude).                            |                 |
+| `--exclude <regex>`                          | Exclude tables matching this regex.                                                          |                 |
+| `--json-schema-import-location <path>`       | Path to import custom JSON field schemas from.                                               |                 |
+| `--module-resolution <type>`                 | Module resolution: `commonjs` or `esm`.                                                      | `commonjs`      |
+| `--zod-version <version>`                    | Target Zod variant: `3`, `4`, or `4-mini`.                                                   | `3`             |
+| `--case-transform <true\|false>`             | Whether to perform case transformations/conversions in generated schemas.                    | `true`          |
+| `--singularization <true\|false>`            | Whether to use singularization of type and enum names.                                       | `true`          |
+| `--coerce-dates <true\|false>`               | Whether to use `z.coerce.date()` for date fields in read schemas.                            | `true`          |
+| `--stringify-json <true\|false>`             | Whether to JSON.stringify() on json fields in write schemas.                                 | `true`          |
+| `--stringify-dates <true\|false>`            | Whether to convert dates to ISO strings in write schemas.                                    | `false`         |
+| `--default-empty-array <true\|false>`        | Whether to use empty arrays as defaults for nullable array fields.                           | `false`         |
+| `--default-unknown <true\|false>`            | Whether to use `unknown` instead of `any` for unresolved/unknown types.                      | `false`         |
+| `--default-nulls-to-undefined <true\|false>` | Whether to transform null values to `undefined` in generated read schemas.                   | `true`          |
+| `--object-name-casing <type>`                | Casing for object/type names: `PascalCase`, `camelCase`, or `snake_case`.                    | `PascalCase`    |
+| `--field-name-casing <type>`                 | Casing for field/property names: `camelCase`, `snake_case`, `PascalCase`, or `passthrough`.  | `camelCase`     |
+| `--silent`                                   | Suppress console output (still writes files).                                                | `false`         |
+| `--debug`                                    | Enable verbose debug logging.                                                                | `false`         |
+| `--help`                                     | Show help and exit.                                                                          |                 |
+| `--version`                                  | Show version number and exit.                                                                |                 |
 
 ### Configuration File
 
@@ -214,17 +215,21 @@ In addition to CLI options, you can use configuration files to set your options.
 **zod-dbs.config.ts:**
 
 ```typescript
+import { createProvider } from 'zod-dbs-pg';
+
 import type { ZodDbsCliConfig } from 'zod-dbs-cli';
 
 const config: ZodDbsCliConfig = {
-  provider: 'pg',
+  provider: createProvider(),
 
+  // Database options
   user: 'postgres',
   password: 'secret',
   host: 'localhost',
   port: 5432,
   database: 'mydb',
 
+  // Output options
   outputDir: './src/generated',
   include: ['users', 'posts'],
   exclude: ['^temp_'],
@@ -236,43 +241,10 @@ const config: ZodDbsCliConfig = {
 export default config;
 ```
 
-**zod-dbs.config.js:**
+When you define a configuration file, you can run the CLI without any options:
 
-```javascript
-module.exports = {
-  provider: 'mysql',
-
-  user: 'user',
-  database: 'mydb',
-  password: 'secret',
-  host: 'localhost',
-  port: 3306,
-  schemaName: 'mydb',
-
-  outputDir: './src/generated',
-};
-```
-
-### SSL Support
-
-To connect to databases that require SSL, use the `--ssl` flag. For more advanced SSL configurations (e.g., providing certificates), you can provide parameters using the `ssl` option in a configuration file.
-
-Note that the exact SSL options depend on the database provider you are using. Refer to the documentation of the specific provider for supported SSL options.
-
-```ts
-import type { ZodDbsCliConfig } from 'zod-dbs-cli';
-
-const config: ZodDbsCliConfig = {
-  provider: 'pg',
-  ssl: {
-    rejectUnauthorized: false,
-    ca: fs.readFileSync('/path/to/ca.crt').toString(),
-    key: fs.readFileSync('/path/to/client.key').toString(),
-    cert: fs.readFileSync('/path/to/client.crt').toString(),
-  },
-};
-
-export default config;
+```sh
+npx zod-dbs
 ```
 
 ## Programmatic usage
@@ -355,7 +327,8 @@ Since reading and writing are two different operations, zod-dbs generates separa
 ### Casing
 
 zod-dbs supports different casing styles for generated schemas and types. By default zod-dbs uses `PascalCase` for object names and `camelCase` for properties. You can specify the desired casing for field names and object names using the `--field-name-casing` and `--object-name-casing` options.
-The `--no-case-transform` option disables the automatic casing transformation for field names, which means that the generated schemas will use the original database column names as-is without any transformation.
+If case transforms are needed, zod-dbs generates additional "base" schemas and transform functions to convert between the database column names and the desired casing.
+Using `--case-transform false` option disables the automatic casing transformation for field names, which means that the generated schemas will use the original database column names as-is without any transformation.
 
 ### Singularization
 
@@ -372,7 +345,7 @@ Example:
 If you would prefer the generated identifiers to preserve the original (often plural / snake_case) names, disable singularization with the CLI flag:
 
 ```
-npx zod-dbs --no-singularization
+npx zod-dbs --singularization false
 ```
 
 Or in a config file:
@@ -514,7 +487,7 @@ const ExtendedSchema = UsersTableBaseSchema.extend({
 }));
 ```
 
-If you have disabled case transforms (`--no-case-transform`) then there are no "base" schemas or transform functions.
+If you have disabled case transforms (`--case-transform false`) then there are no "base" schemas or transform functions.
 And you can just extend the read schema like:
 
 ```ts
@@ -535,10 +508,13 @@ If you want to support a database that is not supported out of the box, you can 
 zod-dbs provides a base class `ZodDbsBaseProvider` that you can extend to create your custom provider. This base class provides default implementations for some methods, so you only need to implement the methods that are specific to your database.
 
 ```ts
-import { ZodDbsBaseProvider } from 'zod-dbs';
+import { ZodDbsBaseProvider } from 'zod-dbs-cli';
 
-import type { ZodDbsColumnInfo, ZodDbsProviderConfig } from 'zod-dbs';
-import type { ZodDbsCliConfig } from 'zod-dbs-cli';
+import type {
+  ZodDbsCliConfig,
+  ZodDbsColumnInfo,
+  ZodDbsProviderConfig,
+} from 'zod-dbs-cli';
 
 // zod-dbs.config.ts
 
@@ -551,7 +527,7 @@ class CustomProvider extends ZodDbsBaseProvider {
   }
 
   protected override async fetchSchemaInfo(
-    _config: ZodDbsProviderConfig
+    config: ZodDbsProviderConfig
   ): Promise<ZodDbsColumnInfo[]> {
     // Implement logic to fetch column information from your database.
     // Looking at existing providers can be helpful.

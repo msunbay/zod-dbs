@@ -35,7 +35,6 @@ export const USER_ROLES = ['admin', 'editor', 'viewer'] as const;
 export const UsersTableBaseSchema = z.object({
      /**
       * dataType: int4
-      * defaultValue: nextval('users_id_seq'::regclass)
       */
     id: z.unknown(),
      /**
@@ -48,7 +47,6 @@ export const UsersTableBaseSchema = z.object({
     email: z.unknown(),
      /**
       * dataType: varchar
-      * defaultValue: 'active'::character varying
       */
     status: z.unknown(),
      /**
@@ -57,7 +55,6 @@ export const UsersTableBaseSchema = z.object({
     profile: z.unknown(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     created_at: z.unknown(),
      /**

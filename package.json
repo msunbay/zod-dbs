@@ -8,34 +8,59 @@
   "engines": {
     "node": ">=20.0.0"
   },
+  "packageManager": "pnpm@10.15.1",
   "scripts": {
     "build": "pnpm run -r build",
     "start": "pnpm run build && node index.js",
     "dev": "tsx dev.ts",
-    "test": "pnpm run build && pnpm run test:unit && pnpm run test:integration && pnpm run test:types",
-    "test:unit": "pnpm run --parallel -r test:unit",
-    "test:integration": "pnpm run -r test:integration",
+    "test": "pnpm run build && pnpm run test:lint && pnpm run test:unit && pnpm run test:integration && pnpm run test:types",
+    "test:unit": "pnpm run -r test:unit",
+    "test:integration:dynamodb": "pnpm vitest --project integration:dynamodb run",
+    "test:integration:mongodb": "pnpm vitest --project integration:mongodb run",
+    "test:integration:mssql": "pnpm vitest --project integration:mssql run",
+    "test:integration:mysql": "pnpm vitest --project integration:mysql run",
+    "test:integration:oracle": "pnpm vitest --project integration:oracle run",
+    "test:integration:pg": "pnpm vitest --project integration:pg run",
+    "test:integration:snowflake": "pnpm vitest --project integration:snowflake run",
+    "test:integration:sqlite": "pnpm vitest --project integration:sqlite run",
+    "test:integration": "pnpm run -r test:integration && vitest --project integration:* run --silent",
     "test:types": "pnpm run -r test:types",
+    "test:lint": "biome check --diagnostic-level warn",
     "format": "prettier --write ."
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/msolvaag/zod-dbs.git"
+    "url": "git+https://github.com/msunbay/zod-dbs.git"
   },
-  "author": "msolvaag",
+  "author": "msunbay",
   "license": "ISC",
   "devDependencies": {
-    "@ianvs/prettier-plugin-sort-imports": "^4.6.2",
+    "@aws-sdk/client-dynamodb": "^3.879.0",
+    "@biomejs/biome": "2.2.3",
+    "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
     "@testcontainers/mongodb": "^10.28.0",
+    "@testcontainers/mssqlserver": "^11.5.1",
+    "@testcontainers/mysql": "^11.5.1",
+    "@testcontainers/postgresql": "^11.5.1",
     "@types/debug": "^4.1.12",
     "@types/mustache": "^4.2.6",
     "@types/node": "^20",
     "@types/pluralize": "^0.0.33",
     "@vitest/coverage-v8": "^3.2.4",
+    "dotenv": "^17.2.2",
     "prettier": "^3.6.2",
     "testcontainers": "^11.5.1",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4",
-    "zod": "^4.0.17"
+    "zod": "^4.0.17",
+    "zod-dbs-core": "workspace:*",
+    "zod-dbs-dynamodb": "workspace:*",
+    "zod-dbs-mongodb": "workspace:*",
+    "zod-dbs-mssql": "workspace:*",
+    "zod-dbs-mysql": "workspace:*",
+    "zod-dbs-oracle": "workspace:*",
+    "zod-dbs-pg": "workspace:*",
+    "zod-dbs-snowflake": "workspace:*",
+    "zod-dbs-sqlite": "workspace:*"
   }
 }

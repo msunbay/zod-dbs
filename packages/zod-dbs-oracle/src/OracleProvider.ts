@@ -3,7 +3,6 @@ import { sql, ZodDbsBaseProvider } from 'zod-dbs-core';
 import type {
   ZodDbsColumnInfo,
   ZodDbsColumnType,
-  ZodDbsConnectionConfig,
   ZodDbsProviderConfig,
   ZodDbsTableType,
 } from 'zod-dbs-core';
@@ -20,14 +19,10 @@ interface RawColumnRow {
   DATA_DEFAULT: string | null;
   COMMENTS: string | null;
   TABLE_TYPE: 'table' | 'view' | 'unknown';
-  CHECK_CONSTRAINTS: string;
+  CHECK_CONSTRAINTS_VC: string;
 }
 
 const CHECK_CONSTRAINT_SEPARATOR = ' ||| ';
-
-const DEFAULT_CONFIGURATION = {
-  port: 1521,
-};
 
 function parseCheckConstraints(raw: string): string[] {
   return raw
@@ -46,11 +41,53 @@ export class OracleProvider extends ZodDbsBaseProvider {
     super({
       name: 'oracle',
       displayName: 'Oracle',
-      defaultConfiguration: DEFAULT_CONFIGURATION,
+      configurationDefaults: {
+        port: 1521,
+        host: 'localhost',
+      },
+      options: [
+        {
+          name: 'connection-string',
+          type: 'string',
+          description:
+            'Full database connection string (overrides other connection options)',
+        },
+        {
+          name: 'host',
+          type: 'string',
+          description: 'Database host',
+        },
+        {
+          name: 'port',
+          type: 'number',
+          description: 'Database port',
+        },
+        {
+          name: 'user',
+          type: 'string',
+          description: 'Database user',
+        },
+        {
+          name: 'password',
+          type: 'string',
+          description: 'Database password',
+        },
+        {
+          name: 'database',
+          type: 'string',
+          description: 'Database service name (e.g., ORCLPDB1)',
+        },
+        {
+          name: 'schema-name',
+          type: 'string',
+          description:
+            'Schema name to introspect (defaults to the user name if not provided)',
+        },
+      ],
     });
   }
 
-  async createClient(options: ZodDbsConnectionConfig) {
+  protected async createClient(options: ZodDbsProviderConfig) {
     return await createClient(options);
   }
 
@@ -74,20 +111,20 @@ export class OracleProvider extends ZodDbsBaseProvider {
   ): ZodDbsColumnInfo {
     const tableType: ZodDbsTableType = column.TABLE_TYPE ?? 'unknown';
 
-    const enumValues = column.CHECK_CONSTRAINTS
+    const enumValues = column.CHECK_CONSTRAINTS_VC
       ? parseEnumValues(
           column.COLUMN_NAME,
-          parseCheckConstraints(column.CHECK_CONSTRAINTS)
+          parseCheckConstraints(column.CHECK_CONSTRAINTS_VC)
         )
       : undefined;
 
     return {
-      name: column.COLUMN_NAME,
+      name: column.COLUMN_NAME.toLowerCase(),
       schemaName,
-      tableName: column.TABLE_NAME,
+      tableName: column.TABLE_NAME.toLowerCase(),
       tableType,
       isNullable: column.NULLABLE === 'Y',
-      dataType: column.DATA_TYPE,
+      dataType: column.DATA_TYPE.toLowerCase(),
       maxLen: column.DATA_LENGTH ?? undefined,
       defaultValue: column.DATA_DEFAULT ?? undefined,
       description: column.COMMENTS ?? undefined,

@@ -3,7 +3,6 @@ import { logDebug, sql, ZodDbsBaseProvider } from 'zod-dbs-core';
 import type {
   ZodDbsColumnInfo,
   ZodDbsConfig,
-  ZodDbsConnectionConfig,
   ZodDbsProviderConfig,
 } from 'zod-dbs-core';
 
@@ -36,23 +35,63 @@ export class MySqlProvider extends ZodDbsBaseProvider {
     super({
       name: 'mysql',
       displayName: 'MySQL',
-      defaultConfiguration: {
+      configurationDefaults: {
         port: 3306,
+        host: 'localhost',
       },
+      options: [
+        {
+          name: 'connection-string',
+          type: 'string',
+          description:
+            'Full database connection string (overrides other connection options)',
+        },
+        {
+          name: 'host',
+          type: 'string',
+          description: 'Database host',
+        },
+        {
+          name: 'port',
+          type: 'number',
+          description: 'Database server port',
+        },
+        {
+          name: 'user',
+          type: 'string',
+          description: 'Database user',
+        },
+        {
+          name: 'password',
+          type: 'string',
+          description: 'Database password',
+        },
+        {
+          name: 'database',
+          type: 'string',
+          description: 'Database name to connect to',
+        },
+        {
+          name: 'schema-name',
+          type: 'string',
+          description:
+            'Database schema name (usually same as database name, optional)',
+        },
+      ],
     });
   }
 
   public override initConfiguration(config: ZodDbsConfig): ZodDbsConfig {
     return {
-      ...this.defaultConfiguration,
+      ...this.configurationDefaults,
       schemaName: config.schemaName ?? config.database,
       ...config,
     };
   }
 
-  createClient = (options: ZodDbsConnectionConfig) => {
-    return createClient(options);
-  };
+  protected async createClient(options: ZodDbsProviderConfig) {
+    return await createClient(options);
+  }
 
   protected createColumnInfo(column: RawColumnInfo): ZodDbsColumnInfo {
     const parsedColumn: ZodDbsColumnInfo = {

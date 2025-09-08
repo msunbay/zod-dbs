@@ -1,6 +1,6 @@
 # zod-dbs-mssql
 
-Microsoft SQL Server provider for [zod-dbs](https://github.com/msolvaag/zod-dbs).
+Microsoft SQL Server provider for [zod-dbs](https://github.com/msunbay/zod-dbs).
 
 ## Installation
 

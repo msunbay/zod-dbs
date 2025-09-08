@@ -1,5 +1,10 @@
 import pluralize from 'pluralize';
-import { ZodDbsCasing, ZodDbsFieldCasing, ZodDbsTable } from 'zod-dbs-core';
+
+import type {
+  ZodDbsCasing,
+  ZodDbsFieldCasing,
+  ZodDbsTable,
+} from 'zod-dbs-core';
 
 import {
   convertCaseFormat,
@@ -83,7 +88,8 @@ export const formatTableSchemaName = ({
   casing?: ZodDbsCasing;
   suffix?: string;
 }): string => {
-  const name = `${pascalCase(table.name)}${getSchemaPrefix(table)}${getOperationSuffix(type)}${suffix}`;
+  const tableName = convertCaseFormat(table.name, casing);
+  const name = `${tableName}${getSchemaPrefix(table)}${getOperationSuffix(type)}${suffix}`;
   return convertCaseFormat(name, casing);
 };
 
@@ -108,7 +114,7 @@ export const formatTableRecordName = ({
   return convertCaseFormat(name, casing);
 };
 
-export const formatJsonSchemaName = ({
+export const formatObjectSchemaName = ({
   tableName,
   columnName,
   casing = 'PascalCase',
@@ -167,4 +173,13 @@ export const formatEnumTypeName = ({
     : pascalCase(colName);
 
   return convertCaseFormat(`${pascalTableName}${pascalColName}`, casing);
+};
+
+export const formatPropertyName = (
+  columnName: string,
+  casing: ZodDbsFieldCasing = 'camelCase'
+): string => {
+  // Remove leading underscores
+  const normalizedColumnName = columnName.replace(/^_+/, '');
+  return convertCaseFormat(normalizedColumnName, casing);
 };

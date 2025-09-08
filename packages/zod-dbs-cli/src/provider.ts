@@ -5,9 +5,13 @@ import type { ZodDbsProvider } from 'zod-dbs-core';
 export const importProvider = async (
   provider: string | ZodDbsProvider
 ): Promise<ZodDbsProvider> => {
-  if (!provider) throw new Error('Provider must be specified');
+  if (!provider)
+    throw new Error(
+      'Provider must be specified through the --provider flag or in a config file'
+    );
 
   if (typeof provider !== 'string') {
+    logDebug('Using provided provider instance:', provider);
     return provider;
   }
 

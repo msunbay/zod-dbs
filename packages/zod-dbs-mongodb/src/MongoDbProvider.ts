@@ -1,10 +1,16 @@
-import { logDebug, ZodDbsBaseProvider } from 'zod-dbs-core';
+import {
+  logDebug,
+  parseConnectionString,
+  ZodDbsBaseProvider,
+} from 'zod-dbs-core';
 
 import type {
+  ZodDbsColumn,
   ZodDbsColumnInfo,
-  ZodDbsConnectionConfig,
+  ZodDbsConfig,
   ZodDbsProvider,
   ZodDbsProviderConfig,
+  ZodDbsTable,
   ZodDbsTableType,
 } from 'zod-dbs-core';
 
@@ -24,42 +30,75 @@ export class MongoDbProvider
     super({
       name: 'mongodb',
       displayName: 'MongoDB',
-      defaultConfiguration: {
+      configurationDefaults: {
         port: 27017,
         host: 'localhost',
+        sampleSize: 50,
+        defaultNullsToUndefined: false,
+        stringifyJson: false,
       },
       options: [
+        {
+          name: 'connection-string',
+          type: 'string',
+          description:
+            'Full database connection string (overrides other connection options)',
+        },
+        {
+          name: 'host',
+          type: 'string',
+          description: 'MongoDB host',
+        },
+        {
+          name: 'port',
+          type: 'number',
+          description: 'MongoDB port',
+        },
+        {
+          name: 'database',
+          type: 'string',
+          description: 'MongoDB database name',
+        },
         {
           name: 'sample-size',
           type: 'number',
           description:
             'Number of documents to sample per collection when no validator exists',
-          default: 50,
+        },
+        {
+          name: 'direct-connection',
+          type: 'boolean',
+          description:
+            'Connect directly to the specified MongoDB host without topology discovery (useful with single-node replica sets)',
+        },
+        {
+          name: 'replica-set',
+          type: 'string',
+          description: 'Replica set name for MongoDB connections',
         },
       ],
     });
   }
 
-  createClient = (options: ZodDbsConnectionConfig) => createClient(options);
+  protected initConfiguration(config: ZodDbsConfig): ZodDbsConfig {
+    const withDefaults = super.initConfiguration(config);
 
-  protected getZodType(dataType: string) {
-    const t = (dataType || '').toLowerCase();
-    if (t === 'objectid' || t === 'uuid') return 'string';
-    if (t === 'date') return 'date';
-    if (t === 'bool' || t === 'boolean') return 'boolean';
-    if (t === 'int' || t === 'int32' || t === 'int64' || t === 'long')
-      return 'int';
-    if (
-      t === 'double' ||
-      t === 'decimal' ||
-      t === 'decimal128' ||
-      t === 'number'
-    )
-      return 'number';
-    if (t === 'string') return 'string';
-    if (t === 'array' || t === 'object' || t === 'document' || t === 'json')
-      return 'json';
-    return super.getZodType(dataType);
+    if (withDefaults.connectionString) {
+      // If connection string is provided, try to parse out the database name if not explicitly set
+      if (!withDefaults.database) {
+        const { database } = parseConnectionString(
+          withDefaults.connectionString
+        );
+
+        withDefaults.database = database;
+      }
+    }
+
+    return withDefaults;
+  }
+
+  protected async createClient(options: ZodDbsProviderConfig) {
+    return await createClient(options);
   }
 
   protected createColumnInfo(args: {
@@ -70,6 +109,7 @@ export class MongoDbProvider
     required?: boolean;
     description?: string;
     isArray?: boolean;
+    objectDefinition?: ZodDbsTable;
   }): ZodDbsColumnInfo {
     const {
       collection,
@@ -79,13 +119,14 @@ export class MongoDbProvider
       required,
       description,
       isArray,
+      objectDefinition,
     } = args;
 
     const bt = Array.isArray(bsonType)
       ? bsonType.map((t) => `${t}`).join('|')
       : bsonType || 'any';
     const dt = isArray ? 'array' : bt.toLowerCase();
-    const isNullable = required ? false : true; // default to optional unless explicitly required
+    const isNullable = !required; // default to optional unless explicitly required
 
     return {
       name,
@@ -102,6 +143,7 @@ export class MongoDbProvider
       isEnum: false,
       isSerial: false,
       isArray: !!isArray,
+      objectDefinition,
     };
   }
 
@@ -136,9 +178,112 @@ export class MongoDbProvider
         if (schema?.properties && typeof schema.properties === 'object') {
           for (const [field, def] of Object.entries<any>(schema.properties)) {
             const bsonType = def?.bsonType ?? def?.type;
+
             const isArray = (
               Array.isArray(bsonType) ? bsonType : [bsonType]
             ).some((t) => String(t).toLowerCase() === 'array');
+
+            // If the field is an object (or array of objects), collect a shallow object definition (as array)
+            let objectFields: ZodDbsColumn[] | undefined;
+
+            if (
+              !isArray &&
+              String(bsonType).toLowerCase() === 'object' &&
+              def?.properties
+            ) {
+              const requiredChildren = new Set<string>(def?.required || []);
+
+              objectFields = Object.entries<any>(def.properties).map(
+                ([k, v]) => {
+                  const childBsonType = v?.bsonType ?? v?.type;
+
+                  const childIsArray = (
+                    Array.isArray(childBsonType)
+                      ? childBsonType
+                      : [childBsonType]
+                  ).some((t: any) => String(t).toLowerCase() === 'array');
+
+                  const childBaseType = childIsArray
+                    ? (v?.items?.bsonType ?? v?.items?.type ?? 'any')
+                    : childBsonType;
+
+                  const childDataType = String(
+                    childIsArray ? 'array' : childBaseType || 'any'
+                  ).toLowerCase();
+
+                  return {
+                    name: k,
+                    defaultValue: undefined,
+                    isNullable: false,
+                    maxLen: undefined,
+                    minLen: undefined,
+                    dataType: childDataType,
+                    type: this.getZodType(childBaseType),
+                    description: v?.description,
+                    enumValues: undefined,
+                    isEnum: false,
+                    isArray: !!childIsArray,
+                    isWritable: true,
+                    isReadOptional: !requiredChildren.has(k),
+                    isWriteOptional: !requiredChildren.has(k),
+                    tableName: coll.name,
+                    tableType: 'table',
+                    isSerial: false,
+                  };
+                }
+              );
+            } else if (isArray) {
+              const itemType = def?.items?.bsonType ?? def?.items?.type;
+
+              if (
+                String(itemType).toLowerCase() === 'object' &&
+                def?.items?.properties
+              ) {
+                const requiredChildren = new Set<string>(
+                  def?.items?.required || []
+                );
+
+                objectFields = Object.entries<any>(def.items.properties).map(
+                  ([k, v]) => {
+                    const childBsonType = v?.bsonType ?? v?.type;
+
+                    const childIsArray = (
+                      Array.isArray(childBsonType)
+                        ? childBsonType
+                        : [childBsonType]
+                    ).some((t: any) => String(t).toLowerCase() === 'array');
+
+                    const childBaseType = childIsArray
+                      ? (v?.items?.bsonType ?? v?.items?.type ?? 'any')
+                      : childBsonType;
+
+                    const childDataType = String(
+                      childIsArray ? 'array' : childBaseType || 'any'
+                    ).toLowerCase();
+
+                    return {
+                      name: k,
+                      defaultValue: undefined,
+                      isNullable: !requiredChildren.has(k),
+                      maxLen: undefined,
+                      minLen: undefined,
+                      dataType: childDataType,
+                      type: this.getZodType(childBaseType),
+                      description: v?.description,
+                      enumValues: undefined,
+                      isEnum: false,
+                      isArray: !!childIsArray,
+                      isWritable: true,
+                      isReadOptional: !requiredChildren.has(k),
+                      isWriteOptional: !requiredChildren.has(k),
+                      tableName: coll.name,
+                      tableType: 'table',
+                      isSerial: false,
+                    };
+                  }
+                );
+              }
+            }
 
             const info = this.createColumnInfo({
               collection: coll.name,
@@ -148,15 +293,24 @@ export class MongoDbProvider
               required: requiredSet.has(field),
               description: def?.description,
               isArray,
+              objectDefinition: objectFields
+                ? {
+                    name: `${coll.name}.${field}`,
+                    type: 'object',
+                    columns: objectFields,
+                  }
+                : undefined,
             });
+
             info.tableType = tableType;
             columns.push(info);
           }
+
           continue;
         }
 
         // Fallback: sample documents to infer fields
-        const sampleSize = Number((config as any).sampleSize ?? 50);
+        const sampleSize = Number(config.sampleSize ?? 50);
         const cursor = db
           .collection(coll.name)
           .aggregate([{ $sample: { size: sampleSize } }]);

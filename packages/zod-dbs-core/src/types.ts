@@ -28,6 +28,7 @@ export type ZodDbsTableType =
   | 'view' // Database view
   | 'materialized_view' // Materialized view
   | 'foreign_table' // Foreign data wrapper table
+  | 'object' // Custom object definition
   | 'unknown'; // Unknown or unsupported type
 
 /**
@@ -89,6 +90,10 @@ export interface ZodDbsColumnInfo {
    * If isDeprecated is true, this provides the reason for deprecation.
    */
   isDeprecatedReason?: string;
+  /**
+   * Object structure for JSON or object column types.
+   */
+  objectDefinition?: ZodDbsTable;
 }
 
 export interface ZodDbsColumn extends ZodDbsColumnInfo {
@@ -124,7 +129,6 @@ export interface ZodDbsProviderOption {
   name: string;
   type: 'string' | 'number' | 'boolean';
   description: string;
-  default?: string | number | boolean;
   required?: boolean;
   allowedValues?: string[];
 }
@@ -155,14 +159,21 @@ export interface ZodDbsProvider {
   ) => Promise<ZodDbsSchemaInfo>;
 }
 
+export interface ZodDbsRenderedFile {
+  /** The file name (without extension) */
+  name: string;
+  /** The file content */
+  content: string;
+}
+
 export interface ZodDbsRenderer {
   /**
    * Renders the TypeScript code for the generated Zod schemas and types for a given table.
    */
-  renderSchemaFile: (
+  renderSchemaFiles: (
     table: ZodDbsTable,
     config: ZodDbsConfig
-  ) => string | Promise<string>;
+  ) => Promise<ZodDbsRenderedFile[]>;
 }
 
 /**
@@ -191,6 +202,7 @@ export type ZodDbsColumnType =
   | 'date' // Date object
   | 'uuid' // String with UUID validation
   | 'json' // JSON object
+  | 'object' // Generic object
   | 'unknown' // Unknown type
   | 'any'; // Any type (fallback)
 
@@ -231,39 +243,15 @@ export interface ZodDbsDatabaseClient {
   connect: () => Promise<void>;
   query: <T>(query: string, params?: any[]) => Promise<T>;
   end: () => Promise<void>;
-  config: ZodDbsConnectionConfig;
 }
 
-/**
- * Configuration for database connection.
- */
-export interface ZodDbsConnectionConfig {
-  protocol?: string; // e.g., 'postgresql', 'mysql', etc.
-  /** Database port (default: 5432) */
-  port?: number;
-  /** Database host (default: localhost) */
-  host?: string;
-  /** Database name to connect to */
-  database?: string;
-  /** Username for authentication */
-  user?: string;
-  /** Password for authentication */
-  password?: string;
-  /** Whether to use SSL connection */
-  ssl?: boolean | ZodDbsSslConfig;
-  /**
-   * Optional schema name (e.g., 'public' for PostgreSQL)
-   */
-  schemaName?: string;
-}
-
-export interface ZodDbsProviderConfig
-  extends ZodDbsConnectionConfig,
-    ZodDbsHooks {
+export interface ZodDbsProviderConfig extends ZodDbsHooks {
   /** Regex pattern(s) to include only specific tables */
   include?: string | string[];
   /** Regex pattern(s) to exclude specific tables */
   exclude?: string | string[];
+  /** If true, will log debug information to the console */
+  debug?: boolean;
 }
 
 /**

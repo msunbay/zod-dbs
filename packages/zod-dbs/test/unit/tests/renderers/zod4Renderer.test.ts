@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { ZodDbsColumn, ZodDbsConfig, ZodDbsTable } from 'zod-dbs-core';
+
+import type { ZodDbsColumn, ZodDbsConfig, ZodDbsTable } from 'zod-dbs-core';
 
 import { Zod4Renderer } from '../../../../src/renderers/Zod4Renderer.js';
 

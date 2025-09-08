@@ -13,7 +13,6 @@ export type ZodDbsColumnBaseType =
  * This represents the column after initial processing but before final rendering.
  */
 export interface ZodDbsColumnBaseRenderModel extends ZodDbsColumn {
-  isOptional: boolean;
   /**
    * The property name of the column in the generated Zod schema.
    * This is typically the column name transformed according to the specified casing (e.g., camelCase).
@@ -36,7 +35,7 @@ export interface ZodDbsColumnBaseRenderModel extends ZodDbsColumn {
    * Used when the JSON schema import feature is enabled for JSON/JSONB columns.
    * Example: 'UserProfileSchema' for a profile column.
    */
-  jsonSchemaName?: string;
+  jsonSchemaName: string;
 }
 
 /**
@@ -55,6 +54,15 @@ export interface ZodDbsColumnRenderModel extends ZodDbsColumnBaseRenderModel {
    * Example: 'z.string().max(100)', 'z.number().nullish()', 'z.string().email()'
    */
   renderedWriteType: string;
+}
+
+export interface ZodDbsObjectSchema {
+  /** The name of the object schema (e.g., 'UserProfileSchema') */
+  description?: string;
+  tableName: string;
+  columnName: string;
+  name: string;
+  fields: { name: string; type: string }[];
 }
 
 /**
@@ -87,6 +95,8 @@ export interface ZodDbsImport {
   name: string;
   /** Whether this is the last import in the list (used for template rendering) */
   last: boolean;
+  /** The file name to import from (e.g., 'UserProfileSchema.js' or 'UserProfileSchema') */
+  fileName: string;
 }
 
 /**
@@ -100,8 +110,8 @@ export interface ZodDbsTableRenderModel {
   type: ZodDbsTableType;
   /** The original table name */
   tableName: string;
-  /** The singular form of the table name (e.g., 'user' from 'users') */
-  tableSingularName: string;
+  /** The table name including namespace */
+  fullName: string;
 
   /** Generated name for the read base schema (e.g., 'UserBaseSchema') */
   tableReadBaseSchemaName?: string;
@@ -142,6 +152,8 @@ export interface ZodDbsTableRenderModel {
   jsonSchemaImports?: ZodDbsImport[];
   /** Whether this table has any JSON schema imports */
   hasJsonSchemaImports: boolean;
+
+  objectSchemaImports?: ZodDbsImport[];
 
   /** Array of enum types found in this table */
   enums: ZodDbsEnum[];

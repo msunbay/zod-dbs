@@ -1,4 +1,4 @@
-import { promises } from 'fs';
+import { promises } from 'node:fs';
 import { logDebug } from 'zod-dbs-core';
 
 import type {
@@ -7,7 +7,7 @@ import type {
   ZodDbsTableType,
 } from 'zod-dbs-core';
 
-import { getOutputFolder } from '../utils/fs.js';
+import { ensureFolder, getOutputFolder } from '../utils/fs.js';
 import { renderMustacheTemplate } from '../utils/mustache.js';
 
 const generateSchemasIndexFile = async (
@@ -23,7 +23,9 @@ const generateSchemasIndexFile = async (
     .map((table) => ({
       ...table,
       fileName:
-        moduleResolution === 'esm' ? `${table.name}/index.js` : table.name,
+        moduleResolution === 'esm'
+          ? `${table.name.toLowerCase()}/index.js`
+          : table.name.toLowerCase(),
     }));
 
   if (exports.length === 0) {
@@ -32,9 +34,16 @@ const generateSchemasIndexFile = async (
     return;
   }
 
+  if (!outputDir) {
+    throw new Error('Output directory is not defined in config');
+  }
+
   const content = await renderMustacheTemplate('index', { exports });
 
-  const filePath = `${outputDir}/${getOutputFolder(type)}/index.ts`;
+  const folderPath = `${outputDir}/${getOutputFolder(type)}`;
+  const filePath = `${folderPath}/index.ts`;
+
+  await ensureFolder(folderPath);
 
   await promises.writeFile(filePath, content, 'utf8');
 

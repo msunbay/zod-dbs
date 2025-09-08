@@ -1,7 +1,9 @@
-import { existsSync, readdirSync, unlinkSync } from 'fs';
-import { mkdir } from 'fs/promises';
-import path from 'path';
-import { logDebug, ZodDbsTableType } from 'zod-dbs-core';
+import { existsSync, readdirSync, unlinkSync } from 'node:fs';
+import { mkdir } from 'node:fs/promises';
+import path from 'node:path';
+import { logDebug } from 'zod-dbs-core';
+
+import type { ZodDbsTableType } from 'zod-dbs-core';
 
 /**
  * Deletes all .ts files in the output schemas folder.

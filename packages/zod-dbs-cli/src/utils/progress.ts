@@ -5,7 +5,7 @@ const PROGRESS_STATUS: Record<string, string> = {
   connecting: 'Connecting to database...',
   fetchingSchema: 'Fetching schema information...',
   generating: 'Generating {{total}} Zod schemas...',
-  done: 'Zod schemas generated successfully.',
+  done: 'Done',
 };
 
 const silentProgressHandler = {

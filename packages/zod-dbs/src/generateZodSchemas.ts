@@ -54,9 +54,10 @@ export const generateZodSchemas = async ({
     ...config,
   };
 
+  logDebug('Using generation configuration:', generateConfig);
+
   const {
     outputDir = DEFAULT_OUTPUT_DIR,
-    schemaName,
     cleanOutput,
     onProgress,
     zodVersion,
@@ -72,9 +73,7 @@ export const generateZodSchemas = async ({
 
   onProgress?.('generating', { total: schema.tables.length });
 
-  logDebug(
-    `Generating zod schemas for ${schema.tables.length} tables in db schema '${schemaName}'`
-  );
+  logDebug(`Generating zod schemas for ${schema.tables.length} tables'`);
 
   const schemaRenderer = renderer ?? createRenderer(zodVersion);
 

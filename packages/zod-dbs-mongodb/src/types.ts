@@ -1,11 +1,27 @@
-import { ZodDbsDatabaseClient } from 'zod-dbs-core';
+import type { ZodDbsDatabaseClient } from 'zod-dbs-core';
 
 export interface ZodDbsMongoDbClient extends ZodDbsDatabaseClient {
   driver: any; // MongoClient
 }
 
 declare module 'zod-dbs-core' {
-  interface ZodDbsConnectionConfig {
+  interface ZodDbsProviderConfig {
+    /**
+     * Optional full MongoDB connection string. If provided, this takes precedence over other connection parameters.
+     */
+    connectionString?: string;
+    /**
+     * The hostname of the MongoDB server (default: 'localhost').
+     */
+    host?: string;
+    /**
+     * The port number of the MongoDB server (default: 27017).
+     */
+    port?: number;
+    /**
+     * The name of the database to connect to (if any).
+     */
+    database?: string;
     /**
      * The replica set name to connect to (if any).
      */

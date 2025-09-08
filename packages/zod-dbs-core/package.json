@@ -7,15 +7,15 @@
   "type": "module",
   "scripts": {
     "build": "rm -rf ./dist && tsc --project tsconfig.build.json",
-    "test": "pnpm run test:unit",
+    "test": "pnpm run test:types && pnpm run test:unit",
     "test:unit": "vitest --project unit run",
     "test:types": "tsc --noEmit"
   },
-  "author": "msolvaag",
+  "author": "msunbay",
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/msolvaag/zod-dbs.git"
+    "url": "git+https://github.com/msunbay/zod-dbs.git"
   },
   "publishConfig": {
     "access": "public"

@@ -12,7 +12,7 @@ export const parseAnyArrayConstraint = (constraint: string): string[] => {
 
   // Match col = ANY ((ARRAY['a'::type, ...])::type[])
   const arrayMatch = clause.match(
-    /ANY\s*\(\s*(?:\(+)?ARRAY\[(.*?)\](?:\))*(::[a-zA-Z0-9_ \[\]]+)?\s*\)/
+    /ANY\s*\(\s*(?:\(+)?ARRAY\[(.*?)\](?:\))*(::[a-zA-Z0-9_ [\]]+)?\s*\)/
   );
 
   if (arrayMatch) {

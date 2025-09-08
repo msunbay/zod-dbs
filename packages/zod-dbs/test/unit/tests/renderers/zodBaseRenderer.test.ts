@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { ZodDbsColumn, ZodDbsConfig, ZodDbsTable } from 'zod-dbs-core';
+
+import type { ZodDbsColumn, ZodDbsConfig, ZodDbsTable } from 'zod-dbs-core';
 
 import { ZodBaseRenderer } from '../../../../src/renderers/ZodBaseRenderer.js';
 
@@ -221,7 +222,7 @@ describe('ZodBaseRenderer', () => {
   });
 
   it('excludes non-writable columns (serial & non-table types) from write schema', async () => {
-    const writable = column({ name: 'email', type: 'string' });
+    const writable = column({ name: 'update_at', type: 'string' });
     const serial = column({
       name: 'id',
       type: 'int',
@@ -244,7 +245,7 @@ describe('ZodBaseRenderer', () => {
     );
     const writeContent = writeSectionMatch ? writeSectionMatch[1] : '';
 
-    expect(writeContent).toContain('email: z.string()');
+    expect(writeContent).toContain('updateAt: z.string()');
     expect(writeContent).not.toContain('id: z.number()');
   });
 
@@ -391,7 +392,7 @@ describe('ZodBaseRenderer', () => {
 
   it('marks optional-only field as optional in write schema', async () => {
     const tbl = table([
-      column({ name: 'nickname', type: 'string', isWriteOptional: true }),
+      column({ name: 'nick_name', type: 'string', isWriteOptional: true }),
     ]);
     const out = await new ZodBaseRenderer().renderSchemaFile(tbl, baseConfig);
     // In insert base schema we expect .optional()
@@ -399,7 +400,7 @@ describe('ZodBaseRenderer', () => {
       /UsersTableInsertBaseSchema = z\.object\(\{([\s\S]*?)\n\}\);/
     );
     const insertContent = insertBaseMatch ? insertBaseMatch[1] : '';
-    expect(insertContent).toMatch(/nickname: z\.string\(\)\.optional\(\)/);
+    expect(insertContent).toMatch(/nickName: z\.string\(\)\.optional\(\)/);
   });
 
   it('ignores writeTransforms for enum columns', async () => {

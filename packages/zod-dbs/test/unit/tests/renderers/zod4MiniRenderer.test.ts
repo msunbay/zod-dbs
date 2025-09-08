@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { ZodDbsColumn, ZodDbsConfig, ZodDbsTable } from 'zod-dbs-core';
+
+import type { ZodDbsColumn, ZodDbsConfig, ZodDbsTable } from 'zod-dbs-core';
 
 import { Zod4MiniRenderer } from '../../../../src/renderers/Zod4MiniRenderer.js';
 
@@ -186,7 +187,7 @@ describe('Zod4MiniRenderer', () => {
       ...config,
       caseTransform: false,
     });
-    expect(out).toContain("import { z } from 'zod'");
+    expect(out).toContain("import { z } from 'zod/mini'");
     expect(out).not.toContain('Base read schema');
   });
 

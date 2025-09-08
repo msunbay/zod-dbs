@@ -1,12 +1,18 @@
-import { ZodDbsConfig } from 'zod-dbs-core';
-
-import type { ZodDbsColumnBaseRenderModel } from './types.js';
+import type { ZodDbsConfig } from 'zod-dbs-core';
+import type {
+  ZodDbsColumnBaseRenderModel,
+  ZodDbsTableRenderModel,
+} from './types.js';
 
 import { Zod4Renderer } from './Zod4Renderer.js';
 
 export class Zod4MiniRenderer extends Zod4Renderer {
-  protected getSchemaTemplateName(config: ZodDbsConfig): string {
-    if (!config.caseTransform) return 'schema.simple';
+  protected override getSchemaTemplateName(
+    model: ZodDbsTableRenderModel,
+    config: ZodDbsConfig
+  ): string {
+    const template = super.getSchemaTemplateName(model, config);
+    if (template === 'schema.simple') return 'schema.4mini.simple';
     return 'schema.4mini';
   }
 
@@ -14,7 +20,11 @@ export class Zod4MiniRenderer extends Zod4Renderer {
     column: ZodDbsColumnBaseRenderModel,
     config: ZodDbsConfig
   ): string {
-    let zodType = this.renderZodType(column.type, config, true);
+    let zodType = this.renderZodType({
+      zodType: column.type,
+      config,
+      isReadField: true,
+    });
 
     if (column.isEnum) {
       zodType = `z.enum(${column.enumConstantName})`;
@@ -54,7 +64,12 @@ export class Zod4MiniRenderer extends Zod4Renderer {
     column: ZodDbsColumnBaseRenderModel,
     config: ZodDbsConfig
   ): string {
-    let zodType = this.renderZodType(column.type, config, false);
+    let zodType = this.renderZodType({
+      zodType: column.type,
+      config,
+      isReadField: false,
+    });
+
     const baseType = this.getBaseType(column.type);
 
     if (baseType === 'string' && !column.isEnum) {

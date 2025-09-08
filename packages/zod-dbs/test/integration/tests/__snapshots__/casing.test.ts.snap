@@ -37,7 +37,6 @@ export const POST_STATUSES = ['draft', 'published', 'archived'] as const;
 export const PostsTableBaseSchema = z.object({
      /**
       * dataType: int4
-      * defaultValue: nextval('posts_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -54,17 +53,14 @@ export const PostsTableBaseSchema = z.object({
     content: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: bool
-      * defaultValue: false
       */
     published: z.boolean().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: varchar
-      * defaultValue: 'draft'::character varying
       */
     status: z.enum(POST_STATUSES).nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: int4
-      * defaultValue: 0
       */
     views: z.number().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -81,7 +77,6 @@ export const PostsTableBaseSchema = z.object({
     published_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     updated_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
 });
@@ -165,7 +160,7 @@ export const PostsTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    metadata: z.any().nullable().optional(),
+    metadata: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: timestamptz
       */
@@ -378,7 +373,6 @@ export const USER_ROLES = ['admin', 'editor', 'viewer'] as const;
 export const UsersTableBaseSchema = z.object({
      /**
       * dataType: int4
-      * defaultValue: nextval('users_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -391,7 +385,6 @@ export const UsersTableBaseSchema = z.object({
     email: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: varchar
-      * defaultValue: 'active'::character varying
       */
     status: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -400,7 +393,6 @@ export const UsersTableBaseSchema = z.object({
     profile: z.any().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     created_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -468,7 +460,7 @@ export const UsersTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    profile: z.any().nullable().optional(),
+    profile: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: timestamptz
       * defaultValue: now()
@@ -662,13 +654,12 @@ import { z } from 'zod';
 export const USER_ROLES = ['admin', 'editor', 'viewer'] as const;
 
 /**
- * Base read schema for the "public.users" table.
- * Validates raw rows read from the database (no casing transforms applied yet).
+ * Read schema for the "public.users" table.
+ * Validates raw rows read from the database.
  */
-export const UsersTableBaseSchema = z.object({
+export const UsersTableSchema = z.object({
      /**
       * dataType: int4
-      * defaultValue: nextval('users_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -681,7 +672,6 @@ export const UsersTableBaseSchema = z.object({
     email: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: varchar
-      * defaultValue: 'active'::character varying
       */
     status: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -690,7 +680,6 @@ export const UsersTableBaseSchema = z.object({
     profile: z.any().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     created_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -704,44 +693,9 @@ export const UsersTableBaseSchema = z.object({
 });
 
 /**
- * The base record type for the "public.users" table.
- * This type represents the raw database record without case transforms.
+ * Insert schema for the "public.users" table.
  */
-export type UserBaseRecord = z.output<typeof UsersTableBaseSchema>;
-
-/**
- * Read transform for the "public.users" table.
- * Maps database fields to app case properties.
- */
-export const transformUserBaseRecord = (data: UserBaseRecord): {
-    id: UserBaseRecord['id'],
-    name: UserBaseRecord['name'],
-    email?: UserBaseRecord['email'],
-    status?: UserBaseRecord['status'],
-    profile?: UserBaseRecord['profile'],
-    created_at?: UserBaseRecord['created_at'],
-    roles?: UserBaseRecord['roles'],
-    dates?: UserBaseRecord['dates'],
-} => ({
-    id: data.id,
-    name: data.name,
-    email: data.email,
-    status: data.status,
-    profile: data.profile,
-    created_at: data.created_at,
-    roles: data.roles,
-    dates: data.dates,
-});
-
-/**
- * Read schema for the "public.users" table (after casing transform).
- */
-export const UsersTableSchema = UsersTableBaseSchema.transform(transformUserBaseRecord);
-
-/**
- * Base insert/write schema for the "public.users" table (no casing transforms).
- */
-export const UsersTableInsertBaseSchema = z.object({
+export const UsersTableInsertSchema = z.object({
      /**
       * dataType: varchar
       */
@@ -758,7 +712,7 @@ export const UsersTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    profile: z.any().nullable().optional(),
+    profile: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: timestamptz
       * defaultValue: now()
@@ -775,76 +729,15 @@ export const UsersTableInsertBaseSchema = z.object({
 });
 
 /**
- * The base record type for the "public.users" table.
- * This type represents an insertable database record before casing transformations are applied.
+ * Update schema for the "public.users" table.
  */
-export type UserInsertBaseRecord = z.output<typeof UsersTableInsertBaseSchema>;
-
-/**
- * The base record type for the "public.users" table.
- * This type represents an updatable database record before casing transformations are applied.
- */
-export type UserUpdateBaseRecord = Partial<UserInsertBaseRecord>;
-
-/**
- * Insert transform for the "public.users" table.
- * Maps app cased properties to database fields.
- */
-export const transformUserInsertBaseRecord = (data: UserInsertBaseRecord): {
-    name: UserInsertBaseRecord['name'],
-    email?: UserInsertBaseRecord['email'],
-    status?: UserInsertBaseRecord['status'],
-    profile?: UserInsertBaseRecord['profile'],
-    created_at?: UserInsertBaseRecord['created_at'],
-    roles?: UserInsertBaseRecord['roles'],
-    dates?: UserInsertBaseRecord['dates'],
-} => ({
-    name: data.name,
-    email: data.email,
-    status: data.status,
-    profile: data.profile,
-    created_at: data.created_at,
-    roles: data.roles,
-    dates: data.dates,
-});
-
-/**
- * Update transform for the "public.users" table.
- * Maps app cased properties to database fields.
- */
-export const transformUserUpdateBaseRecord = (data: UserUpdateBaseRecord): {
-    name: UserUpdateBaseRecord['name'],
-    email?: UserUpdateBaseRecord['email'],
-    status?: UserUpdateBaseRecord['status'],
-    profile?: UserUpdateBaseRecord['profile'],
-    created_at?: UserUpdateBaseRecord['created_at'],
-    roles?: UserUpdateBaseRecord['roles'],
-    dates?: UserUpdateBaseRecord['dates'],
-} => ({
-    name: data.name,
-    email: data.email,
-    status: data.status,
-    profile: data.profile,
-    created_at: data.created_at,
-    roles: data.roles,
-    dates: data.dates,
-});
-
-/**
- * Insert schema for the "public.users" table (after casing transform).
- */
-export const UsersTableInsertSchema = UsersTableInsertBaseSchema.transform(transformUserInsertBaseRecord);
-
-/**
- * Update schema for the "public.users" table (after casing transform).
- */
-export const UsersTableUpdateSchema = UsersTableInsertBaseSchema.partial().transform(transformUserUpdateBaseRecord);
+export const UsersTableUpdateSchema = UsersTableInsertSchema.partial();
 
 type TableInsertRecord = z.input<typeof UsersTableInsertSchema>;
 type TableReadRecord = z.output<typeof UsersTableSchema>;
 
 /**
- * Read record (casing transformed) for the "public.users" table.
+ * Read record for the "public.users" table.
  */
 export interface UserRecord {
     /**
@@ -874,7 +767,7 @@ export interface UserRecord {
 }
 
 /**
- * Insert record (casing transformed) for the "public.users" table.
+ * Insertable record for the "public.users" table.
  */
 export interface UserInsertRecord {
     /**
@@ -906,7 +799,7 @@ export interface UserInsertRecord {
 }
 
 /**
- * Updatable record (casing transformed) for the "public.users" table.
+ * Updatable record for the "public.users" table.
  */
 export type UserUpdateRecord = Partial<UserInsertRecord>;
 
@@ -951,13 +844,12 @@ import { z } from 'zod';
 export const USER_ROLES = ['admin', 'editor', 'viewer'] as const;
 
 /**
- * Base read schema for the "public.users" table.
- * Validates raw rows read from the database (no casing transforms applied yet).
+ * Read schema for the "public.users" table.
+ * Validates raw rows read from the database.
  */
-export const UsersTableBaseSchema = z.object({
+export const UsersTableSchema = z.object({
      /**
       * dataType: int4
-      * defaultValue: nextval('users_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -970,7 +862,6 @@ export const UsersTableBaseSchema = z.object({
     email: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: varchar
-      * defaultValue: 'active'::character varying
       */
     status: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -979,7 +870,6 @@ export const UsersTableBaseSchema = z.object({
     profile: z.any().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     created_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -993,44 +883,9 @@ export const UsersTableBaseSchema = z.object({
 });
 
 /**
- * The base record type for the "public.users" table.
- * This type represents the raw database record without case transforms.
+ * Insert schema for the "public.users" table.
  */
-export type UserBaseRecord = z.output<typeof UsersTableBaseSchema>;
-
-/**
- * Read transform for the "public.users" table.
- * Maps database fields to app case properties.
- */
-export const transform_user_base_record = (data: UserBaseRecord): {
-    id: UserBaseRecord['id'],
-    name: UserBaseRecord['name'],
-    email?: UserBaseRecord['email'],
-    status?: UserBaseRecord['status'],
-    profile?: UserBaseRecord['profile'],
-    created_at?: UserBaseRecord['created_at'],
-    roles?: UserBaseRecord['roles'],
-    dates?: UserBaseRecord['dates'],
-} => ({
-    id: data.id,
-    name: data.name,
-    email: data.email,
-    status: data.status,
-    profile: data.profile,
-    created_at: data.created_at,
-    roles: data.roles,
-    dates: data.dates,
-});
-
-/**
- * Read schema for the "public.users" table (after casing transform).
- */
-export const UsersTableSchema = UsersTableBaseSchema.transform(transform_user_base_record);
-
-/**
- * Base insert/write schema for the "public.users" table (no casing transforms).
- */
-export const UsersTableInsertBaseSchema = z.object({
+export const UsersTableInsertSchema = z.object({
      /**
       * dataType: varchar
       */
@@ -1047,7 +902,7 @@ export const UsersTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    profile: z.any().nullable().optional(),
+    profile: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: timestamptz
       * defaultValue: now()
@@ -1064,76 +919,15 @@ export const UsersTableInsertBaseSchema = z.object({
 });
 
 /**
- * The base record type for the "public.users" table.
- * This type represents an insertable database record before casing transformations are applied.
+ * Update schema for the "public.users" table.
  */
-export type UserInsertBaseRecord = z.output<typeof UsersTableInsertBaseSchema>;
-
-/**
- * The base record type for the "public.users" table.
- * This type represents an updatable database record before casing transformations are applied.
- */
-export type UserUpdateBaseRecord = Partial<UserInsertBaseRecord>;
-
-/**
- * Insert transform for the "public.users" table.
- * Maps app cased properties to database fields.
- */
-export const transform_user_insert_base_record = (data: UserInsertBaseRecord): {
-    name: UserInsertBaseRecord['name'],
-    email?: UserInsertBaseRecord['email'],
-    status?: UserInsertBaseRecord['status'],
-    profile?: UserInsertBaseRecord['profile'],
-    created_at?: UserInsertBaseRecord['created_at'],
-    roles?: UserInsertBaseRecord['roles'],
-    dates?: UserInsertBaseRecord['dates'],
-} => ({
-    name: data.name,
-    email: data.email,
-    status: data.status,
-    profile: data.profile,
-    created_at: data.created_at,
-    roles: data.roles,
-    dates: data.dates,
-});
-
-/**
- * Update transform for the "public.users" table.
- * Maps app cased properties to database fields.
- */
-export const transform_user_update_base_record = (data: UserUpdateBaseRecord): {
-    name: UserUpdateBaseRecord['name'],
-    email?: UserUpdateBaseRecord['email'],
-    status?: UserUpdateBaseRecord['status'],
-    profile?: UserUpdateBaseRecord['profile'],
-    created_at?: UserUpdateBaseRecord['created_at'],
-    roles?: UserUpdateBaseRecord['roles'],
-    dates?: UserUpdateBaseRecord['dates'],
-} => ({
-    name: data.name,
-    email: data.email,
-    status: data.status,
-    profile: data.profile,
-    created_at: data.created_at,
-    roles: data.roles,
-    dates: data.dates,
-});
-
-/**
- * Insert schema for the "public.users" table (after casing transform).
- */
-export const UsersTableInsertSchema = UsersTableInsertBaseSchema.transform(transform_user_insert_base_record);
-
-/**
- * Update schema for the "public.users" table (after casing transform).
- */
-export const UsersTableUpdateSchema = UsersTableInsertBaseSchema.partial().transform(transform_user_update_base_record);
+export const UsersTableUpdateSchema = UsersTableInsertSchema.partial();
 
 type TableInsertRecord = z.input<typeof UsersTableInsertSchema>;
 type TableReadRecord = z.output<typeof UsersTableSchema>;
 
 /**
- * Read record (casing transformed) for the "public.users" table.
+ * Read record for the "public.users" table.
  */
 export interface UserRecord {
     /**
@@ -1163,7 +957,7 @@ export interface UserRecord {
 }
 
 /**
- * Insert record (casing transformed) for the "public.users" table.
+ * Insertable record for the "public.users" table.
  */
 export interface UserInsertRecord {
     /**
@@ -1195,7 +989,7 @@ export interface UserInsertRecord {
 }
 
 /**
- * Updatable record (casing transformed) for the "public.users" table.
+ * Updatable record for the "public.users" table.
  */
 export type UserUpdateRecord = Partial<UserInsertRecord>;
 

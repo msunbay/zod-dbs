@@ -1,6 +1,6 @@
 # zod-dbs-mysql
 
-MySQL provider for [zod-dbs](https://github.com/msolvaag/zod-dbs).
+MySQL provider for [zod-dbs](https://github.com/msunbay/zod-dbs).
 
 ## Installation
 

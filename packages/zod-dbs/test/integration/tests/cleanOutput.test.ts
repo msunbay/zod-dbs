@@ -1,5 +1,6 @@
-import fs from 'fs';
-import path from 'path';
+import { existsSync } from 'node:fs';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 import { generateZodSchemas } from '../../../src/generateZodSchemas.js';
 import {
@@ -15,19 +16,13 @@ describe('clean output option', () => {
     const outputDir = getOutputDir('cleanOutput', 'clean-enabled');
 
     // Create the output directory with some existing files
-    await fs.promises.mkdir(`${outputDir}/tables`, { recursive: true });
-    await fs.promises.writeFile(
-      `${outputDir}/tables/old-file.ts`,
-      '// old content'
-    );
-    await fs.promises.writeFile(
-      `${outputDir}/old-root-file.ts`,
-      '// old root content'
-    );
+    await fs.mkdir(`${outputDir}/tables`, { recursive: true });
+    await fs.writeFile(`${outputDir}/tables/old-file.ts`, '// old content');
+    await fs.writeFile(`${outputDir}/old-root-file.ts`, '// old root content');
 
     // Verify files exist before generation
-    expect(fs.existsSync(`${outputDir}/tables/old-file.ts`)).toBe(true);
-    expect(fs.existsSync(`${outputDir}/old-root-file.ts`)).toBe(true);
+    expect(existsSync(`${outputDir}/tables/old-file.ts`)).toBe(true);
+    expect(existsSync(`${outputDir}/old-root-file.ts`)).toBe(true);
 
     await generateZodSchemas({
       provider,
@@ -40,16 +35,16 @@ describe('clean output option', () => {
     });
 
     // Old files in tables directory should be cleaned
-    expect(fs.existsSync(`${outputDir}/tables/old-file.ts`)).toBe(false);
+    expect(existsSync(`${outputDir}/tables/old-file.ts`)).toBe(false);
 
     // cleanOutput should clean the entire output directory
-    expect(fs.existsSync(`${outputDir}/tables/old-table-file.ts`)).toBe(false);
-    expect(fs.existsSync(`${outputDir}/old-root-file.ts`)).toBe(false);
+    expect(existsSync(`${outputDir}/tables/old-table-file.ts`)).toBe(false);
+    expect(existsSync(`${outputDir}/old-root-file.ts`)).toBe(false);
 
     const outputFiles = await getOutputFiles(outputDir);
 
     for (const file of outputFiles) {
-      const content = fs.readFileSync(file, 'utf8');
+      const content = await fs.readFile(file, 'utf8');
       expect(content).toMatchSnapshot(path.relative(outputDir, file));
     }
   });
@@ -58,14 +53,11 @@ describe('clean output option', () => {
     const outputDir = getOutputDir('cleanOutput', 'clean-disabled');
 
     // Create the output directory with some existing files
-    await fs.promises.mkdir(`${outputDir}/tables`, { recursive: true });
-    await fs.promises.writeFile(
-      `${outputDir}/tables/old-file.ts`,
-      '// old content'
-    );
+    await fs.mkdir(`${outputDir}/tables`, { recursive: true });
+    await fs.writeFile(`${outputDir}/tables/old-file.ts`, '// old content');
 
     // Verify file exists before generation
-    expect(fs.existsSync(`${outputDir}/tables/old-file.ts`)).toBe(true);
+    expect(existsSync(`${outputDir}/tables/old-file.ts`)).toBe(true);
 
     await generateZodSchemas({
       provider,
@@ -78,8 +70,8 @@ describe('clean output option', () => {
     });
 
     // Old file should still exist
-    expect(fs.existsSync(`${outputDir}/tables/old-file.ts`)).toBe(true);
-    const oldContent = fs.readFileSync(
+    expect(existsSync(`${outputDir}/tables/old-file.ts`)).toBe(true);
+    const oldContent = await fs.readFile(
       `${outputDir}/tables/old-file.ts`,
       'utf8'
     );
@@ -88,7 +80,7 @@ describe('clean output option', () => {
     const outputFiles = await getOutputFiles(outputDir);
 
     for (const file of outputFiles) {
-      const content = fs.readFileSync(file, 'utf8');
+      const content = await fs.readFile(file, 'utf8');
       expect(content).toMatchSnapshot(path.relative(outputDir, file));
     }
   });

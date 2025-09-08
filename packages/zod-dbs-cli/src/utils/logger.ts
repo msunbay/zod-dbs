@@ -1,7 +1,24 @@
 import chalk from 'chalk';
 
-export const logSetting = (name: string, value: string) => {
-  console.info(`- ${chalk.white(name)}: ${chalk.blue(value)}`);
+import type { ZodDbsProvider } from 'zod-dbs-core';
+
+import { maskSensitiveValue } from './mask.js';
+
+export const logSetting = (name: string, value: string | boolean | object) => {
+  let displayValue = value.toString();
+
+  if (name === 'provider' && typeof value === 'object' && value !== null) {
+    const provider = value as ZodDbsProvider;
+    const name = provider.name ?? 'custom provider';
+
+    displayValue = provider.displayName
+      ? `${name} (${provider.displayName})`
+      : name;
+  }
+
+  console.info(
+    `- ${chalk.white(name)}: ${chalk.blue(maskSensitiveValue(name, displayValue))}`
+  );
 };
 
 export const logAppName = (message: string) => {

@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 import { generateZodSchemas } from '../../../src/generateZodSchemas.js';
 import {
@@ -30,7 +30,7 @@ describe('module resolution formats', () => {
     const outputFiles = await getOutputFiles(outputDir);
 
     for (const file of outputFiles) {
-      const content = fs.readFileSync(file, 'utf8');
+      const content = await fs.readFile(file, 'utf8');
 
       // Check that imports/exports don't include file extensions
       const importExportLines = content
@@ -61,7 +61,7 @@ describe('module resolution formats', () => {
     const outputFiles = await getOutputFiles(outputDir);
 
     for (const file of outputFiles) {
-      const content = fs.readFileSync(file, 'utf8');
+      const content = await fs.readFile(file, 'utf8');
 
       // Check that relative imports include file extensions
       const importExportLines = content

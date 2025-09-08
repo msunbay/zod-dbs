@@ -1,20 +1,59 @@
-import { ZodDbsConnectionConfig } from '../types.js';
+/**
+ * Configuration for database connection.
+ */
+interface ZodDbsConnectionConfig {
+  scheme?: string; // e.g., 'postgresql', 'mysql', etc.
+  /** Database port (default: 5432) */
+  port?: number;
+  /** Database host (default: localhost) */
+  host?: string;
+  /** Database name to connect to */
+  database?: string;
+  /** Username for authentication */
+  user?: string;
+  /** Password for authentication */
+  password?: string;
+}
 
 export const createConnectionString = (
   options: ZodDbsConnectionConfig
 ): string => {
-  const { host, port, database, user, password, protocol } = options;
+  const {
+    host = 'localhost',
+    port,
+    database,
+    user,
+    password,
+    scheme = 'db',
+  } = options;
 
-  if (!user) throw new Error('User is required for connection string.');
-  if (!password) throw new Error('Password is required for connection string.');
-  if (!host) throw new Error('Host is required for connection string.');
-  if (!port) throw new Error('Port is required for connection string.');
-  if (!database) throw new Error('Database is required for connection string.');
-  if (!protocol) throw new Error('Protocol is required for connection string.');
+  let connectionString = `${scheme}://`;
 
-  return `${protocol}://${user}:${password}@${host}:${port}/${database}`;
+  if (user) {
+    connectionString += user;
+    if (password) {
+      connectionString += `:${password}`;
+    }
+
+    connectionString += `@${host}`;
+  } else {
+    connectionString += host;
+  }
+
+  if (port) {
+    connectionString += `:${port}`;
+  }
+
+  if (database) {
+    connectionString += `/${database}`;
+  }
+
+  return connectionString;
 };
 
+/**
+ * Parses database connection strings, e.g., 'postgresql://user:pass@localhost:5432/dbname'
+ */
 export const parseConnectionString = (
   connectionString: string
 ): ZodDbsConnectionConfig => {
@@ -22,9 +61,9 @@ export const parseConnectionString = (
   const user = url.username;
   const password = url.password;
   const host = url.hostname;
-  const port = url.port ? parseInt(url.port, 10) : 5432; // Default PostgreSQL port
+  const port = url.port ? parseInt(url.port, 10) : undefined;
   const database = url.pathname.slice(1); // Remove leading '/'
-  const protocol = url.protocol.replace(':', ''); // Remove trailing ':'
+  const scheme = url.protocol.replace(':', ''); // Remove trailing ':'
 
   return {
     host,
@@ -32,6 +71,6 @@ export const parseConnectionString = (
     database,
     user,
     password,
-    protocol,
+    scheme,
   };
 };
