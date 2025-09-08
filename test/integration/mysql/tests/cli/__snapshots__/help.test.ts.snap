@@ -2,7 +2,7 @@
 
 exports[`outputs provider help 1`] = `
 "
-zod-dbs CLI v2.0.0
+zod-dbs CLI v1.0.21
 
 Usage: zod-dbs [options]
 
