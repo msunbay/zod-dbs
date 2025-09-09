@@ -14,7 +14,7 @@ npm install zod-dbs-mysql
 npm install mysql2
 ```
 
-## Cli Usage
+## CLI Usage
 
 ```bash
 npm install zod-dbs-cli zod-dbs-mysql

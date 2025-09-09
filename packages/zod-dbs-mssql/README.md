@@ -14,7 +14,7 @@ npm install zod-dbs-mssql
 npm install mssql
 ```
 
-## Cli Usage
+## CLI Usage
 
 ```bash
 npm install zod-dbs-cli zod-dbs-mssql
