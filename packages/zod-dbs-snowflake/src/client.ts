@@ -27,7 +27,6 @@ export async function createClient(
     token: config.token,
     warehouse: config.warehouse,
     role: config.role,
-    // Snowflake uses TLS on 443 by default
   });
 
   const exec = <T>(sql: string, binds?: any[]): Promise<T> =>
@@ -35,9 +34,9 @@ export async function createClient(
       connection.execute({
         sqlText: sql,
         binds,
-        complete: (err: any, _stmt: any, rows: any) => {
+        complete: (err, _stmt, rows) => {
           if (err) return reject(err);
-          resolve(rows);
+          resolve(rows as T);
         },
       });
     });

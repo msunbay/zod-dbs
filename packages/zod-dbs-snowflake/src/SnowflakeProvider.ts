@@ -29,6 +29,12 @@ export class SnowflakeProvider extends ZodDbsBaseProvider {
       displayName: 'Snowflake',
       options: [
         {
+          name: 'host',
+          type: 'string',
+          description:
+            'Snowflake account URL host (e.g., xy12345.snowflakecomputing.com)',
+        },
+        {
           name: 'account',
           type: 'string',
           description:
@@ -36,22 +42,41 @@ export class SnowflakeProvider extends ZodDbsBaseProvider {
           required: true,
         },
         {
+          name: 'user',
+          type: 'string',
+          description: 'Username for authentication',
+        },
+        {
+          name: 'password',
+          type: 'string',
+          description: 'Password for authentication',
+        },
+        {
+          name: 'database',
+          type: 'string',
+          description: 'Database name to connect to',
+          required: true,
+        },
+        {
+          name: 'schemaName',
+          type: 'string',
+          description: 'Schema name to introspect',
+          required: true,
+        },
+        {
           name: 'token',
           type: 'string',
           description: 'JWT token for authentication',
-          required: false,
         },
         {
           name: 'role',
           type: 'string',
           description: 'Role to assume after connecting',
-          required: false,
         },
         {
           name: 'warehouse',
           type: 'string',
           description: 'Virtual warehouse to use for the session',
-          required: false,
         },
       ],
     });

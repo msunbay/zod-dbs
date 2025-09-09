@@ -1,6 +1,6 @@
 import { SqliteProvider } from 'zod-dbs-sqlite';
 
-import { getProviderConfig } from '../../utils/context.js';
+import { getProviderConfig } from '../../../utils/context.js';
 
 it('returns raw schema column information', async () => {
   const provider = new SqliteProvider();

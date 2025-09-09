@@ -1,6 +1,6 @@
 import { SnowflakeProvider } from 'zod-dbs-snowflake';
 
-import { getProviderConfig } from '../../utils/context.js';
+import { getProviderConfig } from '../../../utils/context.js';
 
 const IS_CONFIGURED = !!process.env.SNOWFLAKE_HOST;
 const describeIntegration = IS_CONFIGURED ? describe : describe.skip;

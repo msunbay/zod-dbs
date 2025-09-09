@@ -9,7 +9,8 @@ export const setupTestContext = async (
 ) => {
   const provider = project.name.split(':')[1];
 
-  const label = `Setting up ${provider} test context...`;
+  const label = `Done setting up ${provider} test context`;
+  console.log(`Setting up ${provider} test context...`);
   console.time(label);
 
   await deleteOutputFiles(getProviderOutputDir(provider));
