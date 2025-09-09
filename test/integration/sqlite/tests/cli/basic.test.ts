@@ -13,7 +13,7 @@ it('CLI generates correct zod schemas with basic options', async () => {
   const outputDir = getProviderOutputDir('sqlite', 'basic');
 
   await executeCli(
-    `--provider sqlite --database "${config.database}" --schema-name "${config.schemaName}" --include "users" --output-dir "${outputDir}" --module-resolution esm`
+    `--provider sqlite --database "${config.database}" --include "users" --output-dir "${outputDir}" --module-resolution esm`
   );
 
   const outputFiles = await getOutputFiles(outputDir);

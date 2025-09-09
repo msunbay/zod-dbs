@@ -39,7 +39,8 @@ export interface ZodDbsRenderZodTypeParams {
   isReadField: boolean;
 }
 
-export class ZodBaseRenderer implements ZodDbsRenderer {
+export abstract class ZodBaseRenderer implements ZodDbsRenderer {
+  public name = 'ZodBaseRenderer';
   protected options: ZodDbsRendererOptions;
 
   constructor(options: ZodDbsRendererOptions = {}) {
@@ -272,6 +273,7 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
         casing: config.objectNameCasing,
         singularize: config.singularization,
       }),
+      hasDescriptionFields: !!column.description || !!column.isDeprecated,
       ...column,
     };
 
@@ -389,6 +391,10 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
       .map((column) => ({
         ...column,
         isOptional: column.isWriteOptional,
+        hasDescriptionFields:
+          column.hasDescriptionFields ||
+          !!column.defaultValue ||
+          !!column.maxLen,
       }));
   }
 
@@ -445,10 +451,12 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
       config
     );
 
+    const fullName = table.schemaName
+      ? `${table.schemaName}.${table.name}`
+      : table.name;
+
     const tableModel: ZodDbsTableRenderModel = {
-      fullName: table.schemaName
-        ? `${table.schemaName}.${table.name}`
-        : table.name,
+      fullName,
       type: table.type,
       tableName: table.name,
       schemaName: table.schemaName,

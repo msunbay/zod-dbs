@@ -123,10 +123,12 @@ type TableReadRecord = z.output<typeof {{tableReadSchemaName}}>;
  */
 export interface {{tableReadRecordName}} {
 {{#readableColumns}}
+{{#hasDescriptionFields}}
     /**
     {{#description}}* {{{description}}}
     {{/description}}{{#isDeprecated}}* @deprecated {{isDeprecatedReason}}
     {{/isDeprecated}}*/
+{{/hasDescriptionFields}}
     {{propertyName}}{{#isOptional}}?{{/isOptional}}: TableReadRecord['{{propertyName}}'];
 {{/readableColumns}}
 }
@@ -137,12 +139,14 @@ export interface {{tableReadRecordName}} {
  */
 export interface {{tableInsertRecordName}} {
 {{#writableColumns}}
+{{#hasDescriptionFields}}
     /**
     {{#description}}* {{{description}}}
     {{/description}}{{#maxLen}}* @maxLen: {{maxLen}}
     {{/maxLen}}{{#defaultValue}}* @default: {{{defaultValue}}}
     {{/defaultValue}}{{#isDeprecated}}* @deprecated {{isDeprecatedReason}}
     {{/isDeprecated}}*/
+{{/hasDescriptionFields}}
     {{propertyName}}{{#isOptional}}?{{/isOptional}}: TableInsertRecord['{{propertyName}}'];
 {{/writableColumns}}
 }

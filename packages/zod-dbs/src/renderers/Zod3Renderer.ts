@@ -3,6 +3,8 @@ import type { ZodDbsRenderZodTypeParams } from './ZodBaseRenderer.js';
 import { ZodBaseRenderer } from './ZodBaseRenderer.js';
 
 export class Zod3Renderer extends ZodBaseRenderer {
+  public name = 'Zod3Renderer';
+
   protected override renderZodType(params: ZodDbsRenderZodTypeParams): string {
     const renderedType = super.renderZodType(params);
 

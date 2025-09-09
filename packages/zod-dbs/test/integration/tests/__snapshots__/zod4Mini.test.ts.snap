@@ -107,20 +107,10 @@ type TableReadRecord = z.output<typeof MvUserPostsSchema>;
  * Read record (casing transformed) for the "public.mv_user_posts" materialized_view.
  */
 export interface MvUserPostRecord {
-    /**
-    */
     userId?: TableReadRecord['userId'];
-    /**
-    */
     userName?: TableReadRecord['userName'];
-    /**
-    */
     postId?: TableReadRecord['postId'];
-    /**
-    */
     postTitle?: TableReadRecord['postTitle'];
-    /**
-    */
     postContent?: TableReadRecord['postContent'];
 }
 
@@ -3936,23 +3926,11 @@ type TableReadRecord = z.output<typeof PostsTableSchema>;
  * Read record (casing transformed) for the "public.posts" table.
  */
 export interface PostRecord {
-    /**
-    */
     id: TableReadRecord['id'];
-    /**
-    */
     userId?: TableReadRecord['userId'];
-    /**
-    */
     title: TableReadRecord['title'];
-    /**
-    */
     content?: TableReadRecord['content'];
-    /**
-    */
     published?: TableReadRecord['published'];
-    /**
-    */
     status?: TableReadRecord['status'];
     /**
     * Number of views for the post
@@ -3980,14 +3958,8 @@ export interface PostRecord {
  * Insert record (casing transformed) for the "public.posts" table.
  */
 export interface PostInsertRecord {
-    /**
-    */
     userId?: TableInsertRecord['userId'];
-    /**
-    */
     title: TableInsertRecord['title'];
-    /**
-    */
     content?: TableInsertRecord['content'];
     /**
     * @default: false
@@ -5045,29 +5017,13 @@ type TableReadRecord = z.output<typeof UsersTableSchema>;
  * Read record (casing transformed) for the "public.users" table.
  */
 export interface UserRecord {
-    /**
-    */
     id: TableReadRecord['id'];
-    /**
-    */
     name: TableReadRecord['name'];
-    /**
-    */
     email?: TableReadRecord['email'];
-    /**
-    */
     status?: TableReadRecord['status'];
-    /**
-    */
     profile?: TableReadRecord['profile'];
-    /**
-    */
     createdAt?: TableReadRecord['createdAt'];
-    /**
-    */
     roles?: TableReadRecord['roles'];
-    /**
-    */
     dates?: TableReadRecord['dates'];
 }
 
@@ -5088,18 +5044,12 @@ export interface UserInsertRecord {
     * @default: 'active'::character varying
     */
     status?: TableInsertRecord['status'];
-    /**
-    */
     profile?: TableInsertRecord['profile'];
     /**
     * @default: now()
     */
     createdAt?: TableInsertRecord['createdAt'];
-    /**
-    */
     roles?: TableInsertRecord['roles'];
-    /**
-    */
     dates?: TableInsertRecord['dates'];
 }
 
@@ -5513,20 +5463,10 @@ type TableReadRecord = z.output<typeof ViewUserPostsSchema>;
  * Read record (casing transformed) for the "public.view_user_posts" view.
  */
 export interface ViewUserPostRecord {
-    /**
-    */
     userId?: TableReadRecord['userId'];
-    /**
-    */
     userName?: TableReadRecord['userName'];
-    /**
-    */
     postId?: TableReadRecord['postId'];
-    /**
-    */
     postTitle?: TableReadRecord['postTitle'];
-    /**
-    */
     postContent?: TableReadRecord['postContent'];
 }
 
@@ -5611,20 +5551,10 @@ type TableReadRecord = z.output<typeof MvUserPostsSchema>;
  * Read record for the "public.mv_user_posts" materialized_view.
  */
 export interface MvUserPostRecord {
-    /**
-    */
     user_id?: TableReadRecord['user_id'];
-    /**
-    */
     user_name?: TableReadRecord['user_name'];
-    /**
-    */
     post_id?: TableReadRecord['post_id'];
-    /**
-    */
     post_title?: TableReadRecord['post_title'];
-    /**
-    */
     post_content?: TableReadRecord['post_content'];
 }
 
@@ -8142,23 +8072,11 @@ type TableReadRecord = z.output<typeof PostsTableSchema>;
  * Read record for the "public.posts" table.
  */
 export interface PostRecord {
-    /**
-    */
     id: TableReadRecord['id'];
-    /**
-    */
     user_id?: TableReadRecord['user_id'];
-    /**
-    */
     title: TableReadRecord['title'];
-    /**
-    */
     content?: TableReadRecord['content'];
-    /**
-    */
     published?: TableReadRecord['published'];
-    /**
-    */
     status?: TableReadRecord['status'];
     /**
     * Number of views for the post
@@ -8186,14 +8104,8 @@ export interface PostRecord {
  * Insertable record for the "public.posts" table.
  */
 export interface PostInsertRecord {
-    /**
-    */
     user_id?: TableInsertRecord['user_id'];
-    /**
-    */
     title: TableInsertRecord['title'];
-    /**
-    */
     content?: TableInsertRecord['content'];
     /**
     * @default: false
@@ -8869,29 +8781,13 @@ type TableReadRecord = z.output<typeof UsersTableSchema>;
  * Read record for the "public.users" table.
  */
 export interface UserRecord {
-    /**
-    */
     id: TableReadRecord['id'];
-    /**
-    */
     name: TableReadRecord['name'];
-    /**
-    */
     email?: TableReadRecord['email'];
-    /**
-    */
     status?: TableReadRecord['status'];
-    /**
-    */
     profile?: TableReadRecord['profile'];
-    /**
-    */
     created_at?: TableReadRecord['created_at'];
-    /**
-    */
     roles?: TableReadRecord['roles'];
-    /**
-    */
     dates?: TableReadRecord['dates'];
 }
 
@@ -8912,18 +8808,12 @@ export interface UserInsertRecord {
     * @default: 'active'::character varying
     */
     status?: TableInsertRecord['status'];
-    /**
-    */
     profile?: TableInsertRecord['profile'];
     /**
     * @default: now()
     */
     created_at?: TableInsertRecord['created_at'];
-    /**
-    */
     roles?: TableInsertRecord['roles'];
-    /**
-    */
     dates?: TableInsertRecord['dates'];
 }
 
@@ -9208,20 +9098,10 @@ type TableReadRecord = z.output<typeof ViewUserPostsSchema>;
  * Read record for the "public.view_user_posts" view.
  */
 export interface ViewUserPostRecord {
-    /**
-    */
     user_id?: TableReadRecord['user_id'];
-    /**
-    */
     user_name?: TableReadRecord['user_name'];
-    /**
-    */
     post_id?: TableReadRecord['post_id'];
-    /**
-    */
     post_title?: TableReadRecord['post_title'];
-    /**
-    */
     post_content?: TableReadRecord['post_content'];
 }
 

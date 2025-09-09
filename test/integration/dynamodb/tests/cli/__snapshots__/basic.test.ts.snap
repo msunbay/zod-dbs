@@ -106,23 +106,11 @@ type TableReadRecord = z.output<typeof OrdersTableSchema>;
  * Read record for the ".Orders" table.
  */
 export interface OrderRecord {
-    /**
-    */
     createdAt: TableReadRecord['createdAt'];
-    /**
-    */
     total: TableReadRecord['total'];
-    /**
-    */
     coupon: TableReadRecord['coupon'];
-    /**
-    */
     shipping: TableReadRecord['shipping'];
-    /**
-    */
     orderId: TableReadRecord['orderId'];
-    /**
-    */
     items: TableReadRecord['items'];
 }
 
@@ -130,23 +118,11 @@ export interface OrderRecord {
  * Insertable record for the "Orders" table.
  */
 export interface OrderInsertRecord {
-    /**
-    */
     createdAt: TableInsertRecord['createdAt'];
-    /**
-    */
     total: TableInsertRecord['total'];
-    /**
-    */
     coupon: TableInsertRecord['coupon'];
-    /**
-    */
     shipping: TableInsertRecord['shipping'];
-    /**
-    */
     orderId: TableInsertRecord['orderId'];
-    /**
-    */
     items: TableInsertRecord['items'];
 }
 
@@ -260,29 +236,13 @@ type TableReadRecord = z.output<typeof ProductsTableSchema>;
  * Read record for the ".Products" table.
  */
 export interface ProductRecord {
-    /**
-    */
     image: TableReadRecord['image'];
-    /**
-    */
     metadata: TableReadRecord['metadata'];
-    /**
-    */
     price: TableReadRecord['price'];
-    /**
-    */
     ratings: TableReadRecord['ratings'];
-    /**
-    */
     name: TableReadRecord['name'];
-    /**
-    */
     inStock: TableReadRecord['inStock'];
-    /**
-    */
     id: TableReadRecord['id'];
-    /**
-    */
     categories: TableReadRecord['categories'];
 }
 
@@ -290,29 +250,13 @@ export interface ProductRecord {
  * Insertable record for the "Products" table.
  */
 export interface ProductInsertRecord {
-    /**
-    */
     image: TableInsertRecord['image'];
-    /**
-    */
     metadata: TableInsertRecord['metadata'];
-    /**
-    */
     price: TableInsertRecord['price'];
-    /**
-    */
     ratings: TableInsertRecord['ratings'];
-    /**
-    */
     name: TableInsertRecord['name'];
-    /**
-    */
     inStock: TableInsertRecord['inStock'];
-    /**
-    */
     id: TableInsertRecord['id'];
-    /**
-    */
     categories: TableInsertRecord['categories'];
 }
 
@@ -394,17 +338,9 @@ type TableReadRecord = z.output<typeof SessionsTableSchema>;
  * Read record for the ".Sessions" table.
  */
 export interface SessionRecord {
-    /**
-    */
     tokens: TableReadRecord['tokens'];
-    /**
-    */
     expires: TableReadRecord['expires'];
-    /**
-    */
     sessionId: TableReadRecord['sessionId'];
-    /**
-    */
     userId: TableReadRecord['userId'];
 }
 
@@ -412,17 +348,9 @@ export interface SessionRecord {
  * Insertable record for the "Sessions" table.
  */
 export interface SessionInsertRecord {
-    /**
-    */
     tokens: TableInsertRecord['tokens'];
-    /**
-    */
     expires: TableInsertRecord['expires'];
-    /**
-    */
     sessionId: TableInsertRecord['sessionId'];
-    /**
-    */
     userId: TableInsertRecord['userId'];
 }
 
@@ -512,20 +440,10 @@ type TableReadRecord = z.output<typeof UsersTableSchema>;
  * Read record for the ".Users" table.
  */
 export interface UserRecord {
-    /**
-    */
     id: TableReadRecord['id'];
-    /**
-    */
     sort: TableReadRecord['sort'];
-    /**
-    */
     email: TableReadRecord['email'];
-    /**
-    */
     profile: TableReadRecord['profile'];
-    /**
-    */
     tags: TableReadRecord['tags'];
 }
 
@@ -533,20 +451,10 @@ export interface UserRecord {
  * Insertable record for the "Users" table.
  */
 export interface UserInsertRecord {
-    /**
-    */
     id: TableInsertRecord['id'];
-    /**
-    */
     sort: TableInsertRecord['sort'];
-    /**
-    */
     email: TableInsertRecord['email'];
-    /**
-    */
     profile: TableInsertRecord['profile'];
-    /**
-    */
     tags: TableInsertRecord['tags'];
 }
 

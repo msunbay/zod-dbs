@@ -16,7 +16,6 @@ Options:
 
 SQLite options:
   --database <value>                         Path to SQLite database file (or :memory: for in-memory)
-  --schema-name <value>                      Database schema to introspect
 
 Output options:
   -o,--output-dir <path>                     Output directory for generated schemas

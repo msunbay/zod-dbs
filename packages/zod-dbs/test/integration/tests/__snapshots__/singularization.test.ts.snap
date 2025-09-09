@@ -234,23 +234,11 @@ type TableReadRecord = z.output<typeof PostsTableSchema>;
  * Read record (casing transformed) for the "public.posts" table.
  */
 export interface PostsRecord {
-    /**
-    */
     id: TableReadRecord['id'];
-    /**
-    */
     userId?: TableReadRecord['userId'];
-    /**
-    */
     title: TableReadRecord['title'];
-    /**
-    */
     content?: TableReadRecord['content'];
-    /**
-    */
     published?: TableReadRecord['published'];
-    /**
-    */
     status?: TableReadRecord['status'];
     /**
     * Number of views for the post
@@ -278,14 +266,8 @@ export interface PostsRecord {
  * Insert record (casing transformed) for the "public.posts" table.
  */
 export interface PostsInsertRecord {
-    /**
-    */
     userId?: TableInsertRecord['userId'];
-    /**
-    */
     title: TableInsertRecord['title'];
-    /**
-    */
     content?: TableInsertRecord['content'];
     /**
     * @default: false

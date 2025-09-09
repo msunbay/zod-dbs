@@ -17,7 +17,10 @@ export type {
 } from 'zod-dbs-core';
 export { getZodType, ZodDbsBaseProvider } from 'zod-dbs-core';
 export * from './constants.js';
-export { generateZodSchemas } from './generateZodSchemas.js';
+export {
+  generateZodSchemas,
+  type ZodDbsGenerateOptions,
+} from './generateZodSchemas.js';
 export type * from './renderers/types.js';
 export { Zod3Renderer } from './renderers/Zod3Renderer.js';
 export { Zod4MiniRenderer } from './renderers/Zod4MiniRenderer.js';

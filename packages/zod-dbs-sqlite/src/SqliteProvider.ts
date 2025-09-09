@@ -1,4 +1,4 @@
-import { logDebug, sql, ZodDbsBaseProvider } from 'zod-dbs-core';
+import { sql, ZodDbsBaseProvider } from 'zod-dbs-core';
 
 import type {
   ZodDbsColumnInfo,
@@ -73,7 +73,6 @@ export class SqliteProvider extends ZodDbsBaseProvider {
       displayName: 'SQLite',
       configurationDefaults: {
         database: ':memory:',
-        schemaName: 'main',
       },
       options: [
         {
@@ -81,11 +80,7 @@ export class SqliteProvider extends ZodDbsBaseProvider {
           type: 'string',
           description:
             'Path to SQLite database file (or :memory: for in-memory)',
-        },
-        {
-          name: 'schema-name',
-          type: 'string',
-          description: 'Database schema to introspect',
+          required: true,
         },
       ],
     });
@@ -98,7 +93,6 @@ export class SqliteProvider extends ZodDbsBaseProvider {
   protected createColumnInfo(
     table: RawTableRow,
     column: RawColumnRow,
-    schemaName: string,
     enumMap?: Record<string, string[]>
   ): ZodDbsColumnInfo {
     const dataType = (column.type || 'text').toLowerCase();
@@ -108,13 +102,9 @@ export class SqliteProvider extends ZodDbsBaseProvider {
       defaultValue: column.dflt_value ?? undefined,
       isNullable: column.notnull === 0,
       maxLen: parseMaxLen(column.type),
-      minLen: undefined,
       dataType,
       tableName: table.name,
-      schemaName,
-      description: undefined,
       tableType: (table.type as ZodDbsTableType) ?? 'table',
-      enumValues: undefined,
       isEnum: false,
       isSerial: column.pk === 1 && /int/i.test(column.type || ''),
       isArray: false,
@@ -160,13 +150,11 @@ export class SqliteProvider extends ZodDbsBaseProvider {
   public async fetchSchemaInfo(
     config: ZodDbsProviderConfig
   ): Promise<ZodDbsColumnInfo[]> {
-    const schemaName = config.schemaName || 'main';
     config.onProgress?.('connecting');
     const client = await this.createClient(config);
     await client.connect();
 
     config.onProgress?.('fetchingSchema');
-    logDebug(`Retrieving schema information for schema '${schemaName}'`);
 
     try {
       const tables = await client.query<RawTableRow[]>(
@@ -187,7 +175,7 @@ export class SqliteProvider extends ZodDbsBaseProvider {
           `PRAGMA table_info(${JSON.stringify(tbl.name)});`
         );
         for (const col of pragma) {
-          columns.push(this.createColumnInfo(tbl, col, schemaName, enumMap));
+          columns.push(this.createColumnInfo(tbl, col, enumMap));
         }
       }
 

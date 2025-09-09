@@ -36,6 +36,11 @@ export interface ZodDbsColumnBaseRenderModel extends ZodDbsColumn {
    * Example: 'UserProfileSchema' for a profile column.
    */
   jsonSchemaName: string;
+
+  /**
+   * Whether this column has any description fields that can be used to generate JSDoc comments for fields.
+   */
+  hasDescriptionFields?: boolean;
 }
 
 /**
@@ -54,15 +59,6 @@ export interface ZodDbsColumnRenderModel extends ZodDbsColumnBaseRenderModel {
    * Example: 'z.string().max(100)', 'z.number().nullish()', 'z.string().email()'
    */
   renderedWriteType: string;
-}
-
-export interface ZodDbsObjectSchema {
-  /** The name of the object schema (e.g., 'UserProfileSchema') */
-  description?: string;
-  tableName: string;
-  columnName: string;
-  name: string;
-  fields: { name: string; type: string }[];
 }
 
 /**

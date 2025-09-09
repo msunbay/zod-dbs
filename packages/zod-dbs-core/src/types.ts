@@ -83,7 +83,7 @@ export interface ZodDbsColumnInfo {
   isWritable?: boolean;
   /**
    * Whether this property is marked as deprecated.
-   * Can be used to generate @deprecated JSDoc comments.
+   * Can be used to generate deprecated JSDoc comments.
    */
   isDeprecated?: boolean;
   /**
@@ -180,6 +180,10 @@ export interface ZodDbsRenderedFile {
  * Interface for rendering Zod schemas and types from table information.
  */
 export interface ZodDbsRenderer {
+  /**
+   * The name of the renderer
+   */
+  name?: string;
   /**
    * Renders the TypeScript code for the generated Zod schemas and types for a given table.
    */

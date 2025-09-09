@@ -64,11 +64,7 @@ type TableReadRecord = z.output<typeof UserProfileSchema>;
  * Read record (casing transformed) for the "UserProfile" object.
  */
 export interface UserProfileRecord {
-    /**
-    */
     displayName?: TableReadRecord['displayName'];
-    /**
-    */
     age?: TableReadRecord['age'];
 }
 
@@ -236,20 +232,10 @@ type TableReadRecord = z.output<typeof UsersTableSchema>;
  * Read record (casing transformed) for the "testdb.users" table.
  */
 export interface UserRecord {
-    /**
-    */
     id: TableReadRecord['id'];
-    /**
-    */
     email: TableReadRecord['email'];
-    /**
-    */
     createdAt: TableReadRecord['createdAt'];
-    /**
-    */
     profile?: TableReadRecord['profile'];
-    /**
-    */
     tags?: TableReadRecord['tags'];
 }
 
@@ -257,20 +243,10 @@ export interface UserRecord {
  * Insert record (casing transformed) for the "testdb.users" table.
  */
 export interface UserInsertRecord {
-    /**
-    */
     id: TableInsertRecord['id'];
-    /**
-    */
     email: TableInsertRecord['email'];
-    /**
-    */
     createdAt: TableInsertRecord['createdAt'];
-    /**
-    */
     profile?: TableInsertRecord['profile'];
-    /**
-    */
     tags?: TableInsertRecord['tags'];
 }
 

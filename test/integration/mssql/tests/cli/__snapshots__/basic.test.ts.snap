@@ -205,26 +205,12 @@ type TableReadRecord = z.output<typeof UsersTableSchema>;
  * Read record (casing transformed) for the "dbo.users" table.
  */
 export interface UserRecord {
-    /**
-    */
     id: TableReadRecord['id'];
-    /**
-    */
     name: TableReadRecord['name'];
-    /**
-    */
     email?: TableReadRecord['email'];
-    /**
-    */
     status?: TableReadRecord['status'];
-    /**
-    */
     profile?: TableReadRecord['profile'];
-    /**
-    */
     createdAt?: TableReadRecord['createdAt'];
-    /**
-    */
     roles?: TableReadRecord['roles'];
 }
 
@@ -232,8 +218,6 @@ export interface UserRecord {
  * Insert record (casing transformed) for the "dbo.users" table.
  */
 export interface UserInsertRecord {
-    /**
-    */
     id: TableInsertRecord['id'];
     /**
     * @maxLen: 100

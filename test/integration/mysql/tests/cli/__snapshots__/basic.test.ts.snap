@@ -198,26 +198,12 @@ type TableReadRecord = z.output<typeof UsersTableSchema>;
  * Read record (casing transformed) for the "test.users" table.
  */
 export interface UserRecord {
-    /**
-    */
     id: TableReadRecord['id'];
-    /**
-    */
     name: TableReadRecord['name'];
-    /**
-    */
     email?: TableReadRecord['email'];
-    /**
-    */
     status?: TableReadRecord['status'];
-    /**
-    */
     profile?: TableReadRecord['profile'];
-    /**
-    */
     createdAt?: TableReadRecord['createdAt'];
-    /**
-    */
     roles?: TableReadRecord['roles'];
 }
 
@@ -238,8 +224,6 @@ export interface UserInsertRecord {
     * @default: active
     */
     status?: TableInsertRecord['status'];
-    /**
-    */
     profile?: TableInsertRecord['profile'];
     /**
     * @default: CURRENT_TIMESTAMP

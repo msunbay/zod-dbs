@@ -7,6 +7,8 @@ import type {
 import { Zod4Renderer } from './Zod4Renderer.js';
 
 export class Zod4MiniRenderer extends Zod4Renderer {
+  public name = 'Zod4MiniRenderer';
+
   protected override getSchemaTemplateName(
     model: ZodDbsTableRenderModel,
     config: ZodDbsConfig

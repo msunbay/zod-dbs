@@ -1,13 +1,10 @@
 declare module 'zod-dbs-core' {
   interface ZodDbsProviderConfig {
     /**
-     * The database file to connect to (for SQLite).
+     * The database file to connect to.
+     * Use `:memory:` for an in-memory database.
      */
     database?: string;
-    /**
-     * The database schema to use (for SQLite, this is not commonly used).
-     */
-    schemaName?: string;
   }
 }
 

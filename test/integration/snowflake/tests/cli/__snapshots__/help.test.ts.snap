@@ -15,7 +15,12 @@ Options:
   -h, --help                                 display help for command
 
 Snowflake options:
+  --host <value>                             Snowflake account URL host (e.g., xy12345.snowflakecomputing.com)
   --account <value>                          Snowflake account identifier (e.g., xy12345.eu-central-1)
+  --user <value>                             Username for authentication
+  --password <value>                         Password for authentication
+  --database <value>                         Database name to connect to
+  --schemaName <value>                       Schema name to introspect
   --token <value>                            JWT token for authentication
   --role <value>                             Role to assume after connecting
   --warehouse <value>                        Virtual warehouse to use for the session
