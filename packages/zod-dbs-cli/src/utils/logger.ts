@@ -32,3 +32,7 @@ export const logError = (message: string) => {
 export const logWarning = (message: string) => {
   console.warn(`⚠️ ${message}`);
 };
+
+export const logEmpty = () => {
+  console.log();
+};

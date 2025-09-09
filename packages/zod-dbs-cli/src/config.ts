@@ -22,7 +22,7 @@ const getEnvVar = (prefix: string, name: string) => {
  * Enables debug mode if the ZOD_DBS_DEBUG env var is set to 'true' or '1',
  * or if the --debug CLI argument is present.
  */
-export const enableDebugMode = () => {
+export const detectDebugMode = () => {
   const debug = getEnvVar('ZOD_DBS', 'DEBUG');
   const enabled = debug === 'true' || debug === '1' || hasArgument('--debug');
 
