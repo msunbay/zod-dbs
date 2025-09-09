@@ -127,7 +127,7 @@ exports[`returns schema models > userTable 1`] = `
       "schemaName": "test",
       "tableName": "users",
       "tableType": "table",
-      "type": "int",
+      "zodType": "int",
     },
     {
       "dataType": "varchar",
@@ -145,7 +145,7 @@ exports[`returns schema models > userTable 1`] = `
       "schemaName": "test",
       "tableName": "users",
       "tableType": "table",
-      "type": "string",
+      "zodType": "string",
     },
     {
       "dataType": "varchar",
@@ -163,7 +163,7 @@ exports[`returns schema models > userTable 1`] = `
       "schemaName": "test",
       "tableName": "users",
       "tableType": "table",
-      "type": "string",
+      "zodType": "string",
     },
     {
       "dataType": "varchar",
@@ -181,7 +181,7 @@ exports[`returns schema models > userTable 1`] = `
       "schemaName": "test",
       "tableName": "users",
       "tableType": "table",
-      "type": "string",
+      "zodType": "string",
     },
     {
       "dataType": "json",
@@ -199,7 +199,7 @@ exports[`returns schema models > userTable 1`] = `
       "schemaName": "test",
       "tableName": "users",
       "tableType": "table",
-      "type": "json",
+      "zodType": "json",
     },
     {
       "dataType": "timestamp",
@@ -217,7 +217,7 @@ exports[`returns schema models > userTable 1`] = `
       "schemaName": "test",
       "tableName": "users",
       "tableType": "table",
-      "type": "date",
+      "zodType": "date",
     },
     {
       "dataType": "enum",
@@ -240,7 +240,7 @@ exports[`returns schema models > userTable 1`] = `
       "schemaName": "test",
       "tableName": "users",
       "tableType": "table",
-      "type": "any",
+      "zodType": "any",
     },
   ],
   "name": "users",

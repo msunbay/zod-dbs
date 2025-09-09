@@ -99,7 +99,7 @@ exports[`returns schema models > userTable 1`] = `
       "name": "id",
       "tableName": "users",
       "tableType": "table",
-      "type": "int",
+      "zodType": "int",
     },
     {
       "dataType": "text",
@@ -115,7 +115,7 @@ exports[`returns schema models > userTable 1`] = `
       "name": "name",
       "tableName": "users",
       "tableType": "table",
-      "type": "string",
+      "zodType": "string",
     },
     {
       "dataType": "text",
@@ -131,7 +131,7 @@ exports[`returns schema models > userTable 1`] = `
       "name": "email",
       "tableName": "users",
       "tableType": "table",
-      "type": "string",
+      "zodType": "string",
     },
     {
       "dataType": "text",
@@ -152,7 +152,7 @@ exports[`returns schema models > userTable 1`] = `
       "name": "status",
       "tableName": "users",
       "tableType": "table",
-      "type": "string",
+      "zodType": "string",
     },
     {
       "dataType": "json",
@@ -168,7 +168,7 @@ exports[`returns schema models > userTable 1`] = `
       "name": "profile",
       "tableName": "users",
       "tableType": "table",
-      "type": "json",
+      "zodType": "json",
     },
     {
       "dataType": "text",
@@ -184,7 +184,7 @@ exports[`returns schema models > userTable 1`] = `
       "name": "created_at",
       "tableName": "users",
       "tableType": "table",
-      "type": "string",
+      "zodType": "string",
     },
   ],
   "name": "users",

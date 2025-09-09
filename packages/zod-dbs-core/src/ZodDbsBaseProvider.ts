@@ -114,7 +114,7 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
       ...column,
       name: column.name,
       tableName: column.tableName,
-      type: this.getZodType(column.dataType),
+      zodType: this.getZodType(column.dataType),
       isWritable:
         column.isWritable ?? (!column.isSerial && column.tableType === 'table'),
       isReadOptional: column.isNullable,

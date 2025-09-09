@@ -8,7 +8,7 @@ import { ZodBaseRenderer } from '../../../../src/renderers/ZodBaseRenderer.js';
 const column = (overrides: Partial<ZodDbsColumn>): ZodDbsColumn => ({
   name: 'col',
   dataType: 'text',
-  type: 'string',
+  zodType: 'string',
   isEnum: false,
   isSerial: false,
   isArray: false,
@@ -47,9 +47,9 @@ class TestRenderer extends ZodBaseRenderer {}
 describe('ZodBaseRenderer', () => {
   it('renders fallback types number, unknown, any', async () => {
     const tbl = table([
-      column({ name: 'total', type: 'number', dataType: 'numeric' }),
-      column({ name: 'mystery', type: 'unknown', dataType: 'unknown' }),
-      column({ name: 'whatever', type: 'any', dataType: 'other' }),
+      column({ name: 'total', zodType: 'number', dataType: 'numeric' }),
+      column({ name: 'mystery', zodType: 'unknown', dataType: 'unknown' }),
+      column({ name: 'whatever', zodType: 'any', dataType: 'other' }),
     ]);
     const out = await new TestRenderer().renderSchemaFile(tbl, baseConfig);
     expect(out).toContain('total: z.number()');
@@ -59,19 +59,19 @@ describe('ZodBaseRenderer', () => {
 
   it('renders core zod types & array/nullable/optional transforms', async () => {
     const tbl = table([
-      column({ name: 'id', type: 'int', dataType: 'int4', isSerial: true }),
-      column({ name: 'email', type: 'email', dataType: 'varchar' }),
+      column({ name: 'id', zodType: 'int', dataType: 'int4', isSerial: true }),
+      column({ name: 'email', zodType: 'email', dataType: 'varchar' }),
       column({
         name: 'profile',
-        type: 'json',
+        zodType: 'json',
         dataType: 'jsonb',
         isNullable: true,
         isReadOptional: true,
       }),
-      column({ name: 'created_at', type: 'date', dataType: 'timestamptz' }),
+      column({ name: 'created_at', zodType: 'date', dataType: 'timestamptz' }),
       column({
         name: 'tags',
-        type: 'string',
+        zodType: 'string',
         dataType: '_text',
         isArray: true,
         isNullable: true,
@@ -92,7 +92,7 @@ describe('ZodBaseRenderer', () => {
 
   it('honors coerceDates set to false for date fields', async () => {
     const tbl = table([
-      column({ name: 'created_at', type: 'date', dataType: 'timestamptz' }),
+      column({ name: 'created_at', zodType: 'date', dataType: 'timestamptz' }),
     ]);
     const out = await new TestRenderer().renderSchemaFile(tbl, {
       ...baseConfig,
@@ -103,7 +103,7 @@ describe('ZodBaseRenderer', () => {
 
   it('stringifies dates in write schema when stringifyDates is true', async () => {
     const tbl = table([
-      column({ name: 'created_at', type: 'date', dataType: 'timestamptz' }),
+      column({ name: 'created_at', zodType: 'date', dataType: 'timestamptz' }),
     ]);
     const out = await new TestRenderer().renderSchemaFile(tbl, baseConfig);
     expect(out).toMatch(
@@ -115,13 +115,13 @@ describe('ZodBaseRenderer', () => {
     const tbl = table([
       column({
         name: 'dates',
-        type: 'date',
+        zodType: 'date',
         dataType: 'timestamptz',
         isArray: true,
       }),
       column({
         name: 'dates_nullable',
-        type: 'date',
+        zodType: 'date',
         dataType: 'timestamptz',
         isArray: true,
         isNullable: true,
@@ -146,7 +146,7 @@ describe('ZodBaseRenderer', () => {
 
   it('applies min/max length constraints on write schema only', async () => {
     const tbl = table([
-      column({ name: 'username', type: 'string', minLen: 2, maxLen: 10 }),
+      column({ name: 'username', zodType: 'string', minLen: 2, maxLen: 10 }),
     ]);
     const out = await new TestRenderer().renderSchemaFile(tbl, baseConfig);
     expect(out).toMatch(/username: z\.string\(\)\.min\(2\)\.max\(10\)/);
@@ -156,7 +156,7 @@ describe('ZodBaseRenderer', () => {
     const tbl = table([
       column({
         name: 'status',
-        type: 'string',
+        zodType: 'string',
         isEnum: true,
         enumValues: ['active', 'inactive'],
       }),
@@ -173,10 +173,10 @@ describe('ZodBaseRenderer', () => {
 
   it('creates json schema imports when configured', async () => {
     const tbl = table([
-      column({ name: 'profile', type: 'json', dataType: 'jsonb' }),
+      column({ name: 'profile', zodType: 'json', dataType: 'jsonb' }),
       column({
         name: 'meta',
-        type: 'json',
+        zodType: 'json',
         dataType: 'json',
         isNullable: true,
         isReadOptional: true,
@@ -197,7 +197,7 @@ describe('ZodBaseRenderer', () => {
 
   it('respects stringifyJson flag set to false', async () => {
     const tbl = table([
-      column({ name: 'profile', type: 'json', dataType: 'jsonb' }),
+      column({ name: 'profile', zodType: 'json', dataType: 'jsonb' }),
     ]);
     const out = await new TestRenderer().renderSchemaFile(tbl, {
       ...baseConfig,
@@ -210,7 +210,7 @@ describe('ZodBaseRenderer', () => {
     const tbl = table([
       column({
         name: 'meta',
-        type: 'json',
+        zodType: 'json',
         dataType: 'jsonb',
         isNullable: true,
       }),
@@ -224,10 +224,10 @@ describe('ZodBaseRenderer', () => {
   });
 
   it('excludes non-writable columns (serial & non-table types) from write schema', async () => {
-    const writable = column({ name: 'update_at', type: 'string' });
+    const writable = column({ name: 'update_at', zodType: 'string' });
     const serial = column({
       name: 'id',
-      type: 'int',
+      zodType: 'int',
       isSerial: true,
       isWritable: false,
     });
@@ -252,7 +252,7 @@ describe('ZodBaseRenderer', () => {
   });
 
   it('applies all writeTransforms in order (trim, lowercase, uppercase, normalize)', async () => {
-    const tbl = table([column({ name: 'value', type: 'string' })]);
+    const tbl = table([column({ name: 'value', zodType: 'string' })]);
     const out = await new TestRenderer({
       onColumnModelCreated: (m) => ({
         ...m,
@@ -268,7 +268,7 @@ describe('ZodBaseRenderer', () => {
     const tbl = table([
       column({
         name: 'nickname',
-        type: 'string',
+        zodType: 'string',
         isReadOptional: true,
         isNullable: false,
       }),
@@ -280,7 +280,7 @@ describe('ZodBaseRenderer', () => {
   });
 
   it('omits json schema import section when location configured but no json columns', async () => {
-    const tbl = table([column({ name: 'username', type: 'string' })]);
+    const tbl = table([column({ name: 'username', zodType: 'string' })]);
     const out = await new TestRenderer().renderSchemaFile(tbl, {
       ...baseConfig,
       jsonSchemaImportLocation: '@schemas',
@@ -289,9 +289,9 @@ describe('ZodBaseRenderer', () => {
   });
 
   it('onColumnModelCreated and onTableModelCreated hooks modify output & re-render types', async () => {
-    const tbl = table([column({ name: 'count', type: 'string' })]);
+    const tbl = table([column({ name: 'count', zodType: 'string' })]);
     const out = await new TestRenderer({
-      onColumnModelCreated: (m) => ({ ...m, type: 'int' }),
+      onColumnModelCreated: (m) => ({ ...m, zodType: 'int' }),
       onTableModelCreated: (t) => ({
         ...t,
         tableReadSchemaName: 'CustomUsersSchema',
@@ -302,7 +302,7 @@ describe('ZodBaseRenderer', () => {
   });
 
   it('uses schema.simple template when caseTransform is false', async () => {
-    const tbl = table([column({ name: 'id', type: 'int' })]);
+    const tbl = table([column({ name: 'id', zodType: 'int' })]);
     const out = await new TestRenderer().renderSchemaFile(tbl, {
       ...baseConfig,
       caseTransform: false,
@@ -317,7 +317,7 @@ describe('ZodBaseRenderer', () => {
     const tbl = table([
       column({
         name: 'maybe',
-        type: 'string',
+        zodType: 'string',
         isNullable: true,
         isReadOptional: true,
       }),
@@ -336,7 +336,7 @@ describe('ZodBaseRenderer', () => {
 
   it('uses z.unknown() for fallback any type when defaultUnknown=true', async () => {
     const tbl = table([
-      column({ name: 'whatever', type: 'any', dataType: 'other' }),
+      column({ name: 'whatever', zodType: 'any', dataType: 'other' }),
     ]);
     const out = await new TestRenderer().renderSchemaFile(tbl, {
       ...baseConfig,
@@ -347,10 +347,10 @@ describe('ZodBaseRenderer', () => {
 
   it('stringifies json fields in write schema (nullable vs non-nullable)', async () => {
     const tbl = table([
-      column({ name: 'profile', type: 'json', dataType: 'jsonb' }),
+      column({ name: 'profile', zodType: 'json', dataType: 'jsonb' }),
       column({
         name: 'meta',
-        type: 'json',
+        zodType: 'json',
         dataType: 'jsonb',
         isNullable: true,
         isWriteOptional: true,
@@ -367,7 +367,7 @@ describe('ZodBaseRenderer', () => {
     const tbl = table([
       column({
         name: 'last_seen',
-        type: 'date',
+        zodType: 'date',
         dataType: 'timestamptz',
         isNullable: true,
         isWriteOptional: true,
@@ -384,7 +384,7 @@ describe('ZodBaseRenderer', () => {
     const tbl = table([
       column({
         name: 'age',
-        type: 'number',
+        zodType: 'number',
         writeTransforms: ['nonnegative'] as any,
       }),
     ]);
@@ -394,7 +394,7 @@ describe('ZodBaseRenderer', () => {
 
   it('marks optional-only field as optional in write schema', async () => {
     const tbl = table([
-      column({ name: 'nick_name', type: 'string', isWriteOptional: true }),
+      column({ name: 'nick_name', zodType: 'string', isWriteOptional: true }),
     ]);
     const out = await new TestRenderer().renderSchemaFile(tbl, baseConfig);
     // In insert base schema we expect .optional()
@@ -409,7 +409,7 @@ describe('ZodBaseRenderer', () => {
     const tbl = table([
       column({
         name: 'status',
-        type: 'string',
+        zodType: 'string',
         isEnum: true,
         enumValues: ['active', 'inactive'],
       }),
@@ -427,9 +427,9 @@ describe('ZodBaseRenderer', () => {
 
   it('ignores string writeTransforms for non-string base types (date, json, boolean)', async () => {
     const tbl = table([
-      column({ name: 'created_at', type: 'date', dataType: 'timestamptz' }),
-      column({ name: 'settings', type: 'json', dataType: 'jsonb' }),
-      column({ name: 'is_active', type: 'boolean', dataType: 'bool' }),
+      column({ name: 'created_at', zodType: 'date', dataType: 'timestamptz' }),
+      column({ name: 'settings', zodType: 'json', dataType: 'jsonb' }),
+      column({ name: 'is_active', zodType: 'boolean', dataType: 'bool' }),
     ]);
     const out = await new TestRenderer({
       onColumnModelCreated: (m) => ({
@@ -445,7 +445,7 @@ describe('ZodBaseRenderer', () => {
   });
 
   it('handles empty writeTransforms array without adding transforms', async () => {
-    const tbl = table([column({ name: 'title', type: 'string' })]);
+    const tbl = table([column({ name: 'title', zodType: 'string' })]);
     const out = await new TestRenderer({
       onColumnModelCreated: (m) => ({ ...m, writeTransforms: [] }),
     }).renderSchemaFile(tbl, baseConfig);
@@ -460,7 +460,7 @@ describe('ZodBaseRenderer', () => {
     const tbl = table([
       column({
         name: 'note',
-        type: 'string',
+        zodType: 'string',
         isNullable: true,
         isReadOptional: false,
       }),
@@ -477,7 +477,7 @@ describe('ZodBaseRenderer', () => {
     const tbl = table([
       column({
         name: 'labels',
-        type: 'string',
+        zodType: 'string',
         dataType: '_text',
         isArray: true,
         isNullable: true,
@@ -496,7 +496,7 @@ describe('ZodBaseRenderer', () => {
 
   it('renders boolean field', async () => {
     const tbl = table([
-      column({ name: 'is_active', type: 'boolean', dataType: 'bool' }),
+      column({ name: 'is_active', zodType: 'boolean', dataType: 'bool' }),
     ]);
     const out = await new TestRenderer().renderSchemaFile(tbl, baseConfig);
     expect(out).toContain('is_active: z.boolean()');
@@ -506,7 +506,7 @@ describe('ZodBaseRenderer', () => {
     const tbl = table([
       column({
         name: 'score',
-        type: 'number',
+        zodType: 'number',
         dataType: 'int4',
         minLen: 1,
         maxLen: 100,
@@ -518,16 +518,16 @@ describe('ZodBaseRenderer', () => {
 
   it('does not stringify date or date arrays when stringifyDates is false', async () => {
     const tbl = table([
-      column({ name: 'created_at', type: 'date', dataType: 'timestamptz' }),
+      column({ name: 'created_at', zodType: 'date', dataType: 'timestamptz' }),
       column({
         name: 'event_dates',
-        type: 'date',
+        zodType: 'date',
         dataType: 'timestamptz',
         isArray: true,
       }),
       column({
         name: 'maybe_date',
-        type: 'date',
+        zodType: 'date',
         dataType: 'timestamptz',
         isNullable: true,
         isWriteOptional: true,

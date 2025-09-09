@@ -119,7 +119,7 @@ export interface ZodDbsColumn extends ZodDbsColumnInfo {
    * The mapped Zod type ( usually derived from the dataType ).
    * This type is used to render the appropriate Zod schema (e.g., z.string(), z.number(), z.date()).
    */
-  type: ZodDbsColumnType;
+  zodType: ZodDbsColumnType;
   /**
    * Additional transforms applied to the column.
    * These are used provide rendering hints the Zod type during rendering the write schema.

@@ -124,20 +124,20 @@ export abstract class ZodBaseRenderer implements ZodDbsRenderer {
     config: ZodDbsConfig
   ): string {
     let zodType = this.renderZodType({
-      zodType: column.type,
+      zodType: column.zodType,
       config,
       isReadField: true,
     });
 
     if (
-      column.type === 'json' &&
+      column.zodType === 'json' &&
       config.jsonSchemaImportLocation &&
       column.jsonSchemaName
     ) {
       zodType = column.jsonSchemaName;
     }
 
-    if (column.type === 'object' && column.objectDefinition) {
+    if (column.zodType === 'object' && column.objectDefinition) {
       zodType = column.jsonSchemaName;
     }
 
@@ -167,12 +167,12 @@ export abstract class ZodBaseRenderer implements ZodDbsRenderer {
     config: ZodDbsConfig
   ): string {
     let zodType = this.renderZodType({
-      zodType: column.type,
+      zodType: column.zodType,
       config,
       isReadField: false,
     });
 
-    const baseType = this.getBaseType(column.type);
+    const baseType = this.getBaseType(column.zodType);
 
     if (baseType === 'string' && !column.isEnum) {
       if (column.writeTransforms?.includes('trim')) {
@@ -199,14 +199,14 @@ export abstract class ZodBaseRenderer implements ZodDbsRenderer {
     }
 
     if (
-      column.type === 'json' &&
+      column.zodType === 'json' &&
       config.jsonSchemaImportLocation &&
       column.jsonSchemaName
     ) {
       zodType = column.jsonSchemaName;
     }
 
-    if (column.type === 'object' && column.objectDefinition) {
+    if (column.zodType === 'object' && column.objectDefinition) {
       zodType = column.jsonSchemaName;
     }
 
@@ -227,14 +227,14 @@ export abstract class ZodBaseRenderer implements ZodDbsRenderer {
       zodType = `${zodType}.nullable()`;
     }
 
-    if (column.type === 'json' && config.stringifyJson) {
+    if (column.zodType === 'json' && config.stringifyJson) {
       if (!column.isNullable)
         zodType = `${zodType}.transform((value) => JSON.stringify(value))`;
       else
         zodType = `${zodType}.transform((value) => value ? JSON.stringify(value) : value)`;
     }
 
-    if (column.type === 'date' && config.stringifyDates) {
+    if (column.zodType === 'date' && config.stringifyDates) {
       if (column.isArray) {
         if (!column.isNullable)
           zodType = `${zodType}.transform((value) => value.map(date => date.toISOString()))`;
@@ -354,7 +354,7 @@ export abstract class ZodBaseRenderer implements ZodDbsRenderer {
     config: ZodDbsConfig
   ): ZodDbsImport[] | undefined {
     const objectFields = columns.filter(
-      (col) => col.type === 'object' && col.objectDefinition
+      (col) => col.zodType === 'object' && col.objectDefinition
     );
 
     return objectFields.map((col) => ({
@@ -373,7 +373,7 @@ export abstract class ZodBaseRenderer implements ZodDbsRenderer {
     if (!config.jsonSchemaImportLocation) return undefined;
 
     const jsonFields = columns.filter(
-      (col) => col.type === 'json' && col.jsonSchemaName
+      (col) => col.zodType === 'json' && col.jsonSchemaName
     );
 
     return jsonFields.map((col, index) => ({

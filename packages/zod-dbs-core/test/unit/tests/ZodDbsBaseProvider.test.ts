@@ -138,10 +138,10 @@ describe('ZodDbsBaseProvider', () => {
     const schema = await provider.getSchemaInformation({
       onColumnModelCreated: async (c) => ({
         ...c,
-        type: 'int',
+        zodType: 'int',
       }),
     });
-    expect(schema.tables[0].columns[0].type).toBe('int');
+    expect(schema.tables[0].columns[0].zodType).toBe('int');
   });
 
   it('applies onTableModelCreated hook (async) after grouping', async () => {

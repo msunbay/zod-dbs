@@ -103,7 +103,7 @@ describe('MySqlProvider', () => {
                 "schemaName": "test",
                 "tableName": "users",
                 "tableType": "table",
-                "type": "int",
+                "zodType": "int",
               },
             ],
             "name": "users",

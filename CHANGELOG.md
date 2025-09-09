@@ -5,6 +5,7 @@
 - Fixed broken output for zod 4-mini when case transforms were disabled.
 - Fixed errors about failing to write files when the provider returned no tables.
 - Fixed issues where some CLI flags were not not respected by some providers.
+- Added missing type exports.
 
 ### Output Improvements
 
@@ -37,4 +38,5 @@
 
 - All `--no-` CLI flags have been replaced by flags with value inputs. e.g. `--no-case-transforms` is now `--case-transforms false`.
 - Some exported types and utility functions have been removed / renamed.
+- The property `ZodDbsColumn.type` has been renamed to `ZodDbsColumn.zodType` to better reflect its purpose.
 - Config files needs to import the provider to get proper typing support.

@@ -822,7 +822,7 @@ exports[`returns schema models > userTable 1`] = `
       "schemaName": "dbo",
       "tableName": "users",
       "tableType": "table",
-      "type": "int",
+      "zodType": "int",
     },
     {
       "dataType": "nvarchar",
@@ -840,7 +840,7 @@ exports[`returns schema models > userTable 1`] = `
       "schemaName": "dbo",
       "tableName": "users",
       "tableType": "table",
-      "type": "string",
+      "zodType": "string",
     },
     {
       "dataType": "nvarchar",
@@ -858,7 +858,7 @@ exports[`returns schema models > userTable 1`] = `
       "schemaName": "dbo",
       "tableName": "users",
       "tableType": "table",
-      "type": "string",
+      "zodType": "string",
     },
     {
       "dataType": "nvarchar",
@@ -876,7 +876,7 @@ exports[`returns schema models > userTable 1`] = `
       "schemaName": "dbo",
       "tableName": "users",
       "tableType": "table",
-      "type": "string",
+      "zodType": "string",
     },
     {
       "dataType": "nvarchar",
@@ -894,7 +894,7 @@ exports[`returns schema models > userTable 1`] = `
       "schemaName": "dbo",
       "tableName": "users",
       "tableType": "table",
-      "type": "string",
+      "zodType": "string",
     },
     {
       "dataType": "datetime2",
@@ -912,7 +912,7 @@ exports[`returns schema models > userTable 1`] = `
       "schemaName": "dbo",
       "tableName": "users",
       "tableType": "table",
-      "type": "any",
+      "zodType": "any",
     },
     {
       "dataType": "nvarchar",
@@ -930,7 +930,7 @@ exports[`returns schema models > userTable 1`] = `
       "schemaName": "dbo",
       "tableName": "users",
       "tableType": "table",
-      "type": "string",
+      "zodType": "string",
     },
   ],
   "name": "users",

@@ -23,7 +23,7 @@ export class Zod4MiniRenderer extends Zod4Renderer {
     config: ZodDbsConfig
   ): string {
     let zodType = this.renderZodType({
-      zodType: column.type,
+      zodType: column.zodType,
       config,
       isReadField: true,
     });
@@ -37,7 +37,7 @@ export class Zod4MiniRenderer extends Zod4Renderer {
     }
 
     if (
-      column.type === 'json' &&
+      column.zodType === 'json' &&
       config.jsonSchemaImportLocation &&
       column.jsonSchemaName
     ) {
@@ -67,12 +67,12 @@ export class Zod4MiniRenderer extends Zod4Renderer {
     config: ZodDbsConfig
   ): string {
     let zodType = this.renderZodType({
-      zodType: column.type,
+      zodType: column.zodType,
       config,
       isReadField: false,
     });
 
-    const baseType = this.getBaseType(column.type);
+    const baseType = this.getBaseType(column.zodType);
 
     if (baseType === 'string' && !column.isEnum) {
       if (column.writeTransforms?.includes('trim')) {
@@ -107,7 +107,7 @@ export class Zod4MiniRenderer extends Zod4Renderer {
     }
 
     if (
-      column.type === 'json' &&
+      column.zodType === 'json' &&
       config.jsonSchemaImportLocation &&
       column.jsonSchemaName
     ) {
@@ -144,14 +144,14 @@ export class Zod4MiniRenderer extends Zod4Renderer {
       zodType = `z.optional(${zodType})`;
     }
 
-    if (column.type === 'json' && config.stringifyJson) {
+    if (column.zodType === 'json' && config.stringifyJson) {
       if (!column.isNullable)
         zodType = `z.pipe(${zodType}, z.transform((value) => JSON.stringify(value)))`;
       else
         zodType = `z.pipe(${zodType}, z.transform((value) => value ? JSON.stringify(value) : value))`;
     }
 
-    if (column.type === 'date' && config.stringifyDates) {
+    if (column.zodType === 'date' && config.stringifyDates) {
       if (column.isArray) {
         if (!column.isNullable)
           zodType = `z.pipe(${zodType}, z.transform((value) => value.map(date => date.toISOString())))`;

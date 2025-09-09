@@ -7,7 +7,7 @@ import { Zod3Renderer } from '../../../../src/renderers/Zod3Renderer.js';
 const column = (overrides: Partial<ZodDbsColumn>): ZodDbsColumn => ({
   name: 'col',
   dataType: 'text',
-  type: 'string',
+  zodType: 'string',
   isEnum: false,
   isSerial: false,
   isArray: false,
@@ -40,10 +40,10 @@ const config: ZodDbsConfig = {
 describe('Zod3Renderer', () => {
   it('overrides email/url/int/uuid types with zod 3 style chains', async () => {
     const tbl = table([
-      column({ name: 'email', type: 'email' }),
-      column({ name: 'homepage', type: 'url' }),
-      column({ name: 'age', type: 'int' }),
-      column({ name: 'guid', type: 'uuid' }),
+      column({ name: 'email', zodType: 'email' }),
+      column({ name: 'homepage', zodType: 'url' }),
+      column({ name: 'age', zodType: 'int' }),
+      column({ name: 'guid', zodType: 'uuid' }),
     ]);
     const out = await new Zod3Renderer().renderSchemaFile(tbl, config);
     expect(out).toContain('email: z.string().email()');
@@ -52,9 +52,9 @@ describe('Zod3Renderer', () => {
     expect(out).toContain('guid: z.string().uuid()');
   });
 
-  it('leaves json type as z.any()', async () => {
+  it('leaves json zodType as z.any()', async () => {
     const tbl = table([
-      column({ name: 'payload', type: 'json', dataType: 'jsonb' }),
+      column({ name: 'payload', zodType: 'json', dataType: 'jsonb' }),
     ]);
     const out = await new Zod3Renderer().renderSchemaFile(tbl, config);
     expect(out).toContain('payload: z.any()');
@@ -64,13 +64,13 @@ describe('Zod3Renderer', () => {
     const tbl = table([
       column({
         name: 'dates',
-        type: 'date',
+        zodType: 'date',
         dataType: 'timestamptz',
         isArray: true,
       }),
       column({
         name: 'dates_nullable',
-        type: 'date',
+        zodType: 'date',
         dataType: 'timestamptz',
         isArray: true,
         isNullable: true,
@@ -98,7 +98,7 @@ describe('Zod3Renderer', () => {
     const tbl = table([
       column({
         name: 'nickname',
-        type: 'string',
+        zodType: 'string',
         isReadOptional: true,
         isNullable: false,
       }),

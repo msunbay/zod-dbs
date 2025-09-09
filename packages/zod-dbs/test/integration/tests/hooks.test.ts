@@ -25,7 +25,7 @@ describe('hook options', () => {
           if (column.name === 'email') {
             return {
               ...column,
-              type: 'email',
+              zodType: 'email',
               writeTransforms: ['trim', 'lowercase'],
             };
           }
@@ -88,7 +88,7 @@ describe('hook options', () => {
         include: ['users'],
         onColumnModelCreated: (column) => {
           // Mark all string columns as trimmed
-          if (column.type === 'string') {
+          if (column.zodType === 'string') {
             return {
               ...column,
               isTrimmed: true,

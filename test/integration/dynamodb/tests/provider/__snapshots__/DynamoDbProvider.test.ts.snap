@@ -76,7 +76,7 @@ exports[`returns table models > usersTable 1`] = `
       "schemaName": undefined,
       "tableName": "Users",
       "tableType": "table",
-      "type": "string",
+      "zodType": "string",
     },
     {
       "dataType": "string",
@@ -96,7 +96,7 @@ exports[`returns table models > usersTable 1`] = `
       "schemaName": undefined,
       "tableName": "Users",
       "tableType": "table",
-      "type": "string",
+      "zodType": "string",
     },
     {
       "dataType": "string",
@@ -116,7 +116,7 @@ exports[`returns table models > usersTable 1`] = `
       "schemaName": undefined,
       "tableName": "Users",
       "tableType": "table",
-      "type": "string",
+      "zodType": "string",
     },
     {
       "dataType": "object",
@@ -136,7 +136,7 @@ exports[`returns table models > usersTable 1`] = `
       "schemaName": undefined,
       "tableName": "Users",
       "tableType": "table",
-      "type": "object",
+      "zodType": "object",
     },
     {
       "dataType": "array",
@@ -156,7 +156,7 @@ exports[`returns table models > usersTable 1`] = `
       "schemaName": undefined,
       "tableName": "Users",
       "tableType": "table",
-      "type": "any",
+      "zodType": "any",
     },
   ],
   "name": "Users",

@@ -365,17 +365,17 @@ zod-dbs provides hooks to customize the generated models during generation. Thes
 
 ### Available Hooks
 
-#### `onColumnInfoCreated`
+#### `onColumnModelCreated`
 
 This hook is called for each column after its initial model is created, allowing you to modify individual column properties.
 
 ```typescript
-onColumnInfoCreated: (column) => {
+onColumnModelCreated: (column) => {
   // Add email validation to email columns
   if (column.name === 'email') {
-    // Note that this only applies to the write schema.
+    // Note that changing the "zodType" to a string field with extra validation logic, only applies to the write schema.
     // The read schema will still output the field as a z.string.
-    column.type = 'email';
+    column.zodType = 'email';
 
     // Additional validation / transformation
     column.writeTransforms = ['trim', 'lowercase'];
@@ -387,6 +387,17 @@ onColumnInfoCreated: (column) => {
     column.minLen = 8;
   }
 
+  // Mark column as deprecated
+  if (column.name === 'profile' && column.tableName === 'users') {
+    column.isDeprecated = true;
+    column.IsDeprecatedReason = 'This column is replaced by individual columns';
+  }
+
+  // Fix unmapped type
+  if (column.dataType === 'custom' && column.zodType === 'any') {
+    column.zodType = 'string';
+  }
+
   // Add custom transformations based on table name
   if (column.tableName === 'users') {
     // Add any table-specific customizations
@@ -396,15 +407,20 @@ onColumnInfoCreated: (column) => {
 };
 ```
 
-#### `onTableInfoCreated`
+#### `onTableModelCreated`
 
 This hook is called for each table after all its columns have been processed, allowing you to modify the table model.
 
 ```typescript
-onTableInfoCreated: (table) => {
+onTableModelCreated: (table) => {
   // Add custom transformations based on table name
   if (table.name === 'users') {
     // Add any table-specific customizations
+
+    // e.g remove a column
+    table.columns = table.columns.filter(
+      (column) => column.name !== 'not_in_use'
+    );
   }
 
   return table;
