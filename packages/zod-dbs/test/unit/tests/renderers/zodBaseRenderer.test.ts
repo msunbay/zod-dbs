@@ -38,7 +38,7 @@ const baseConfig: ZodDbsConfig = {
   stringifyJson: true,
   singularization: true,
   coerceDates: true,
-  defaultNullsToUndefined: true,
+  nullsToUndefined: true,
   caseTransform: true,
 };
 
@@ -313,7 +313,7 @@ describe('ZodBaseRenderer', () => {
     expect(out).not.toMatch(/transformUser/);
   });
 
-  it('does not add null-to-undefined transform when defaultNullsToUndefined is false', async () => {
+  it('does not add null-to-undefined transform when nullsToUndefined is false', async () => {
     const tbl = table([
       column({
         name: 'maybe',
@@ -324,7 +324,7 @@ describe('ZodBaseRenderer', () => {
     ]);
     const out = await new TestRenderer().renderSchemaFile(tbl, {
       ...baseConfig,
-      defaultNullsToUndefined: false,
+      nullsToUndefined: false,
       defaultEmptyArray: false,
     });
     // Read path: expect nullable + optional but no transform((value) => value ?? undefined)

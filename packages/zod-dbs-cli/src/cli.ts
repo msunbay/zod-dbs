@@ -3,7 +3,7 @@ import { generateZodSchemas } from 'zod-dbs';
 import { logDebug, toError } from 'zod-dbs-core';
 
 import type { Command } from 'commander';
-import type { ZodDbsProvider } from 'zod-dbs-core';
+import type { ZodDbsConfig, ZodDbsProvider } from 'zod-dbs-core';
 import type { ZodDbsCliConfig, ZodDbsCliOptions } from './types.js';
 
 import { enableDebugMode, getConfiguration } from './config.js';
@@ -47,12 +47,6 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
 
   const outputOptions = program.optionsGroup('Output options:');
 
-  const parseBooleanOption = (value: string) => {
-    if (value.toLowerCase() === 'true') return true;
-    if (value.toLowerCase() === 'false') return false;
-    throw new Error(`Invalid boolean value: ${value}`);
-  };
-
   outputOptions.option(
     '-o,--output-dir <path>',
     'Output directory for generated schemas'
@@ -89,51 +83,51 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
   );
   outputOptions.addOption(
     new Option(
-      '--case-transform <true|false>',
-      'Whether to do case transformations / conversions for generated schemas. (defaults to true)'
-    ).argParser(parseBooleanOption)
+      '--no-case-transform',
+      'Disable case transformations / conversions for generated schemas.'
+    )
   );
   outputOptions.addOption(
     new Option(
-      '--singularization <true|false>',
-      'Whether to use singularization of type and enum names. (defaults to true)'
-    ).argParser(parseBooleanOption)
+      '--no-singularization',
+      'Disable singularization of type and enum names.'
+    )
   );
   outputOptions.addOption(
     new Option(
-      '--coerce-dates <true|false>',
-      'Whether to use z.coerce.date() for date fields in read schemas. (defaults to true)'
-    ).argParser(parseBooleanOption)
+      '--no-coerce-dates',
+      'Disable using z.coerce.date() for date fields in read schemas.'
+    )
   );
   outputOptions.addOption(
     new Option(
-      '--stringify-json <true|false>',
-      'Whether to JSON.stringify() on json fields in write schemas. (defaults to true)'
-    ).argParser(parseBooleanOption)
+      '--no-stringify-json',
+      'Disable using JSON.stringify() on json fields in write schemas.'
+    )
   );
   outputOptions.addOption(
     new Option(
-      '--stringify-dates <true|false>',
+      '--no-nulls-to-undefined',
+      'Disable transforming null values to undefined in generated read schemas.'
+    )
+  );
+  outputOptions.addOption(
+    new Option(
+      '--stringify-dates',
       'Whether to convert dates to ISO strings in write schemas. (defaults to false)'
-    ).argParser(parseBooleanOption)
+    )
   );
   outputOptions.addOption(
     new Option(
-      '--default-empty-array <true|false>',
+      '--default-empty-array',
       'Whether to use empty arrays as defaults for nullable array fields. (defaults to false)'
-    ).argParser(parseBooleanOption)
+    )
   );
   outputOptions.addOption(
     new Option(
-      '--default-unknown <true|false>',
+      '--default-unknown',
       'Whether to use "unknown" instead of "any" for unresolved types. (defaults to false)'
-    ).argParser(parseBooleanOption)
-  );
-  outputOptions.addOption(
-    new Option(
-      '--default-nulls-to-undefined <true|false>',
-      'Whether to transform null values to undefined in generated read schemas. (defaults to true)'
-    ).argParser(parseBooleanOption)
+    )
   );
   outputOptions.addOption(
     new Option(
@@ -152,10 +146,12 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
   const options = program.opts();
   const spinner = createProgressHandler(options.silent);
 
+  const cleanedOptions = treatNegatedOptions(options);
+
   try {
     const cliConfig: ZodDbsCliConfig = {
       ...config,
-      ...options,
+      ...cleanedOptions,
     };
 
     logDebug('Final configuration:', cliConfig);
@@ -242,4 +238,21 @@ const logSettings = (config: ZodDbsCliConfig) => {
       logSetting(key, value);
     }
   }
+};
+
+/**
+ * Remove options that are set to true because they are using negated flags
+ * (e.g. --no-case-transform sets caseTransform to false, so we want to remove
+ * caseTransform if it's true to avoid overriding config files)
+ */
+const treatNegatedOptions = (options: ZodDbsConfig) => {
+  const cleaned = { ...options };
+
+  if (options.caseTransform) delete cleaned.caseTransform;
+  if (options.singularization) delete cleaned.singularization;
+  if (options.coerceDates) delete cleaned.coerceDates;
+  if (options.stringifyJson) delete cleaned.stringifyJson;
+  if (options.nullsToUndefined) delete cleaned.nullsToUndefined;
+
+  return cleaned;
 };

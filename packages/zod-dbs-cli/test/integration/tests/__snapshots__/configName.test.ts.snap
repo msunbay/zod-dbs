@@ -11,6 +11,7 @@ zod-dbs CLI v1.0.21
 - zodVersion: 4
 - stringifyDates: true
 - defaultEmptyArray: true
+- caseTransform: false
 - configName: test
 
 "

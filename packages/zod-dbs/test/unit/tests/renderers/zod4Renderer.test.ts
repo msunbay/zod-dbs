@@ -30,7 +30,7 @@ const config: ZodDbsConfig = {
   outputDir: '/tmp/ignore',
   fieldNameCasing: 'camelCase',
   objectNameCasing: 'PascalCase',
-  defaultNullsToUndefined: true,
+  nullsToUndefined: true,
   stringifyJson: true,
   singularization: true,
   coerceDates: true,

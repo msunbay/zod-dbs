@@ -15,6 +15,7 @@ const config: ZodDbsCliConfig = {
   zodVersion: '4',
   stringifyDates: true,
   defaultEmptyArray: true,
+  caseTransform: false,
 };
 
 export default config;

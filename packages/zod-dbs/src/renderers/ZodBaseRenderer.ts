@@ -151,7 +151,7 @@ export abstract class ZodBaseRenderer implements ZodDbsRenderer {
     if (column.isReadOptional || column.isNullable) {
       if (column.isArray && config.defaultEmptyArray)
         zodType = `${zodType}.transform((value) => value ?? [])`;
-      else if (config.defaultNullsToUndefined)
+      else if (config.nullsToUndefined)
         zodType = `${zodType}.transform((value) => value ?? undefined)`;
 
       if (column.isReadOptional) {
@@ -339,7 +339,7 @@ export abstract class ZodBaseRenderer implements ZodDbsRenderer {
         {
           ...config,
           jsonSchemaImportLocation: undefined,
-          defaultNullsToUndefined: false,
+          nullsToUndefined: false,
         }
       );
 

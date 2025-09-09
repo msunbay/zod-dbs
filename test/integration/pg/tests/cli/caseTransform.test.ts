@@ -4,12 +4,12 @@ import { executeCli, getOutputFiles } from '../../../utils/cli.js';
 import { getProviderConnectionString } from '../../../utils/context.js';
 import { getOutputDir } from '../../setup.js';
 
-it('does not transform case when --case-transform option is false', async () => {
+it('does not transform case with --no-case-transform option', async () => {
   const outputDir = getOutputDir('noCaseTransform');
   const connectionString = getProviderConnectionString('postgres');
 
   await executeCli(
-    `--provider pg --connection-string "${connectionString}" --output-dir "${outputDir}" --case-transform false --include "^posts$" --module-resolution esm`
+    `--provider pg --connection-string "${connectionString}" --output-dir "${outputDir}" --no-case-transform --include "^posts$" --module-resolution esm`
   );
 
   const outputFiles = await getOutputFiles(outputDir);

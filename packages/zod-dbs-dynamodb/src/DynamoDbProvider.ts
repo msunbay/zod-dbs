@@ -25,7 +25,7 @@ export class DynamoDbProvider
       configurationDefaults: {
         region: 'us-east-1',
         sampleSize: 50,
-        defaultNullsToUndefined: false,
+        nullsToUndefined: false,
         stringifyJson: false,
       },
       options: [

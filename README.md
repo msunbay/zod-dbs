@@ -180,31 +180,31 @@ Order of precedence for options:
 
 Booleans are passed explicitly as <true|false> for clarity.
 
-| Option                                       | Description                                                                                  | Default         |
-| -------------------------------------------- | -------------------------------------------------------------------------------------------- | --------------- |
-| `--provider <string>`                        | DB connection provider (e.g. pg, mysql, mssql, oracle, sqlite, snowflake, mongodb, dynamodb) |                 |
-| `--config-name <name>`                       | Name of configuration file. E.g. development uses `zod-dbs-development.{ts,js,json}`         |                 |
-| `--output-dir <path>`                        | Output directory for generated files.                                                        | `./zod-schemas` |
-| `--clean-output`                             | Delete the output directory before generation.                                               | `false`         |
-| `--include <regex>`                          | Include only tables matching this regex (applied before exclude).                            |                 |
-| `--exclude <regex>`                          | Exclude tables matching this regex.                                                          |                 |
-| `--json-schema-import-location <path>`       | Path to import custom JSON field schemas from.                                               |                 |
-| `--module-resolution <type>`                 | Module resolution: `commonjs` or `esm`.                                                      | `commonjs`      |
-| `--zod-version <version>`                    | Target Zod variant: `3`, `4`, or `4-mini`.                                                   | `3`             |
-| `--case-transform <true\|false>`             | Whether to perform case transformations/conversions in generated schemas.                    | `true`          |
-| `--singularization <true\|false>`            | Whether to use singularization of type and enum names.                                       | `true`          |
-| `--coerce-dates <true\|false>`               | Whether to use `z.coerce.date()` for date fields in read schemas.                            | `true`          |
-| `--stringify-json <true\|false>`             | Whether to JSON.stringify() on json fields in write schemas.                                 | `true`          |
-| `--stringify-dates <true\|false>`            | Whether to convert dates to ISO strings in write schemas.                                    | `false`         |
-| `--default-empty-array <true\|false>`        | Whether to use empty arrays as defaults for nullable array fields.                           | `false`         |
-| `--default-unknown <true\|false>`            | Whether to use `unknown` instead of `any` for unresolved/unknown types.                      | `false`         |
-| `--default-nulls-to-undefined <true\|false>` | Whether to transform null values to `undefined` in generated read schemas.                   | `true`          |
-| `--object-name-casing <type>`                | Casing for object/type names: `PascalCase`, `camelCase`, or `snake_case`.                    | `PascalCase`    |
-| `--field-name-casing <type>`                 | Casing for field/property names: `camelCase`, `snake_case`, `PascalCase`, or `passthrough`.  | `camelCase`     |
-| `--silent`                                   | Suppress console output (still writes files).                                                | `false`         |
-| `--debug`                                    | Enable verbose debug logging.                                                                | `false`         |
-| `--help`                                     | Show help and exit.                                                                          |                 |
-| `--version`                                  | Show version number and exit.                                                                |                 |
+| Option                                 | Description                                                                                  | Default         |
+| -------------------------------------- | -------------------------------------------------------------------------------------------- | --------------- |
+| `--provider <string>`                  | DB connection provider (e.g. pg, mysql, mssql, oracle, sqlite, snowflake, mongodb, dynamodb) |                 |
+| `--config-name <name>`                 | Name of configuration file. E.g. development uses `zod-dbs-development.{ts,js,json}`         |                 |
+| `--output-dir <path>`                  | Output directory for generated files.                                                        | `./zod-schemas` |
+| `--clean-output`                       | Delete the output directory before generation.                                               | `false`         |
+| `--include <regex>`                    | Include only tables matching this regex (applied before exclude).                            |                 |
+| `--exclude <regex>`                    | Exclude tables matching this regex.                                                          |                 |
+| `--json-schema-import-location <path>` | Path to import custom JSON field schemas from.                                               |                 |
+| `--module-resolution <type>`           | Module resolution: `commonjs` or `esm`.                                                      | `commonjs`      |
+| `--zod-version <version>`              | Target Zod variant: `3`, `4`, or `4-mini`.                                                   | `3`             |
+| `--no-case-transform`                  | Disables case transformations/conversions in generated schemas.                              |                 |
+| `--no-singularization`                 | Disables singularization of type and enum names.                                             |                 |
+| `--no-coerce-dates`                    | Disables using `z.coerce.date()` for date fields in read schemas.                            |                 |
+| `--no-stringify-json`                  | Disables using JSON.stringify() on json fields in write schemas.                             |                 |
+| `--no-default-nulls-to-undefined`      | Disables transforming null values to `undefined` in generated read schemas.                  |                 |
+| `--stringify-dates`                    | Whether to convert dates to ISO strings in write schemas.                                    | `false`         |
+| `--default-empty-array`                | Whether to use empty arrays as defaults for nullable array fields.                           | `false`         |
+| `--default-unknown`                    | Whether to use `unknown` instead of `any` for unresolved/unknown types.                      | `false`         |
+| `--object-name-casing <type>`          | Casing for object/type names: `PascalCase`, `camelCase`, or `snake_case`.                    | `PascalCase`    |
+| `--field-name-casing <type>`           | Casing for field/property names: `camelCase`, `snake_case`, `PascalCase`, or `passthrough`.  | `camelCase`     |
+| `--silent`                             | Suppress console output (still writes files).                                                | `false`         |
+| `--debug`                              | Enable verbose debug logging.                                                                | `false`         |
+| `--help`                               | Show help and exit.                                                                          |                 |
+| `--version`                            | Show version number and exit.                                                                |                 |
 
 ### Configuration File
 
@@ -332,7 +332,7 @@ zod-dbs supports different casing styles for generated schemas and types. By def
 
 If your database column names are in e.g snake_case and the field name casing is set to camelCase (the default),
 zod-dbs automatically detects whether a case transformation is needed for each table. If so it generates additional "base" schemas and transform functions to convert between the database column names and the desired casing.
-You can disable this behavior by using `--case-transform false`. This means that the generated schemas will use the original database column names as-is without any transformation. Note that object casing is not affected by this flag, only fields / properties.
+You can disable this behavior by specifying `--no-case-transform`. This means that the generated schemas will use the original database column names as-is without any transformation. Note that object casing is not affected by this flag, only fields / properties.
 
 ### Singularization
 
@@ -508,7 +508,7 @@ const ExtendedSchema = UsersTableBaseSchema.extend({
 }));
 ```
 
-If you have disabled case transforms (`--case-transform false`) or no casing transforms were detected, then there are no "base" schemas or transform functions.
+If you have disabled case transforms (`--no-case-transform`) or no casing transforms were detected, then there are no "base" schemas or transform functions.
 And you can just extend the read schema like:
 
 ```ts

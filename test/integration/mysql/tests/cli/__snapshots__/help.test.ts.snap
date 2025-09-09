@@ -9,39 +9,63 @@ Usage: zod-dbs [options]
 Generates Zod schemas from database schema.
 
 Options:
-  -V, --version                              output the version number
-  -p,--provider <name>                       Database provider to use
-  --config-name <name>                       Name of configuration file. E.g. "development" will load "zod-dbs-development.ts"
-  -h, --help                                 display help for command
+  -V, --version                         output the version number
+  -p,--provider <name>                  Database provider to use
+  --config-name <name>                  Name of configuration file. E.g.
+                                        "development" will load
+                                        "zod-dbs-development.ts"
+  -h, --help                            display help for command
 
 MySQL options:
-  --connection-string <value>                Full database connection string (overrides other connection options)
-  --host <value>                             Database host
-  --port <value>                             Database server port
-  --user <value>                             Database user
-  --password <value>                         Database password
-  --database <value>                         Database name to connect to
-  --schema-name <value>                      Database schema name (usually same as database name, optional)
+  --connection-string <value>           Full database connection string
+                                        (overrides other connection options)
+  --host <value>                        Database host
+  --port <value>                        Database server port
+  --user <value>                        Database user
+  --password <value>                    Database password
+  --database <value>                    Database name to connect to
+  --schema-name <value>                 Database schema name (usually same as
+                                        database name, optional)
 
 Output options:
-  -o,--output-dir <path>                     Output directory for generated schemas
-  --module-resolution <type>                 Module resolution type for generated files. (defaults to commonjs) (choices: "commonjs", "esm")
-  --clean-output                             Clean output directory before generating schemas
-  --exclude <regex>                          Exclude tables matching this regex
-  --include <regex>                          Include only tables matching this regex
-  --silent                                   Suppress all console output
-  --debug                                    Enable debug logging
-  --json-schema-import-location <path>       Path to import JSON schemas
-  --zod-version <value>                      Zod version to use. (defaults to 3) (choices: "3", "4", "4-mini")
-  --case-transform <true|false>              Whether to do case transformations / conversions for generated schemas. (defaults to true)
-  --singularization <true|false>             Whether to use singularization of type and enum names. (defaults to true)
-  --coerce-dates <true|false>                Whether to use z.coerce.date() for date fields in read schemas. (defaults to true)
-  --stringify-json <true|false>              Whether to JSON.stringify() on json fields in write schemas. (defaults to true)
-  --stringify-dates <true|false>             Whether to convert dates to ISO strings in write schemas. (defaults to false)
-  --default-empty-array <true|false>         Whether to use empty arrays as defaults for nullable array fields. (defaults to false)
-  --default-unknown <true|false>             Whether to use "unknown" instead of "any" for unresolved types. (defaults to false)
-  --default-nulls-to-undefined <true|false>  Whether to transform null values to undefined in generated read schemas. (defaults to true)
-  --object-name-casing <type>                Casing for generated object/type names. (defaults to PascalCase) (choices: "PascalCase", "camelCase", "snake_case")
-  --field-name-casing <type>                 Casing for field/property names in schemas & records. (defaults to camelCase) (choices: "camelCase", "snake_case", "PascalCase", "passthrough")
+  -o,--output-dir <path>                Output directory for generated schemas
+  --module-resolution <type>            Module resolution type for generated
+                                        files. (defaults to commonjs) (choices:
+                                        "commonjs", "esm")
+  --clean-output                        Clean output directory before generating
+                                        schemas
+  --exclude <regex>                     Exclude tables matching this regex
+  --include <regex>                     Include only tables matching this regex
+  --silent                              Suppress all console output
+  --debug                               Enable debug logging
+  --json-schema-import-location <path>  Path to import JSON schemas
+  --zod-version <value>                 Zod version to use. (defaults to 3)
+                                        (choices: "3", "4", "4-mini")
+  --no-case-transform                   Disable case transformations /
+                                        conversions for generated schemas.
+  --no-singularization                  Disable singularization of type and enum
+                                        names.
+  --no-coerce-dates                     Disable using z.coerce.date() for date
+                                        fields in read schemas.
+  --no-stringify-json                   Disable using JSON.stringify() on json
+                                        fields in write schemas.
+  --no-nulls-to-undefined               Disable transforming null values to
+                                        undefined in generated read schemas.
+  --stringify-dates                     Whether to convert dates to ISO strings
+                                        in write schemas. (defaults to false)
+  --default-empty-array                 Whether to use empty arrays as defaults
+                                        for nullable array fields. (defaults to
+                                        false)
+  --default-unknown                     Whether to use "unknown" instead of
+                                        "any" for unresolved types. (defaults to
+                                        false)
+  --object-name-casing <type>           Casing for generated object/type names.
+                                        (defaults to PascalCase) (choices:
+                                        "PascalCase", "camelCase", "snake_case")
+  --field-name-casing <type>            Casing for field/property names in
+                                        schemas & records. (defaults to
+                                        camelCase) (choices: "camelCase",
+                                        "snake_case", "PascalCase",
+                                        "passthrough")
 "
 `;

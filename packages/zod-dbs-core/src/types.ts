@@ -301,7 +301,7 @@ export interface ZodDbsConfig extends ZodDbsProviderConfig {
   /** Whether to provide empty arrays as defaults for nullable array fields */
   defaultEmptyArray?: boolean;
   /** Whether to transform null values to undefined in generated read schemas */
-  defaultNullsToUndefined?: boolean;
+  nullsToUndefined?: boolean;
   /** Whether to use "unknown" for unknown types, defaults to "any" */
   defaultUnknown?: boolean;
 

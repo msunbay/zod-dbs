@@ -36,7 +36,6 @@
 
 ### BREAKING CHANGES
 
-- All `--no-` CLI flags have been replaced by flags with value inputs. e.g. `--no-case-transforms` is now `--case-transforms false`.
 - Some exported types and utility functions have been removed / renamed.
 - The property `ZodDbsColumn.type` has been renamed to `ZodDbsColumn.zodType` to better reflect its purpose.
 - Config files needs to import the provider to get proper typing support.

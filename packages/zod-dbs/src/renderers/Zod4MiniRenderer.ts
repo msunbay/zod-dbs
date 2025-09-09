@@ -55,7 +55,7 @@ export class Zod4MiniRenderer extends Zod4Renderer {
     if (column.isNullable || column.isReadOptional) {
       if (column.isArray && config.defaultEmptyArray)
         zodType = `z.pipe(${zodType}, z.transform(val => val ?? []))`;
-      else if (config.defaultNullsToUndefined)
+      else if (config.nullsToUndefined)
         zodType = `z.pipe(${zodType}, z.transform(val => val ?? undefined))`;
     }
 

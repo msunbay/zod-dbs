@@ -35,7 +35,7 @@ const config: ZodDbsConfig = {
   stringifyJson: true,
   singularization: true,
   coerceDates: true,
-  defaultNullsToUndefined: true,
+  nullsToUndefined: true,
   caseTransform: true,
 };
 

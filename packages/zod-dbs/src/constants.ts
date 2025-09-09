@@ -14,6 +14,6 @@ export const DEFAULT_CONFIGURATION: ZodDbsConfig = {
   caseTransform: true,
   singularization: true,
   coerceDates: true,
-  defaultNullsToUndefined: true,
+  nullsToUndefined: true,
   stringifyJson: true,
 };

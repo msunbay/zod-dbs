@@ -4,12 +4,12 @@ import { executeCli, getOutputFiles } from '../../../utils/cli.js';
 import { getProviderConnectionString } from '../../../utils/context.js';
 import { getOutputDir } from '../../setup.js';
 
-it('does not stringify JSON fields in write schemas if --stringify-json false', async () => {
+it('does not stringify JSON fields in write schemas with --no-stringify-json', async () => {
   const connectionString = getProviderConnectionString('postgres');
   const outputDir = getOutputDir('noStringifyJson');
 
   await executeCli(
-    `--provider pg --connection-string "${connectionString}" --output-dir "${outputDir}" --stringify-json false --silent --include "^posts$" --module-resolution esm`
+    `--provider pg --connection-string "${connectionString}" --output-dir "${outputDir}" --no-stringify-json --silent --include "^posts$" --module-resolution esm`
   );
 
   const outputFiles = await getOutputFiles(outputDir);
