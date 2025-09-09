@@ -33,13 +33,13 @@ export class CliExecutionError extends Error {
 }
 
 export const executeCli = async (
-  args: string,
+  args?: string,
   { logErrors = true }: { logErrors?: boolean } = {}
 ): Promise<string> => {
   const cliPath = getCliPath();
 
   try {
-    const { stdout } = await execAsync(`node ${cliPath} ${args}`, {
+    const { stdout } = await execAsync(`node ${cliPath} ${args ?? ''}`, {
       maxBuffer: 10 * 1024 * 1024,
       shell: 'bash',
     });

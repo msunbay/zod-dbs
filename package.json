@@ -25,7 +25,7 @@
     "test:integration:sqlite": "pnpm vitest --project integration:sqlite run",
     "test:integration": "pnpm run -r test:integration && pnpm run test:integration:dynamodb && pnpm run test:integration:mongodb && pnpm run test:integration:mssql && pnpm run test:integration:mysql && pnpm run test:integration:oracle && pnpm run test:integration:pg && pnpm run test:integration:snowflake && pnpm run test:integration:sqlite",
     "test:root:integrations": "pnpm vitest run",
-    "test:types": "pnpm run -r test:types",
+    "test:types": "tsc --noEmit && pnpm run -r test:types",
     "test:lint": "biome ci --diagnostic-level error",
     "test:lint:fix": "biome check --write",
     "format": "prettier --write ."

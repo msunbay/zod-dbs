@@ -65,11 +65,11 @@ zod-dbs automates this process by generating type-safe validation schemas direct
 
 - PostgreSQL: [zod-dbs-pg](./packages/zod-dbs-pg/README.md)
   - Compatible with managed PostgreSQL (AlloyDB, Amazon RDS, Cloud SQL, Azure Database for PostgreSQL, Neon, Supabase, etc.). See the provider README for details.
-- MySQL: [zod-dbs-mysql](./packages/zod-dbs-mysql/README.md) (experimental)
-- Microsoft SQL Server: [zod-dbs-mssql](./packages/zod-dbs-mssql/README.md) (experimental)
-- Oracle: [zod-dbs-oracle](./packages/zod-dbs-oracle/README.md) (experimental)
-- SQLite: [zod-dbs-sqlite](./packages/zod-dbs-sqlite/README.md) (experimental)
-- Snowflake: [zod-dbs-snowflake](./packages/zod-dbs-snowflake/README.md) (experimental)
+- MySQL: [zod-dbs-mysql](./packages/zod-dbs-mysql/README.md)
+- Microsoft SQL Server: [zod-dbs-mssql](./packages/zod-dbs-mssql/README.md)
+- Oracle: [zod-dbs-oracle](./packages/zod-dbs-oracle/README.md)
+- SQLite: [zod-dbs-sqlite](./packages/zod-dbs-sqlite/README.md)
+- Snowflake: [zod-dbs-snowflake](./packages/zod-dbs-snowflake/README.md)
 - MongoDB: [zod-dbs-mongodb](./packages/zod-dbs-mongodb/README.md) (experimental)
 - DynamoDB: [zod-dbs-dynamodb](./packages/zod-dbs-dynamodb/README.md) (experimental)
 

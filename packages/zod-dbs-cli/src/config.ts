@@ -28,7 +28,6 @@ export const enableDebugMode = () => {
 
   if (enabled) {
     enableDebug();
-    logDebug('Debug mode enabled');
   }
 };
 
@@ -61,13 +60,14 @@ function getEnvOverrides(appName: string): Partial<ZodDbsConfig> {
 
 const loadConfigFile = async (name: string, suffix?: string) => {
   const configName = suffix ? `${name}-${suffix}` : name;
+  const searchFrom = process.env.ZOD_DBS_CWD;
 
-  logDebug(`Searching for configuration: ${configName}`);
+  logDebug('Searching for configuration', { configName, searchFrom });
 
   try {
     const explorer = cosmiconfig(configName);
 
-    const result = await explorer.search();
+    const result = await explorer.search(process.env.ZOD_DBS_CWD);
 
     logDebug(`Loaded configuration from file ${configName}:`, result?.config);
 
@@ -100,9 +100,15 @@ export const getConfiguration = async ({
   const envOverrides = getEnvOverrides(appName);
 
   // Precedence (lowest -> highest): base defaults < config file < env overrides
-  return {
+  const mergedConfig = {
     ...config,
     ...envOverrides,
     ...overrides,
   };
+
+  if (mergedConfig.debug) {
+    enableDebug();
+  }
+
+  return mergedConfig;
 };

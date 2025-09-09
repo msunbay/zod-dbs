@@ -4,11 +4,14 @@ import {
   formatTableRecordName,
   generateZodSchemas,
   Zod4Renderer,
+} from 'zod-dbs';
+import { createProvider } from 'zod-dbs-pg';
+
+import type {
   ZodDbsConfig,
   ZodDbsTable,
   ZodDbsTableRenderModel,
 } from 'zod-dbs';
-import { createProvider } from 'zod-dbs-pg';
 
 import { getOutputFiles } from '../../../utils/cli.js';
 import { getProviderConfig } from '../../../utils/context.js';
@@ -23,6 +26,7 @@ it('Api generates correct zod schemas with basic options', async () => {
     provider,
     config: {
       outputDir,
+      moduleResolution: 'esm',
       ...config,
     },
   });
@@ -50,6 +54,7 @@ it('Api generates correct zod schemas with hooks', async () => {
 
       include: ['users'],
       zodVersion: '4',
+      moduleResolution: 'esm',
 
       onColumnModelCreated(column) {
         // Add custom validation to email columns
@@ -129,6 +134,7 @@ it('Api generates correct zod schemas with custom renderer', async () => {
     config: {
       outputDir,
       include: ['users'],
+      moduleResolution: 'esm',
       ...config,
     },
   });
