@@ -53,7 +53,7 @@
 - **Node.js 20+**
 - **TypeScript 4+**
 
-Note that zod-dbs should work with Bun and Deno.
+Verified to work with latest versions of Bun and Deno (as of 2025-09-09)
 
 ## Why zod-dbs?
 
@@ -133,7 +133,7 @@ zod-dbs can read connection details from environment variables. Set the followin
 - `ZOD_DBS_PASSWORD`
 - `ZOD_DBS_HOST`
 - `ZOD_DBS_PORT`
-- `ZOD_DBS_DB`
+- `ZOD_DBS_DATABASE`
 - `ZOD_DBS_SSL` (optional, defaults to `false`)
 
 Then run:
@@ -209,18 +209,20 @@ Booleans are passed explicitly as <true|false> for clarity.
 ### Configuration File
 
 In addition to CLI options, you can use configuration files to set your options. zod-dbs-cli uses [cosmiconfig](https://github.com/davidtheclark/cosmiconfig).
+The configuration options are the same as the cli options, but defined in camelCase properties.
+Each provider defined its own set of configuration options so if you want a type safe config file, you need to import the provider library as well.
 
 #### Example Configuration File
 
 **zod-dbs.config.ts:**
 
 ```typescript
-import { createProvider } from 'zod-dbs-pg';
+import { createProvider } from 'zod-dbs-pg'; // import 'zod-dbs-pg' if using provider: "pg"
 
 import type { ZodDbsCliConfig } from 'zod-dbs-cli';
 
 const config: ZodDbsCliConfig = {
-  provider: createProvider(),
+  provider: createProvider(), // or just "pg"
 
   // Database options
   user: 'postgres',
@@ -324,11 +326,13 @@ Since reading and writing are two different operations, zod-dbs generates separa
 - Optionally transforms date fields to ISO strings using `.toISOString()`.
 - Excludes only SERIAL/auto-incrementing columns and columns from non-table relations (views, etc.).
 
-### Casing
+### Casing Transforms
 
 zod-dbs supports different casing styles for generated schemas and types. By default zod-dbs uses `PascalCase` for object names and `camelCase` for properties. You can specify the desired casing for field names and object names using the `--field-name-casing` and `--object-name-casing` options.
-If case transforms are needed, zod-dbs generates additional "base" schemas and transform functions to convert between the database column names and the desired casing.
-Using `--case-transform false` option disables the automatic casing transformation for field names, which means that the generated schemas will use the original database column names as-is without any transformation.
+
+If your database column names are in e.g snake_case and the field name casing is set to camelCase (the default),
+zod-dbs automatically detects whether a case transformation is needed for each table. If so it generates additional "base" schemas and transform functions to convert between the database column names and the desired casing.
+You can disable this behavior by using `--case-transform false`. This means that the generated schemas will use the original database column names as-is without any transformation. Note that object casing is not affected by this flag, only fields / properties.
 
 ### Singularization
 
@@ -391,7 +395,7 @@ onColumnModelCreated: (column) => {
   // Mark column as deprecated
   if (column.name === 'profile' && column.tableName === 'users') {
     column.isDeprecated = true;
-    column.IsDeprecatedReason = 'This column is replaced by individual columns';
+    column.isDeprecatedReason = 'This column is replaced by individual columns';
   }
 
   // Fix unmapped type
@@ -522,7 +526,7 @@ If you want to support a database that is not supported out of the box, you can 
 
 ### Extending the base provider
 
-zod-dbs-cli provides a base class `ZodDbsBaseProvider` that you can extend to create your custom provider. This base class provides default implementations for some methods, so you only need to implement the methods that are specific to your database.
+zod-dbs-cli provides a base class `ZodDbsBaseProvider` that you can extend to create a custom provider. This base class provides default implementations for some methods, so you only need to implement the methods that are specific to your database.
 
 ```ts
 // zod-dbs.config.ts
