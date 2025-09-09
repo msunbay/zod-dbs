@@ -13,7 +13,7 @@
     "build": "pnpm run -r build",
     "start": "pnpm run build && node index.js",
     "dev": "tsx dev.ts",
-    "test": "pnpm run build && pnpm run test:unit && pnpm run test:integration && pnpm run test:types & pnpm run test:lint",
+    "test": "pnpm run build && pnpm run test:unit && pnpm run test:integration && pnpm run test:types && pnpm run test:lint",
     "test:unit": "pnpm run -r test:unit",
     "test:integration:dynamodb": "pnpm vitest --project integration:dynamodb run",
     "test:integration:mongodb": "pnpm vitest --project integration:mongodb run",
