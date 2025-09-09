@@ -8,9 +8,10 @@
 
 ### Output Improvements
 
-- Cleaned up generated code commends and property descriptions.
+- Cleaned up generated code comments and property descriptions.
 - Automatically detects whether case transforms are needed. If not, then they are disabled to improve readability and extensibility of the generated code / schemas.
 - If no tables are found, no files or directories are written.
+- Performance improvements for rendering/writing from large database schemas.
 
 ### Provider Improvements
 
@@ -29,6 +30,8 @@
 ### Other Improvements
 
 - Generally more logs in debug mode.
+- More unit and integration tests.
+- Generated output from tests are now also linted with biome in addition to being type checked.
 
 ### BREAKING CHANGES
 
