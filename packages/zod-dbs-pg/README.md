@@ -22,18 +22,18 @@ npm install zod-dbs-cli zod-dbs-pg
 npx zod-dbs --provider pg
 ```
 
-### CLI Options
+### Provider Specific CLI Options
 
-| Option                | Description                                                       |
-| --------------------- | ----------------------------------------------------------------- |
-| `--connection-string` | PostgreSQL connection string (overrides other connection options) |
-| `--host <str>`        | Database host (default: localhost)                                |
-| `--port <num>`        | Database port (default: 5432)                                     |
-| `--database <str>`    | Database name                                                     |
-| `--user <str>`        | Database user                                                     |
-| `--password <str>`    | Database password                                                 |
-| `--schema-name <str>` | Name of the schema to introspect (default: public)                |
-| `--ssl`               | Use SSL for the connection                                        |
+| Option                       | Description                                                          |
+| ---------------------------- | -------------------------------------------------------------------- | --- |
+| `--connection-string <conn>` | Full database connection string (overrides other connection options) |     |
+| `--host <host>`              | Database host (default: `localhost`)                                 |     |
+| `--port <port>`              | Database server port (default: `5432`)                               |     |
+| `--user <user>`              | Database user (default: `postgres`)                                  |     |
+| `--password <password>`      | Database password (default: `postgres`)                              |     |
+| `--database <db>`            | Database name (default: `postgres`)                                  |     |
+| `--schema-name <schema>`     | Database schema to introspect (default: `public`)                    |     |
+| `--ssl`                      | Use SSL connection                                                   |     |
 
 ## Programmatic Usage
 

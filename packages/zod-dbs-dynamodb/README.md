@@ -6,9 +6,8 @@ DynamoDB provider for zod-dbs.
 
 - Requires `@aws-sdk/client-dynamodb` as a peer dependency.
 - Enum types are not yet supported, but can be added to the generated schemas using hooks.
-- DynamoDB is schemaless; results are heuristic (unioned types collapse to json/any).
+- DynamoDB is schemaless; results are heuristic.
 - Key attributes forced non-nullable.
-- No deep object/array field introspection inside M/L beyond coarse type classification.
 - Requires AWS credentials or a local endpoint (set endpoint for DynamoDB local).
 
 ## Installation
@@ -26,15 +25,19 @@ npm install @aws-sdk/client-dynamodb
 ## CLI Usage
 
 ```bash
-npx zod-dbs --provider dynamo --endpoint <endpoint> --sample-size <num>
+npx zod-dbs --provider dynamodb --endpoint <endpoint> --sample-size <num>
 ```
 
 ### Provider Specific CLI Options
 
-| Option          | Description                                                | Required |
-| --------------- | ---------------------------------------------------------- | -------- |
-| `--endpoint`    | Local endpoint                                             |          |
-| `--sample-size` | Number of documents to sample per collection (default: 50) |          |
+| Option                         | Description                                                             |
+| ------------------------------ | ----------------------------------------------------------------------- |
+| `--region <region>`            | AWS region for DynamoDB (default: `us-east-1`)                          |
+| `--access-key-id <key>`        | AWS Access Key ID (for local or custom endpoints)                       |
+| `--secret-access-key <secret>` | AWS Secret Access Key (for local or custom endpoints)                   |
+| `--session-token <token>`      | AWS Session Token (for local or custom endpoints)                       |
+| `--endpoint <url>`             | Override endpoint (e.g., for local DynamoDB)                            |
+| `--sample-size <num>`          | Number of items to sample per table when inferring schema (default: 50) |
 
 ### Configuration File Example
 

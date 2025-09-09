@@ -30,11 +30,15 @@ npx zod-dbs --provider mongodb \
 
 ### Provider Specific CLI Options
 
-| Option                | Description                                                | Required |
-| --------------------- | ---------------------------------------------------------- | -------- |
-| `--replica-set <str>` | Name of the replica set (if any)                           |          |
-| `--direct-connection` | Use a direct connection (if needed)                        |          |
-| `--sample-size`       | Number of documents to sample per collection (default: 50) |          |
+| Option                       | Description                                                          | Required |
+| ---------------------------- | -------------------------------------------------------------------- | -------- |
+| `--connection-string <conn>` | Full database connection string (overrides other connection options) |          |
+| `--host <host>`              | MongoDB host (default: `localhost`)                                  |          |
+| `--port <port>`              | MongoDB port (default: `27017`)                                      |          |
+| `--database <db>`            | MongoDB database name                                                |          |
+| `--sample-size <num>`        | Number of documents to sample per collection (default: 50)           |          |
+| `--direct-connection`        | Use a direct connection (if needed)                                  |          |
+| `--replica-set <name>`       | Name of the replica set (if any)                                     |          |
 
 ### Configuration File Example
 
