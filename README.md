@@ -373,7 +373,8 @@ This hook is called for each column after its initial model is created, allowing
 onColumnModelCreated: (column) => {
   // Add email validation to email columns
   if (column.name === 'email') {
-    // Note that changing the "zodType" to a string field with extra validation logic, only applies to the write schema.
+    // Note that changing the "zodType" to a string field with extra validation logic,
+    // only applies to the write schema.
     // The read schema will still output the field as a z.string.
     column.zodType = 'email';
 
@@ -503,7 +504,7 @@ const ExtendedSchema = UsersTableBaseSchema.extend({
 }));
 ```
 
-If you have disabled case transforms (`--case-transform false`) then there are no "base" schemas or transform functions.
+If you have disabled case transforms (`--case-transform false`) or no casing transforms were detected, then there are no "base" schemas or transform functions.
 And you can just extend the read schema like:
 
 ```ts
@@ -511,19 +512,20 @@ import { UsersTableSchema } from '[output]/tables';
 
 const ExtendedSchema = UsersTableSchema.extend({
   permissions: z.array(z.string()).nullish().optional(),
-  signed_in_at: z.coerce.date().nullish().optional(),
+  signedInAt: z.coerce.date().nullish().optional(),
 });
 ```
 
 ## Custom Provider
 
-If you want to support a database that is not supported out of the box, you can create a custom provider by implementing the `ZodDbsProvider` interface (available from `zod-dbs`).
+If you want to support a database that is not supported out of the box, you can create a custom provider by implementing the `ZodDbsProvider` interface.
 
 ### Extending the base provider
 
-zod-dbs provides a base class `ZodDbsBaseProvider` that you can extend to create your custom provider. This base class provides default implementations for some methods, so you only need to implement the methods that are specific to your database.
+zod-dbs-cli provides a base class `ZodDbsBaseProvider` that you can extend to create your custom provider. This base class provides default implementations for some methods, so you only need to implement the methods that are specific to your database.
 
 ```ts
+// zod-dbs.config.ts
 import { ZodDbsBaseProvider } from 'zod-dbs-cli';
 
 import type {
@@ -531,8 +533,6 @@ import type {
   ZodDbsColumnInfo,
   ZodDbsProviderConfig,
 } from 'zod-dbs-cli';
-
-// zod-dbs.config.ts
 
 class CustomProvider extends ZodDbsBaseProvider {
   constructor() {
