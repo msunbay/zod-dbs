@@ -32,7 +32,7 @@ export type ZodDbsTableType =
   | 'unknown'; // Unknown or unsupported type
 
 /**
- * Transform types that can be applied to Zod schemas.
+ * Transform types that can be applied to Zod write schemas.
  */
 export type ZodDbsTransform =
   | 'trim'
@@ -96,6 +96,9 @@ export interface ZodDbsColumnInfo {
   objectDefinition?: ZodDbsTable;
 }
 
+/**
+ * Represents a database column with additional metadata used for Zod schema generation.
+ */
 export interface ZodDbsColumn extends ZodDbsColumnInfo {
   /**
    * Whether this column should be included in insert/update schemas.
@@ -125,6 +128,10 @@ export interface ZodDbsColumn extends ZodDbsColumnInfo {
   writeTransforms?: ZodDbsTransform[];
 }
 
+/**
+ * Represents a configuration option supported by a database provider.
+ * Usually used by CLI tools to generate prompts or validate config files.
+ */
 export interface ZodDbsProviderOption {
   name: string;
   type: 'string' | 'number' | 'boolean';
@@ -159,6 +166,9 @@ export interface ZodDbsProvider {
   ) => Promise<ZodDbsSchemaInfo>;
 }
 
+/**
+ * Represents a rendered file containing generated Zod schemas and types.
+ */
 export interface ZodDbsRenderedFile {
   /** The file name (without extension) */
   name: string;
@@ -166,6 +176,9 @@ export interface ZodDbsRenderedFile {
   content: string;
 }
 
+/**
+ * Interface for rendering Zod schemas and types from table information.
+ */
 export interface ZodDbsRenderer {
   /**
    * Renders the TypeScript code for the generated Zod schemas and types for a given table.
@@ -237,14 +250,20 @@ export interface ZodDbsHooks {
   ) => ZodDbsTable | Promise<ZodDbsTable>;
 }
 
-export interface ZodDbsSslConfig extends Record<string, any> {}
-
+/**
+ * Interface representing a database client/connection.
+ * This interface is usually implemented by specific database providers to handle connections and queries.
+ */
 export interface ZodDbsDatabaseClient {
   connect: () => Promise<void>;
   query: <T>(query: string, params?: any[]) => Promise<T>;
   end: () => Promise<void>;
 }
 
+/**
+ * Base configuration interface for database providers.
+ * This interface is usually extended by specific providers to include additional options.
+ */
 export interface ZodDbsProviderConfig extends ZodDbsHooks {
   /** Regex pattern(s) to include only specific tables */
   include?: string | string[];
@@ -279,7 +298,7 @@ export interface ZodDbsConfig extends ZodDbsProviderConfig {
   defaultEmptyArray?: boolean;
   /** Whether to transform null values to undefined in generated read schemas */
   defaultNullsToUndefined?: boolean;
-  /** Wheter to use "unknown" for unknown types, defaults to "any" */
+  /** Whether to use "unknown" for unknown types, defaults to "any" */
   defaultUnknown?: boolean;
 
   /** Target Zod version for generated code */
