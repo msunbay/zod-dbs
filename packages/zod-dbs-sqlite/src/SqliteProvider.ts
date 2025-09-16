@@ -1,9 +1,7 @@
-import { logDebug, sql, ZodDbsBaseProvider } from 'zod-dbs-core';
+import { sql, ZodDbsBaseProvider } from 'zod-dbs-core';
 
 import type {
   ZodDbsColumnInfo,
-  ZodDbsConfig,
-  ZodDbsConnectionConfig,
   ZodDbsProviderConfig,
   ZodDbsTableType,
 } from 'zod-dbs-core';
@@ -23,11 +21,6 @@ interface RawColumnRow {
   dflt_value: string | null;
   pk: 0 | 1;
 }
-
-const DEFAULT_CONFIGURATION: ZodDbsConfig = {
-  database: ':memory:',
-  schemaName: 'main',
-};
 
 const parseMaxLen = (declType: string | null): number | undefined => {
   if (!declType) return undefined;
@@ -49,14 +42,14 @@ const extractEnumMapFromCreateSql = (
 
   // Directly match CHECK (<ident> IN (...)) ignoring whitespace/case; tolerate extra parens
   const directRegex =
-    /CHECK\s*\(\s*\(?\s*([`"\[]?[A-Za-z_][A-Za-z0-9_\$]*[`"\]]?)\s+IN\s*\(([^\)]*)\)\s*\)?\s*\)/gi;
+    /CHECK\s*\(\s*\(?\s*([`"[]?[A-Za-z_][A-Za-z0-9_$]*[`"\]]?)\s+IN\s*\(([^)]*)\)\s*\)?\s*\)/gi;
   let m: RegExpExecArray | null;
   while ((m = directRegex.exec(sql)) !== null) {
     const rawIdent = m[1];
     const listBody = m[2];
 
     const ident = rawIdent
-      .replace(/^[`"\[]/, '')
+      .replace(/^[`"[]/, '')
       .replace(/[`"\]]$/, '')
       .toLowerCase();
 
@@ -78,16 +71,28 @@ export class SqliteProvider extends ZodDbsBaseProvider {
     super({
       name: 'sqlite',
       displayName: 'SQLite',
-      defaultConfiguration: DEFAULT_CONFIGURATION,
+      configurationDefaults: {
+        database: ':memory:',
+      },
+      options: [
+        {
+          name: 'database',
+          type: 'string',
+          description:
+            'Path to SQLite database file (or :memory: for in-memory)',
+          required: true,
+        },
+      ],
     });
   }
 
-  createClient = (options: ZodDbsConnectionConfig) => createClient(options);
+  protected async createClient(options: ZodDbsProviderConfig) {
+    return await createClient(options);
+  }
 
   protected createColumnInfo(
     table: RawTableRow,
     column: RawColumnRow,
-    schemaName: string,
     enumMap?: Record<string, string[]>
   ): ZodDbsColumnInfo {
     const dataType = (column.type || 'text').toLowerCase();
@@ -97,13 +102,9 @@ export class SqliteProvider extends ZodDbsBaseProvider {
       defaultValue: column.dflt_value ?? undefined,
       isNullable: column.notnull === 0,
       maxLen: parseMaxLen(column.type),
-      minLen: undefined,
       dataType,
       tableName: table.name,
-      schemaName,
-      description: undefined,
       tableType: (table.type as ZodDbsTableType) ?? 'table',
-      enumValues: undefined,
       isEnum: false,
       isSerial: column.pk === 1 && /int/i.test(column.type || ''),
       isArray: false,
@@ -149,13 +150,11 @@ export class SqliteProvider extends ZodDbsBaseProvider {
   public async fetchSchemaInfo(
     config: ZodDbsProviderConfig
   ): Promise<ZodDbsColumnInfo[]> {
-    const schemaName = config.schemaName || 'main';
     config.onProgress?.('connecting');
     const client = await this.createClient(config);
     await client.connect();
 
     config.onProgress?.('fetchingSchema');
-    logDebug(`Retrieving schema information for schema '${schemaName}'`);
 
     try {
       const tables = await client.query<RawTableRow[]>(
@@ -176,7 +175,7 @@ export class SqliteProvider extends ZodDbsBaseProvider {
           `PRAGMA table_info(${JSON.stringify(tbl.name)});`
         );
         for (const col of pragma) {
-          columns.push(this.createColumnInfo(tbl, col, schemaName, enumMap));
+          columns.push(this.createColumnInfo(tbl, col, enumMap));
         }
       }
 

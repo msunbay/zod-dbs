@@ -3,7 +3,7 @@
 A library for generating Zod schemas from database schemas.
 
 Read the full documentation for usage details using the cli which wraps this library.
-https://github.com/msolvaag/zod-dbs
+https://github.com/msunbay/zod-dbs
 
 ## Installation
 
@@ -20,7 +20,7 @@ import { createProvider } from 'zod-dbs-[provider]';
 await generateZodSchemas({
   provider: createProvider(),
   config: {
-    // See the root zod-dbs documentation for available options
+    // See the project and provider documentation for available options
   },
 });
 ```

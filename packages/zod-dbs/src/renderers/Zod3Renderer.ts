@@ -1,19 +1,17 @@
-import type { ZodDbsColumnType, ZodDbsConfig } from 'zod-dbs-core';
+import type { ZodDbsRenderZodTypeParams } from './ZodBaseRenderer.js';
 
 import { ZodBaseRenderer } from './ZodBaseRenderer.js';
 
 export class Zod3Renderer extends ZodBaseRenderer {
-  protected override renderZodType(
-    zodType: ZodDbsColumnType,
-    config: ZodDbsConfig,
-    isReadField: boolean
-  ): string {
-    const renderedType = super.renderZodType(zodType, config, isReadField);
+  public name = 'Zod3Renderer';
+
+  protected override renderZodType(params: ZodDbsRenderZodTypeParams): string {
+    const renderedType = super.renderZodType(params);
 
     // For read fields, we don't apply additional validation or transformations.
-    if (isReadField) return renderedType;
+    if (params.isReadField) return renderedType;
 
-    switch (zodType) {
+    switch (params.zodType) {
       case 'email':
         return 'z.string().email()';
       case 'url':

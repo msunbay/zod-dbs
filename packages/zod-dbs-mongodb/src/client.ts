@@ -1,31 +1,25 @@
 import { MongoClient } from 'mongodb';
+import { createConnectionString, logDebug } from 'zod-dbs-core';
 
-import type { ZodDbsConnectionConfig } from 'zod-dbs-core';
-
-import { ZodDbsMongoDbClient } from './types.js';
-
-const createConnectionUri = (config: ZodDbsConnectionConfig) => {
-  let uri = `mongodb://`;
-
-  if (config.user) {
-    uri += encodeURIComponent(config.user);
-    if (config.password) {
-      uri += `:${encodeURIComponent(config.password)}`;
-    }
-
-    uri += '@';
-  }
-
-  uri += config.host || 'localhost';
-  uri += `:${config.port || 27017}`;
-
-  return uri;
-};
+import type { ZodDbsProviderConfig } from 'zod-dbs-core';
+import type { ZodDbsMongoDbClient } from './types.js';
 
 export async function createClient(
-  config: ZodDbsConnectionConfig
+  config: ZodDbsProviderConfig
 ): Promise<ZodDbsMongoDbClient> {
-  const uri = createConnectionUri(config);
+  const uri =
+    config.connectionString ??
+    createConnectionString({
+      scheme: 'mongodb',
+      ...config,
+      database: undefined,
+    });
+
+  logDebug('Creating MongoDB client', {
+    uri,
+    directConnection: config.directConnection,
+    replicaSet: config.replicaSet,
+  });
 
   const client = new MongoClient(uri, {
     directConnection: config.directConnection,
@@ -35,7 +29,6 @@ export async function createClient(
   let connected = false;
 
   return {
-    config,
     async connect() {
       if (!connected) {
         await client.connect();

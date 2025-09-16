@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 import { generateZodSchemas } from '../../../src/generateZodSchemas.js';
 import {
@@ -25,7 +25,7 @@ describe('hook options', () => {
           if (column.name === 'email') {
             return {
               ...column,
-              type: 'email',
+              zodType: 'email',
               writeTransforms: ['trim', 'lowercase'],
             };
           }
@@ -37,7 +37,7 @@ describe('hook options', () => {
     const outputFiles = await getOutputFiles(outputDir);
 
     for (const file of outputFiles) {
-      const content = fs.readFileSync(file, 'utf8');
+      const content = await fs.readFile(file, 'utf8');
 
       // Check if email validation was applied
       if (file.includes('schema.ts')) {
@@ -70,7 +70,7 @@ describe('hook options', () => {
     const outputFiles = await getOutputFiles(outputDir);
 
     for (const file of outputFiles) {
-      const content = fs.readFileSync(file, 'utf8');
+      const content = await fs.readFile(file, 'utf8');
 
       // Test captures the actual generated code
       expect(content).toMatchSnapshot(path.relative(outputDir, file));
@@ -88,7 +88,7 @@ describe('hook options', () => {
         include: ['users'],
         onColumnModelCreated: (column) => {
           // Mark all string columns as trimmed
-          if (column.type === 'string') {
+          if (column.zodType === 'string') {
             return {
               ...column,
               isTrimmed: true,
@@ -109,7 +109,7 @@ describe('hook options', () => {
     const outputFiles = await getOutputFiles(outputDir);
 
     for (const file of outputFiles) {
-      const content = fs.readFileSync(file, 'utf8');
+      const content = await fs.readFile(file, 'utf8');
 
       // Test captures the actual generated code
       expect(content).toMatchSnapshot(path.relative(outputDir, file));

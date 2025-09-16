@@ -1,10 +1,8 @@
-import fs from 'fs/promises';
-import path from 'path';
-import {
-  ZodDbsBaseProvider,
-  ZodDbsColumnInfo,
-  ZodDbsProvider,
-} from 'zod-dbs-core';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { ZodDbsBaseProvider } from 'zod-dbs-core';
+
+import type { ZodDbsColumnInfo, ZodDbsProvider } from 'zod-dbs-core';
 
 import rawColumns from './fixtures/raw-columns.json' with { type: 'json' };
 
@@ -34,12 +32,7 @@ export async function deleteOutputFiles(dir: string): Promise<void> {
 
 class TestProvider extends ZodDbsBaseProvider {
   constructor() {
-    super({
-      name: 'test',
-      defaultConfiguration: {
-        schemaName: 'test-schema',
-      },
-    });
+    super({ name: 'test' });
   }
 
   protected fetchSchemaInfo(): Promise<ZodDbsColumnInfo[]> {

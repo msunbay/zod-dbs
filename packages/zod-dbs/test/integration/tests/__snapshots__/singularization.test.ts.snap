@@ -14,7 +14,6 @@ export const POSTS_STATUSES = ['draft', 'published', 'archived'] as const;
 export const PostsTableBaseSchema = z.object({
      /**
       * dataType: int4
-      * defaultValue: nextval('posts_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -31,17 +30,14 @@ export const PostsTableBaseSchema = z.object({
     content: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: bool
-      * defaultValue: false
       */
     published: z.boolean().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: varchar
-      * defaultValue: 'draft'::character varying
       */
     status: z.enum(POSTS_STATUSES).nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: int4
-      * defaultValue: 0
       */
     views: z.number().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -58,7 +54,6 @@ export const PostsTableBaseSchema = z.object({
     published_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     updated_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
 });
@@ -142,7 +137,7 @@ export const PostsTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    metadata: z.any().nullable().optional(),
+    metadata: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: timestamptz
       */
@@ -239,23 +234,11 @@ type TableReadRecord = z.output<typeof PostsTableSchema>;
  * Read record (casing transformed) for the "public.posts" table.
  */
 export interface PostsRecord {
-    /**
-    */
     id: TableReadRecord['id'];
-    /**
-    */
     userId?: TableReadRecord['userId'];
-    /**
-    */
     title: TableReadRecord['title'];
-    /**
-    */
     content?: TableReadRecord['content'];
-    /**
-    */
     published?: TableReadRecord['published'];
-    /**
-    */
     status?: TableReadRecord['status'];
     /**
     * Number of views for the post
@@ -283,14 +266,8 @@ export interface PostsRecord {
  * Insert record (casing transformed) for the "public.posts" table.
  */
 export interface PostsInsertRecord {
-    /**
-    */
     userId?: TableInsertRecord['userId'];
-    /**
-    */
     title: TableInsertRecord['title'];
-    /**
-    */
     content?: TableInsertRecord['content'];
     /**
     * @default: false

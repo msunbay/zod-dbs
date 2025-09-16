@@ -1,4 +1,4 @@
-import { ZodDbsProvider } from 'zod-dbs-core';
+import type { ZodDbsProvider } from 'zod-dbs-core';
 
 import { MsSqlServerProvider } from './MsSqlServerProvider.js';
 

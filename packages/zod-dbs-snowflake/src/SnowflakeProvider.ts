@@ -3,7 +3,6 @@ import { logDebug, sql, ZodDbsBaseProvider } from 'zod-dbs-core';
 import type {
   ZodDbsColumnInfo,
   ZodDbsColumnType,
-  ZodDbsConnectionConfig,
   ZodDbsProviderConfig,
   ZodDbsTableType,
 } from 'zod-dbs-core';
@@ -28,11 +27,13 @@ export class SnowflakeProvider extends ZodDbsBaseProvider {
     super({
       name: 'snowflake',
       displayName: 'Snowflake',
-      defaultConfiguration: {
-        port: 443,
-        ssl: true,
-      },
       options: [
+        {
+          name: 'host',
+          type: 'string',
+          description:
+            'Snowflake account URL host (e.g., xy12345.snowflakecomputing.com)',
+        },
         {
           name: 'account',
           type: 'string',
@@ -41,28 +42,49 @@ export class SnowflakeProvider extends ZodDbsBaseProvider {
           required: true,
         },
         {
+          name: 'user',
+          type: 'string',
+          description: 'Username for authentication',
+        },
+        {
+          name: 'password',
+          type: 'string',
+          description: 'Password for authentication',
+        },
+        {
+          name: 'database',
+          type: 'string',
+          description: 'Database name to connect to',
+          required: true,
+        },
+        {
+          name: 'schemaName',
+          type: 'string',
+          description: 'Schema name to introspect',
+          required: true,
+        },
+        {
           name: 'token',
           type: 'string',
           description: 'JWT token for authentication',
-          required: false,
         },
         {
           name: 'role',
           type: 'string',
           description: 'Role to assume after connecting',
-          required: false,
         },
         {
           name: 'warehouse',
           type: 'string',
           description: 'Virtual warehouse to use for the session',
-          required: false,
         },
       ],
     });
   }
 
-  createClient = (options: ZodDbsConnectionConfig) => createClient(options);
+  protected async createClient(options: ZodDbsProviderConfig) {
+    return await createClient(options);
+  }
 
   protected createColumnInfo(
     row: RawColumnRow,

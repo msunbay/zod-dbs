@@ -15,11 +15,11 @@
     "test:integration": "vitest --project integration run",
     "test:types": "tsc --noEmit"
   },
-  "author": "msolvaag",
+  "author": "msunbay",
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/msolvaag/zod-dbs.git"
+    "url": "git+https://github.com/msunbay/zod-dbs.git"
   },
   "publishConfig": {
     "access": "public"

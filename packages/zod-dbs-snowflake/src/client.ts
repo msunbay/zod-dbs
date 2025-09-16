@@ -1,36 +1,32 @@
-import path from 'path';
+import path from 'node:path';
 import sdk from 'snowflake-sdk';
 import { logDebug } from 'zod-dbs-core';
 
-import type {
-  ZodDbsConnectionConfig,
-  ZodDbsDatabaseClient,
-} from 'zod-dbs-core';
+import type { ZodDbsDatabaseClient, ZodDbsProviderConfig } from 'zod-dbs-core';
 
 export async function createClient(
-  options: ZodDbsConnectionConfig
+  config: ZodDbsProviderConfig
 ): Promise<ZodDbsDatabaseClient> {
-  if (!options.account)
+  if (!config.account)
     throw new Error("Snowflake 'account' is required in connection config");
 
   sdk.configure({
     additionalLogToConsole: false,
-    logFilePath: path.join(process.cwd(), '/snowflake.log'),
+    logFilePath: path.join(process.cwd(), './.zod-dbs/snowflake.log'),
   });
 
-  logDebug('Creating Snowflake connection', { options });
+  logDebug('Creating Snowflake client', config);
 
   const connection = sdk.createConnection({
-    host: options.host,
-    account: options.account,
-    username: options.user,
-    password: options.password,
-    database: options.database,
-    schema: options.schemaName,
-    token: options.token,
-    warehouse: options.warehouse,
-    role: options.role,
-    // Snowflake uses TLS on 443 by default
+    host: config.host,
+    account: config.account,
+    username: config.user,
+    password: config.password,
+    database: config.database,
+    schema: config.schemaName,
+    token: config.token,
+    warehouse: config.warehouse,
+    role: config.role,
   });
 
   const exec = <T>(sql: string, binds?: any[]): Promise<T> =>
@@ -38,9 +34,9 @@ export async function createClient(
       connection.execute({
         sqlText: sql,
         binds,
-        complete: (err: any, _stmt: any, rows: any) => {
+        complete: (err, _stmt, rows) => {
           if (err) return reject(err);
-          resolve(rows);
+          resolve(rows as T);
         },
       });
     });
@@ -60,10 +56,6 @@ export async function createClient(
       await new Promise<void>((resolve) => {
         connection.destroy((/* err */) => resolve());
       });
-    },
-    config: {
-      ...options,
-      protocol: 'snowflake',
     },
   };
 }

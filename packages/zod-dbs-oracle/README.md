@@ -8,7 +8,7 @@ Oracle provider for zod-dbs. Experimental.
 npm install zod-dbs-oracle
 ```
 
-> Note: This package has a peer dependency on `oracledb`. If you don't already have it, install it:
+> Note: This package has a peer dependency on `oracledb`. If you don't already have it, you might need to install it (depending on your environment, package manager, etc):
 
 ```bash
 npm install oracledb
@@ -22,13 +22,25 @@ npm install zod-dbs-cli zod-dbs-oracle
 npx zod-dbs --provider oracle
 ```
 
+### Provider Specific CLI Options
+
+| Option                       | Description                                                          | Required |
+| ---------------------------- | -------------------------------------------------------------------- | -------- |
+| `--connection-string <conn>` | Full database connection string (overrides other connection options) |          |
+| `--host <host>`              | Database host (default: `localhost`)                                 |          |
+| `--port <port>`              | Database port (default: `1521`)                                      |          |
+| `--user <user>`              | Database user                                                        |          |
+| `--password <password>`      | Database password                                                    |          |
+| `--database <service>`       | Database service name (e.g., ORCLPDB1)                               |          |
+| `--schema-name <schema>`     | Schema name to introspect (defaults to user if not provided)         |          |
+
 ## Programmatic Usage
 
 ```ts
 import { generateZodSchemas } from 'zod-dbs';
-import { OracleProvider } from 'zod-dbs-oracle';
+import { createProvider } from 'zod-dbs-oracle';
 
-const provider = new OracleProvider();
+const provider = createProvider();
 
 await generateZodSchemas({
   provider,

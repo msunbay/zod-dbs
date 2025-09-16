@@ -1,13 +1,21 @@
-import { logDebug } from 'zod-dbs-core';
+import { logDebug, toError } from 'zod-dbs-core';
 
 import type { ZodDbsProvider } from 'zod-dbs-core';
+import type { ZodDbsCliConfig } from './types.js';
 
-export const importProvider = async (
+import { getArgumentValue } from './utils/args.js';
+import { logError } from './utils/logger.js';
+
+const importProvider = async (
   provider: string | ZodDbsProvider
 ): Promise<ZodDbsProvider> => {
-  if (!provider) throw new Error('Provider must be specified');
+  if (!provider)
+    throw new Error(
+      'Provider must be specified through the --provider flag or in a config file'
+    );
 
   if (typeof provider !== 'string') {
+    logDebug('Using provided provider instance:', provider);
     return provider;
   }
 
@@ -32,4 +40,23 @@ export const importProvider = async (
   }
 
   throw new Error(`Unsupported database provider: ${provider}`);
+};
+
+export const loadProvider = async (
+  override: ZodDbsProvider | string | undefined,
+  config: ZodDbsCliConfig
+) => {
+  try {
+    const providerOrName =
+      override ??
+      getArgumentValue('-p') ??
+      getArgumentValue('--provider') ??
+      config.provider;
+
+    return await importProvider(providerOrName);
+  } catch (error) {
+    logError(toError(error).message);
+    logDebug(error);
+    process.exit(1);
+  }
 };

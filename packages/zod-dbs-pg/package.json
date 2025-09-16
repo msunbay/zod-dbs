@@ -7,14 +7,13 @@
   "scripts": {
     "build": "rm -rf ./dist && tsc --project tsconfig.build.json",
     "test:unit": "vitest --project unit run",
-    "test:integration": "vitest --project integration run",
     "test:types": "tsc --noEmit"
   },
-  "author": "msolvaag",
+  "author": "msunbay",
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/msolvaag/zod-dbs.git"
+    "url": "git+https://github.com/msunbay/zod-dbs.git"
   },
   "publishConfig": {
     "access": "public"
@@ -27,8 +26,7 @@
   },
   "devDependencies": {
     "pg": "^8.16.3",
-    "@types/pg": "^8.15.4",
-    "@testcontainers/postgresql": "^11.5.1"
+    "@types/pg": "^8.15.4"
   },
   "peerDependencies": {
     "pg": ">=8.12.0"

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { ZodDbsColumn, ZodDbsConfig, ZodDbsTable } from 'zod-dbs-core';
+
+import type { ZodDbsColumn, ZodDbsConfig, ZodDbsTable } from 'zod-dbs-core';
 
 import { Zod4Renderer } from '../../../../src/renderers/Zod4Renderer.js';
 
@@ -16,7 +17,7 @@ const column = (overrides: Partial<ZodDbsColumn>): ZodDbsColumn => ({
   tableName: 'users',
   schemaName: 'public',
   tableType: 'table',
-  type: 'string',
+  zodType: 'string',
   ...overrides,
 });
 const table = (cols: ZodDbsColumn[]): ZodDbsTable => ({
@@ -29,7 +30,7 @@ const config: ZodDbsConfig = {
   outputDir: '/tmp/ignore',
   fieldNameCasing: 'camelCase',
   objectNameCasing: 'PascalCase',
-  defaultNullsToUndefined: true,
+  nullsToUndefined: true,
   stringifyJson: true,
   singularization: true,
   coerceDates: true,
@@ -39,11 +40,11 @@ const config: ZodDbsConfig = {
 describe('Zod4Renderer', () => {
   it('overrides email/url/int/uuid/json types with zod 4 primitives', async () => {
     const tbl = table([
-      column({ name: 'email', type: 'email' }),
-      column({ name: 'homepage', type: 'url' }),
-      column({ name: 'age', type: 'int' }),
-      column({ name: 'guid', type: 'uuid' }),
-      column({ name: 'payload', type: 'json', dataType: 'jsonb' }),
+      column({ name: 'email', zodType: 'email' }),
+      column({ name: 'homepage', zodType: 'url' }),
+      column({ name: 'age', zodType: 'int' }),
+      column({ name: 'guid', zodType: 'uuid' }),
+      column({ name: 'payload', zodType: 'json', dataType: 'jsonb' }),
     ]);
     const out = await new Zod4Renderer().renderSchemaFile(tbl, config);
     expect(out).toContain('email: z.email()');
@@ -55,7 +56,7 @@ describe('Zod4Renderer', () => {
 
   it('uses z.date when coerceDates is false', async () => {
     const tbl = table([
-      column({ name: 'created_at', type: 'date', dataType: 'timestamptz' }),
+      column({ name: 'created_at', zodType: 'date', dataType: 'timestamptz' }),
     ]);
     const out = await new Zod4Renderer().renderSchemaFile(tbl, {
       ...config,
@@ -68,13 +69,13 @@ describe('Zod4Renderer', () => {
     const tbl = table([
       column({
         name: 'dates',
-        type: 'date',
+        zodType: 'date',
         dataType: 'timestamptz',
         isArray: true,
       }),
       column({
         name: 'dates_nullable',
-        type: 'date',
+        zodType: 'date',
         dataType: 'timestamptz',
         isArray: true,
         isNullable: true,
@@ -102,7 +103,7 @@ describe('Zod4Renderer', () => {
     const tbl = table([
       column({
         name: 'nickname',
-        type: 'string',
+        zodType: 'string',
         isReadOptional: true,
         isNullable: false,
       }),

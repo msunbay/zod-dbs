@@ -1,12 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { ZodDbsColumn, ZodDbsConfig, ZodDbsTable } from 'zod-dbs-core';
+
+import type { ZodDbsColumn, ZodDbsConfig, ZodDbsTable } from 'zod-dbs-core';
 
 import { Zod4MiniRenderer } from '../../../../src/renderers/Zod4MiniRenderer.js';
 
 const column = (overrides: Partial<ZodDbsColumn>): ZodDbsColumn => ({
   name: 'col',
   dataType: 'text',
-  type: 'string',
+  zodType: 'string',
   isEnum: false,
   isSerial: false,
   isArray: false,
@@ -34,16 +35,16 @@ const config: ZodDbsConfig = {
   stringifyJson: true,
   singularization: true,
   coerceDates: true,
-  defaultNullsToUndefined: true,
+  nullsToUndefined: true,
   caseTransform: true,
 };
 
 describe('Zod4MiniRenderer', () => {
   it('imports from zod/mini and overrides types', async () => {
     const tbl = table([
-      column({ name: 'email', type: 'email' }),
-      column({ name: 'guid', type: 'uuid' }),
-      column({ name: 'payload', type: 'json', dataType: 'jsonb' }),
+      column({ name: 'email', zodType: 'email' }),
+      column({ name: 'guid', zodType: 'uuid' }),
+      column({ name: 'payload', zodType: 'json', dataType: 'jsonb' }),
     ]);
     const out = await new Zod4MiniRenderer().renderSchemaFile(tbl, config);
     expect(out).toContain("import { z } from 'zod/mini'");
@@ -56,7 +57,7 @@ describe('Zod4MiniRenderer', () => {
     const tbl = table([
       column({
         name: 'tags',
-        type: 'string',
+        zodType: 'string',
         isArray: true,
         isNullable: true,
         isReadOptional: true,
@@ -72,13 +73,13 @@ describe('Zod4MiniRenderer', () => {
     const tbl = table([
       column({
         name: 'dates',
-        type: 'date',
+        zodType: 'date',
         dataType: 'timestamptz',
         isArray: true,
       }),
       column({
         name: 'dates_nullable',
-        type: 'date',
+        zodType: 'date',
         dataType: 'timestamptz',
         isArray: true,
         isNullable: true,
@@ -102,7 +103,7 @@ describe('Zod4MiniRenderer', () => {
   });
 
   it('applies all writeTransforms via .check wrappers', async () => {
-    const tbl = table([column({ name: 'val', type: 'string' })]);
+    const tbl = table([column({ name: 'val', zodType: 'string' })]);
     const out = await new Zod4MiniRenderer({
       onColumnModelCreated: (m) => ({
         ...m,
@@ -118,7 +119,7 @@ describe('Zod4MiniRenderer', () => {
     const tbl = table([
       column({
         name: 'nickname',
-        type: 'string',
+        zodType: 'string',
         isReadOptional: true,
         isNullable: false,
       }),
@@ -131,7 +132,7 @@ describe('Zod4MiniRenderer', () => {
   });
 
   it('does not include json import section when location provided but no json columns', async () => {
-    const tbl = table([column({ name: 'username', type: 'string' })]);
+    const tbl = table([column({ name: 'username', zodType: 'string' })]);
     const out = await new Zod4MiniRenderer().renderSchemaFile(tbl, {
       ...config,
       jsonSchemaImportLocation: '@schemas',
@@ -143,7 +144,7 @@ describe('Zod4MiniRenderer', () => {
     const tbl = table([
       column({
         name: 'meta',
-        type: 'json',
+        zodType: 'json',
         dataType: 'jsonb',
         isNullable: true,
       }),
@@ -157,7 +158,7 @@ describe('Zod4MiniRenderer', () => {
 
   it('write transforms use .check wrappers & min/max', async () => {
     const tbl = table([
-      column({ name: 'username', type: 'string', minLen: 2, maxLen: 20 }),
+      column({ name: 'username', zodType: 'string', minLen: 2, maxLen: 20 }),
     ]);
     const out = await new Zod4MiniRenderer({
       onColumnModelCreated: (m) => ({
@@ -172,7 +173,7 @@ describe('Zod4MiniRenderer', () => {
 
   it('stringifies json in write schema when enabled', async () => {
     const tbl = table([
-      column({ name: 'payload', type: 'json', dataType: 'jsonb' }),
+      column({ name: 'payload', zodType: 'json', dataType: 'jsonb' }),
     ]);
     const out = await new Zod4MiniRenderer().renderSchemaFile(tbl, config);
     expect(out).toMatch(
@@ -181,12 +182,14 @@ describe('Zod4MiniRenderer', () => {
   });
 
   it('falls back to simple template when transformCasing is false', async () => {
-    const tbl = table([column({ name: 'id', type: 'int', dataType: 'int4' })]);
+    const tbl = table([
+      column({ name: 'id', zodType: 'int', dataType: 'int4' }),
+    ]);
     const out = await new Zod4MiniRenderer().renderSchemaFile(tbl, {
       ...config,
       caseTransform: false,
     });
-    expect(out).toContain("import { z } from 'zod'");
+    expect(out).toContain("import { z } from 'zod/mini'");
     expect(out).not.toContain('Base read schema');
   });
 
@@ -194,7 +197,7 @@ describe('Zod4MiniRenderer', () => {
     const tbl = table([
       column({
         name: 'status',
-        type: 'string',
+        zodType: 'string',
         isEnum: true,
         enumValues: ['active', 'inactive'],
         minLen: 2,
@@ -216,7 +219,7 @@ describe('Zod4MiniRenderer', () => {
     const tbl = table([
       column({
         name: 'score',
-        type: 'number',
+        zodType: 'number',
         dataType: 'int4',
         minLen: 1,
         maxLen: 10,
@@ -231,7 +234,7 @@ describe('Zod4MiniRenderer', () => {
 
   it('nullable-only (not optional) read field uses undefined fallback pipe', async () => {
     const tbl = table([
-      column({ name: 'note', type: 'string', isNullable: true }),
+      column({ name: 'note', zodType: 'string', isNullable: true }),
     ]);
     const out = await new Zod4MiniRenderer().renderSchemaFile(tbl, config);
     const line = out.split('\n').find((l) => /note: /.test(l)) || '';
@@ -245,7 +248,7 @@ describe('Zod4MiniRenderer', () => {
     const tbl = table([
       column({
         name: 'labels',
-        type: 'string',
+        zodType: 'string',
         isArray: true,
         isReadOptional: true,
       }),
@@ -260,7 +263,7 @@ describe('Zod4MiniRenderer', () => {
     const tbl = table([
       column({
         name: 'opts',
-        type: 'string',
+        zodType: 'string',
         isArray: true,
         isNullable: true,
         isReadOptional: true,
@@ -278,10 +281,10 @@ describe('Zod4MiniRenderer', () => {
 
   it('creates json schema imports and uses schema names for json fields', async () => {
     const tbl = table([
-      column({ name: 'profile', type: 'json', dataType: 'jsonb' }),
+      column({ name: 'profile', zodType: 'json', dataType: 'jsonb' }),
       column({
         name: 'meta',
-        type: 'json',
+        zodType: 'json',
         dataType: 'json',
         isNullable: true,
         isReadOptional: true,
@@ -304,7 +307,7 @@ describe('Zod4MiniRenderer', () => {
     const tbl = table([
       column({
         name: 'meta',
-        type: 'json',
+        zodType: 'json',
         dataType: 'jsonb',
         isNullable: true,
         isReadOptional: true,
@@ -322,10 +325,10 @@ describe('Zod4MiniRenderer', () => {
 
   it('stringifies single date fields (nullable and non-nullable)', async () => {
     const tbl = table([
-      column({ name: 'created_at', type: 'date', dataType: 'timestamptz' }),
+      column({ name: 'created_at', zodType: 'date', dataType: 'timestamptz' }),
       column({
         name: 'updated_at',
-        type: 'date',
+        zodType: 'date',
         dataType: 'timestamptz',
         isNullable: true,
         isWriteOptional: true,
@@ -342,7 +345,7 @@ describe('Zod4MiniRenderer', () => {
 
   it('does not stringify date fields when stringifyDates is false', async () => {
     const tbl = table([
-      column({ name: 'created_at', type: 'date', dataType: 'timestamptz' }),
+      column({ name: 'created_at', zodType: 'date', dataType: 'timestamptz' }),
     ]);
     const out = await new Zod4MiniRenderer().renderSchemaFile(tbl, {
       ...config,
@@ -354,7 +357,7 @@ describe('Zod4MiniRenderer', () => {
 
   it('does not stringify non-nullable json when stringifyJson is false', async () => {
     const tbl = table([
-      column({ name: 'payload', type: 'json', dataType: 'jsonb' }),
+      column({ name: 'payload', zodType: 'json', dataType: 'jsonb' }),
     ]);
     const out = await new Zod4MiniRenderer().renderSchemaFile(tbl, {
       ...config,
@@ -365,9 +368,9 @@ describe('Zod4MiniRenderer', () => {
 
   it('ignores writeTransforms on non-string base types (date, json, boolean)', async () => {
     const tbl = table([
-      column({ name: 'created_at', type: 'date', dataType: 'timestamptz' }),
-      column({ name: 'settings', type: 'json', dataType: 'jsonb' }),
-      column({ name: 'is_active', type: 'boolean', dataType: 'bool' }),
+      column({ name: 'created_at', zodType: 'date', dataType: 'timestamptz' }),
+      column({ name: 'settings', zodType: 'json', dataType: 'jsonb' }),
+      column({ name: 'is_active', zodType: 'boolean', dataType: 'bool' }),
     ]);
     const out = await new Zod4MiniRenderer({
       onColumnModelCreated: (m) => ({
@@ -385,7 +388,7 @@ describe('Zod4MiniRenderer', () => {
   });
 
   it('handles empty writeTransforms array (no .check chains)', async () => {
-    const tbl = table([column({ name: 'title', type: 'string' })]);
+    const tbl = table([column({ name: 'title', zodType: 'string' })]);
     const out = await new Zod4MiniRenderer({
       onColumnModelCreated: (m) => ({ ...m, writeTransforms: [] }),
     }).renderSchemaFile(tbl, config);

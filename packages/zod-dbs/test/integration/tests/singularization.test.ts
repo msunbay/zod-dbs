@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'node:fs/promises';
 
 import { generateZodSchemas } from '../../../src/generateZodSchemas.js';
 import {
@@ -29,7 +29,7 @@ it('generates correct zod schemas with disabled singularization', async () => {
 
   expect(postsFile).toBeDefined();
 
-  const content = fs.readFileSync(postsFile!, 'utf8');
+  const content = await fs.readFile(postsFile!, 'utf8');
   expect(content).toMatchSnapshot();
 
   // Ensure that the singularization is not applied

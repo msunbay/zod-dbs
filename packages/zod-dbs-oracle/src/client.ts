@@ -1,22 +1,26 @@
 import oracledb from 'oracledb';
+import { logDebug, parseConnectionString } from 'zod-dbs-core';
 
-import type {
-  ZodDbsConnectionConfig,
-  ZodDbsDatabaseClient,
-} from 'zod-dbs-core';
+import type { ZodDbsDatabaseClient, ZodDbsProviderConfig } from 'zod-dbs-core';
 
 export async function createClient(
-  config: ZodDbsConnectionConfig
+  config: ZodDbsProviderConfig
 ): Promise<ZodDbsDatabaseClient> {
   let pool: any | null = null;
   let conn: any | null = null;
 
+  logDebug('Creating OracleDB client', config);
+
   const connectInternal = async () => {
+    const { user, password, host, port, database } = config.connectionString
+      ? parseConnectionString(config.connectionString)
+      : config;
+
     if (!pool) {
       pool = await oracledb.createPool({
-        user: config.user,
-        password: config.password,
-        connectString: `${config.host ?? 'localhost'}:${config.port ?? 1521}/${config.database}`,
+        user,
+        password,
+        connectString: `${host ?? 'localhost'}:${port ?? 1521}/${database}`,
       });
     }
     if (!conn) {
@@ -25,7 +29,6 @@ export async function createClient(
   };
 
   const client: ZodDbsDatabaseClient = {
-    config,
     connect: async () => {
       await connectInternal();
     },

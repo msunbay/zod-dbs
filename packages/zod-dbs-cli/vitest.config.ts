@@ -2,6 +2,7 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
+    reporters: 'dot',
     projects: [
       {
         test: {
@@ -13,19 +14,9 @@ export default defineConfig({
       },
       {
         test: {
-          name: 'integration:cli',
+          name: 'integration',
           environment: 'node',
-          include: ['test/integration/cli/tests/**/*.test.ts'],
-          globals: true,
-          hookTimeout: 60000,
-          testTimeout: 20000,
-        },
-      },
-      {
-        test: {
-          name: 'integration:schema',
-          environment: 'node',
-          include: ['test/integration/schema/tests/**/*.test.ts'],
+          include: ['test/integration/tests/**/*.test.ts'],
           globals: true,
           hookTimeout: 60000,
           testTimeout: 20000,

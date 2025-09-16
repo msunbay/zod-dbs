@@ -1,12 +1,18 @@
-import { ZodDbsColumnType } from './types.js';
+import type { ZodDbsColumnType } from './types.js';
 
 export const getZodType = (dataType: string): ZodDbsColumnType => {
   // Normalize the data type to handle variations
   const lowercaseDataType = dataType.toLowerCase();
 
-  const normalizedType = lowercaseDataType.startsWith('_')
+  let normalizedType = lowercaseDataType.startsWith('_')
     ? lowercaseDataType.slice(1) // Remove leading underscore for array types
     : lowercaseDataType;
+
+  // Remove ending numbers from types like varchar(255) => varchar
+  normalizedType = normalizedType.replace(/\(\d+\)$/, '');
+
+  // Remove ending numbers from types like int128 => int
+  normalizedType = normalizedType.replace(/\d+$/, '');
 
   switch (normalizedType) {
     case 'text':
@@ -27,27 +33,25 @@ export const getZodType = (dataType: string): ZodDbsColumnType => {
     case 'point':
     case 'polygon':
     case 'circle':
+    case 'objectid':
     case 'name':
     case 'time':
     case 'timetz':
+    case 'string':
       return 'string';
     case 'int':
-    case 'int2':
-    case 'int4':
-    case 'int8':
+    case 'integer':
+    case 'long':
     case 'smallint':
     case 'bigint':
     case 'mediumint':
     case 'tinyint':
     case 'year':
     case 'serial':
-    case 'serial4':
-    case 'serial8':
     case 'bigserial':
       return 'int';
+    case 'real':
     case 'float':
-    case 'float4':
-    case 'float8':
     case 'decimal':
     case 'double':
     case 'double precision':
@@ -56,6 +60,7 @@ export const getZodType = (dataType: string): ZodDbsColumnType => {
     case 'money':
       return 'number';
     case 'bool':
+    case 'boolean':
       return 'boolean';
     case 'timestamptz':
     case 'timestamp':
@@ -66,6 +71,10 @@ export const getZodType = (dataType: string): ZodDbsColumnType => {
     case 'jsonb':
     case 'json':
       return 'json';
+    case 'object':
+      return 'object';
+    case 'unknown':
+      return 'unknown';
     default:
       // If the type is not recognized, return 'any'
       return 'any';

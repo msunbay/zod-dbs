@@ -16,7 +16,6 @@ import { generateTypesFile } from './generate/generateTypesFile.js';
 import { Zod3Renderer } from './renderers/Zod3Renderer.js';
 import { Zod4MiniRenderer } from './renderers/Zod4MiniRenderer.js';
 import { Zod4Renderer } from './renderers/Zod4Renderer.js';
-import { ZodBaseRenderer } from './renderers/ZodBaseRenderer.js';
 import { clearTablesDirectory } from './utils/index.js';
 
 export interface ZodDbsGenerateOptions {
@@ -26,10 +25,6 @@ export interface ZodDbsGenerateOptions {
 }
 
 const createRenderer = (zodVersion: ZodDbsZodVersion | undefined) => {
-  if (zodVersion === '3') {
-    return new Zod3Renderer();
-  }
-
   if (zodVersion === '4') {
     return new Zod4Renderer();
   }
@@ -38,7 +33,7 @@ const createRenderer = (zodVersion: ZodDbsZodVersion | undefined) => {
     return new Zod4MiniRenderer();
   }
 
-  return new ZodBaseRenderer();
+  return new Zod3Renderer();
 };
 
 /**
@@ -54,9 +49,10 @@ export const generateZodSchemas = async ({
     ...config,
   };
 
+  logDebug('Using generation configuration:', generateConfig);
+
   const {
     outputDir = DEFAULT_OUTPUT_DIR,
-    schemaName,
     cleanOutput,
     onProgress,
     zodVersion,
@@ -72,11 +68,11 @@ export const generateZodSchemas = async ({
 
   onProgress?.('generating', { total: schema.tables.length });
 
-  logDebug(
-    `Generating zod schemas for ${schema.tables.length} tables in db schema '${schemaName}'`
-  );
+  logDebug(`Generating zod schemas for ${schema.tables.length} tables'`);
 
   const schemaRenderer = renderer ?? createRenderer(zodVersion);
+
+  logDebug(`Using renderer: ${schemaRenderer.name ?? '<unknown>'}`);
 
   for (const table of schema.tables) {
     await generateSchemaFiles(table, schemaRenderer, generateConfig);

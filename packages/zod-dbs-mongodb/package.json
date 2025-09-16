@@ -3,17 +3,17 @@
   "version": "0.0.1",
   "description": "MongoDB provider for zod-dbs",
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "type": "module",
   "scripts": {
     "build": "rm -rf ./dist && tsc --project tsconfig.build.json",
-    "test:integration": "vitest --project integration run",
     "test:types": "tsc --noEmit"
   },
-  "author": "msolvaag",
+  "author": "msunbay",
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/msolvaag/zod-dbs.git",
+    "url": "git+https://github.com/msunbay/zod-dbs.git",
     "directory": "packages/zod-dbs-mongodb"
   },
   "publishConfig": {
@@ -29,7 +29,6 @@
     "mongodb": ">=5"
   },
   "devDependencies": {
-    "@testcontainers/mongodb": "^10.28.0",
     "mongodb": "^6.8.0"
   }
 }

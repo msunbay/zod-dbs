@@ -35,7 +35,6 @@ export const USER_ROLES = ['admin', 'editor', 'viewer'] as const;
 export const UsersTableBaseSchema = z.object({
      /**
       * dataType: int4
-      * defaultValue: nextval('users_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -48,7 +47,6 @@ export const UsersTableBaseSchema = z.object({
     email: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: varchar
-      * defaultValue: 'active'::character varying
       */
     status: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -57,7 +55,6 @@ export const UsersTableBaseSchema = z.object({
     profile: z.any().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     created_at: z.date().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -125,7 +122,7 @@ export const UsersTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    profile: z.any().nullable().optional(),
+    profile: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: timestamptz
       * defaultValue: now()
@@ -214,29 +211,13 @@ type TableReadRecord = z.output<typeof UsersTableSchema>;
  * Read record (casing transformed) for the "public.users" table.
  */
 export interface UserRecord {
-    /**
-    */
     id: TableReadRecord['id'];
-    /**
-    */
     name: TableReadRecord['name'];
-    /**
-    */
     email?: TableReadRecord['email'];
-    /**
-    */
     status?: TableReadRecord['status'];
-    /**
-    */
     profile?: TableReadRecord['profile'];
-    /**
-    */
     createdAt?: TableReadRecord['createdAt'];
-    /**
-    */
     roles?: TableReadRecord['roles'];
-    /**
-    */
     dates?: TableReadRecord['dates'];
 }
 
@@ -257,18 +238,12 @@ export interface UserInsertRecord {
     * @default: 'active'::character varying
     */
     status?: TableInsertRecord['status'];
-    /**
-    */
     profile?: TableInsertRecord['profile'];
     /**
     * @default: now()
     */
     createdAt?: TableInsertRecord['createdAt'];
-    /**
-    */
     roles?: TableInsertRecord['roles'];
-    /**
-    */
     dates?: TableInsertRecord['dates'];
 }
 
@@ -324,7 +299,6 @@ export const USER_ROLES = ['admin', 'editor', 'viewer'] as const;
 export const UsersTableBaseSchema = z.object({
      /**
       * dataType: int4
-      * defaultValue: nextval('users_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -337,7 +311,6 @@ export const UsersTableBaseSchema = z.object({
     email: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: varchar
-      * defaultValue: 'active'::character varying
       */
     status: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -346,7 +319,6 @@ export const UsersTableBaseSchema = z.object({
     profile: z.any().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     created_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -414,7 +386,7 @@ export const UsersTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    profile: z.any().nullable().optional(),
+    profile: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: timestamptz
       * defaultValue: now()
@@ -503,29 +475,13 @@ type TableReadRecord = z.output<typeof UsersTableSchema>;
  * Read record (casing transformed) for the "public.users" table.
  */
 export interface UserRecord {
-    /**
-    */
     id: TableReadRecord['id'];
-    /**
-    */
     name: TableReadRecord['name'];
-    /**
-    */
     email?: TableReadRecord['email'];
-    /**
-    */
     status?: TableReadRecord['status'];
-    /**
-    */
     profile?: TableReadRecord['profile'];
-    /**
-    */
     createdAt?: TableReadRecord['createdAt'];
-    /**
-    */
     roles?: TableReadRecord['roles'];
-    /**
-    */
     dates?: TableReadRecord['dates'];
 }
 
@@ -546,18 +502,12 @@ export interface UserInsertRecord {
     * @default: 'active'::character varying
     */
     status?: TableInsertRecord['status'];
-    /**
-    */
     profile?: TableInsertRecord['profile'];
     /**
     * @default: now()
     */
     createdAt?: TableInsertRecord['createdAt'];
-    /**
-    */
     roles?: TableInsertRecord['roles'];
-    /**
-    */
     dates?: TableInsertRecord['dates'];
 }
 
@@ -613,7 +563,6 @@ export const USER_ROLES = ['admin', 'editor', 'viewer'] as const;
 export const UsersTableBaseSchema = z.object({
      /**
       * dataType: int4
-      * defaultValue: nextval('users_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -626,7 +575,6 @@ export const UsersTableBaseSchema = z.object({
     email: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: varchar
-      * defaultValue: 'active'::character varying
       */
     status: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -635,7 +583,6 @@ export const UsersTableBaseSchema = z.object({
     profile: z.any().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     created_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -703,7 +650,7 @@ export const UsersTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    profile: z.any().nullable().optional(),
+    profile: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: timestamptz
       * defaultValue: now()
@@ -792,29 +739,13 @@ type TableReadRecord = z.output<typeof UsersTableSchema>;
  * Read record (casing transformed) for the "public.users" table.
  */
 export interface UserRecord {
-    /**
-    */
     id: TableReadRecord['id'];
-    /**
-    */
     name: TableReadRecord['name'];
-    /**
-    */
     email?: TableReadRecord['email'];
-    /**
-    */
     status?: TableReadRecord['status'];
-    /**
-    */
     profile?: TableReadRecord['profile'];
-    /**
-    */
     createdAt?: TableReadRecord['createdAt'];
-    /**
-    */
     roles?: TableReadRecord['roles'];
-    /**
-    */
     dates?: TableReadRecord['dates'];
 }
 
@@ -835,18 +766,12 @@ export interface UserInsertRecord {
     * @default: 'active'::character varying
     */
     status?: TableInsertRecord['status'];
-    /**
-    */
     profile?: TableInsertRecord['profile'];
     /**
     * @default: now()
     */
     createdAt?: TableInsertRecord['createdAt'];
-    /**
-    */
     roles?: TableInsertRecord['roles'];
-    /**
-    */
     dates?: TableInsertRecord['dates'];
 }
 
@@ -902,7 +827,6 @@ export const USER_ROLES = ['admin', 'editor', 'viewer'] as const;
 export const UsersTableBaseSchema = z.object({
      /**
       * dataType: int4
-      * defaultValue: nextval('users_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -915,7 +839,6 @@ export const UsersTableBaseSchema = z.object({
     email: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: varchar
-      * defaultValue: 'active'::character varying
       */
     status: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -924,7 +847,6 @@ export const UsersTableBaseSchema = z.object({
     profile: z.any().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     created_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -992,7 +914,7 @@ export const UsersTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    profile: z.any().nullable().optional(),
+    profile: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: timestamptz
       * defaultValue: now()
@@ -1081,29 +1003,13 @@ type TableReadRecord = z.output<typeof UsersTableSchema>;
  * Read record (casing transformed) for the "public.users" table.
  */
 export interface UserRecord {
-    /**
-    */
     id: TableReadRecord['id'];
-    /**
-    */
     name: TableReadRecord['name'];
-    /**
-    */
     email?: TableReadRecord['email'];
-    /**
-    */
     status?: TableReadRecord['status'];
-    /**
-    */
     profile?: TableReadRecord['profile'];
-    /**
-    */
     createdAt?: TableReadRecord['createdAt'];
-    /**
-    */
     roles?: TableReadRecord['roles'];
-    /**
-    */
     dates?: TableReadRecord['dates'];
 }
 
@@ -1124,18 +1030,12 @@ export interface UserInsertRecord {
     * @default: 'active'::character varying
     */
     status?: TableInsertRecord['status'];
-    /**
-    */
     profile?: TableInsertRecord['profile'];
     /**
     * @default: now()
     */
     createdAt?: TableInsertRecord['createdAt'];
-    /**
-    */
     roles?: TableInsertRecord['roles'];
-    /**
-    */
     dates?: TableInsertRecord['dates'];
 }
 
@@ -1191,7 +1091,6 @@ export const POST_STATUSES = ['draft', 'published', 'archived'] as const;
 export const PostsTableBaseSchema = z.object({
      /**
       * dataType: int4
-      * defaultValue: nextval('posts_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -1208,17 +1107,14 @@ export const PostsTableBaseSchema = z.object({
     content: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: bool
-      * defaultValue: false
       */
     published: z.boolean().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: varchar
-      * defaultValue: 'draft'::character varying
       */
     status: z.enum(POST_STATUSES).nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: int4
-      * defaultValue: 0
       */
     views: z.number().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -1235,7 +1131,6 @@ export const PostsTableBaseSchema = z.object({
     published_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     updated_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
 });
@@ -1416,23 +1311,11 @@ type TableReadRecord = z.output<typeof PostsTableSchema>;
  * Read record (casing transformed) for the "public.posts" table.
  */
 export interface PostRecord {
-    /**
-    */
     id: TableReadRecord['id'];
-    /**
-    */
     userId?: TableReadRecord['userId'];
-    /**
-    */
     title: TableReadRecord['title'];
-    /**
-    */
     content?: TableReadRecord['content'];
-    /**
-    */
     published?: TableReadRecord['published'];
-    /**
-    */
     status?: TableReadRecord['status'];
     /**
     * Number of views for the post
@@ -1460,14 +1343,8 @@ export interface PostRecord {
  * Insert record (casing transformed) for the "public.posts" table.
  */
 export interface PostInsertRecord {
-    /**
-    */
     userId?: TableInsertRecord['userId'];
-    /**
-    */
     title: TableInsertRecord['title'];
-    /**
-    */
     content?: TableInsertRecord['content'];
     /**
     * @default: false
@@ -1554,7 +1431,6 @@ export const POST_STATUSES = ['draft', 'published', 'archived'] as const;
 export const PostsTableBaseSchema = z.object({
      /**
       * dataType: int4
-      * defaultValue: nextval('posts_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -1571,17 +1447,14 @@ export const PostsTableBaseSchema = z.object({
     content: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: bool
-      * defaultValue: false
       */
     published: z.boolean().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: varchar
-      * defaultValue: 'draft'::character varying
       */
     status: z.enum(POST_STATUSES).nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: int4
-      * defaultValue: 0
       */
     views: z.number().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -1598,7 +1471,6 @@ export const PostsTableBaseSchema = z.object({
     published_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     updated_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
 });
@@ -1682,7 +1554,7 @@ export const PostsTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    metadata: z.any().nullable().optional(),
+    metadata: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: timestamptz
       */
@@ -1779,23 +1651,11 @@ type TableReadRecord = z.output<typeof PostsTableSchema>;
  * Read record (casing transformed) for the "public.posts" table.
  */
 export interface PostRecord {
-    /**
-    */
     id: TableReadRecord['id'];
-    /**
-    */
     userId?: TableReadRecord['userId'];
-    /**
-    */
     title: TableReadRecord['title'];
-    /**
-    */
     content?: TableReadRecord['content'];
-    /**
-    */
     published?: TableReadRecord['published'];
-    /**
-    */
     status?: TableReadRecord['status'];
     /**
     * Number of views for the post
@@ -1823,14 +1683,8 @@ export interface PostRecord {
  * Insert record (casing transformed) for the "public.posts" table.
  */
 export interface PostInsertRecord {
-    /**
-    */
     userId?: TableInsertRecord['userId'];
-    /**
-    */
     title: TableInsertRecord['title'];
-    /**
-    */
     content?: TableInsertRecord['content'];
     /**
     * @default: false

@@ -46,7 +46,7 @@ import { z } from 'zod';
 
 
 /**
- * Base read schema for the "public.mv_user_posts" table.
+ * Base read schema for the "public.mv_user_posts" materialized_view.
  * Validates raw rows read from the database (no casing transforms applied yet).
  */
 export const MvUserPostsBaseSchema = z.object({
@@ -73,13 +73,13 @@ export const MvUserPostsBaseSchema = z.object({
 });
 
 /**
- * The base record type for the "public.mv_user_posts" table.
+ * The base record type for the "public.mv_user_posts" materialized_view.
  * This type represents the raw database record without case transforms.
  */
 export type MvUserPostBaseRecord = z.output<typeof MvUserPostsBaseSchema>;
 
 /**
- * Read transform for the "public.mv_user_posts" table.
+ * Read transform for the "public.mv_user_posts" materialized_view.
  * Maps database fields to app case properties.
  */
 export const transformMvUserPostBaseRecord = (data: MvUserPostBaseRecord): {
@@ -97,7 +97,7 @@ export const transformMvUserPostBaseRecord = (data: MvUserPostBaseRecord): {
 });
 
 /**
- * Read schema for the "public.mv_user_posts" table (after casing transform).
+ * Read schema for the "public.mv_user_posts" materialized_view (after casing transform).
  */
 export const MvUserPostsSchema = MvUserPostsBaseSchema.transform(transformMvUserPostBaseRecord);
 
@@ -107,20 +107,10 @@ type TableReadRecord = z.output<typeof MvUserPostsSchema>;
  * Read record (casing transformed) for the "public.mv_user_posts" materialized_view.
  */
 export interface MvUserPostRecord {
-    /**
-    */
     userId?: TableReadRecord['userId'];
-    /**
-    */
     userName?: TableReadRecord['userName'];
-    /**
-    */
     postId?: TableReadRecord['postId'];
-    /**
-    */
     postTitle?: TableReadRecord['postTitle'];
-    /**
-    */
     postContent?: TableReadRecord['postContent'];
 }
 
@@ -147,7 +137,6 @@ import { z } from 'zod';
 export const AuditLogsTableBaseSchema = z.object({
      /**
       * dataType: int8
-      * defaultValue: nextval('audit_logs_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -176,7 +165,6 @@ export const AuditLogsTableBaseSchema = z.object({
     new_values: z.any().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     created_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
 });
@@ -239,11 +227,11 @@ export const AuditLogsTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    oldValues: z.any().nullable().optional(),
+    oldValues: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: jsonb
       */
-    newValues: z.any().nullable().optional(),
+    newValues: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: timestamptz
       * defaultValue: now()
@@ -423,7 +411,6 @@ import { z } from 'zod';
 export const CategoriesTableBaseSchema = z.object({
      /**
       * dataType: int4
-      * defaultValue: nextval('categories_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -440,7 +427,6 @@ export const CategoriesTableBaseSchema = z.object({
     color: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     created_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
 });
@@ -633,7 +619,6 @@ import { z } from 'zod';
 export const CommentsTableBaseSchema = z.object({
      /**
       * dataType: int4
-      * defaultValue: nextval('comments_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -654,17 +639,14 @@ export const CommentsTableBaseSchema = z.object({
     content: z.string(),
      /**
       * dataType: bool
-      * defaultValue: false
       */
     is_approved: z.boolean().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     created_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     updated_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
 });
@@ -918,7 +900,6 @@ export const CONSTRAINT_VARIATION_ACTIVE_STATUSES = ['true', 'false'] as const;
 export const ConstraintVariationsTableBaseSchema = z.object({
      /**
       * dataType: int4
-      * defaultValue: nextval('constraint_variations_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -947,7 +928,6 @@ export const ConstraintVariationsTableBaseSchema = z.object({
     active_status: z.enum(CONSTRAINT_VARIATION_ACTIVE_STATUSES).nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     created_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
 });
@@ -1212,7 +1192,6 @@ export const ENUM_TEST_PAYMENT_METHODS = ['cash', 'credit-card', 'debit-card', '
 export const EnumTestsTableBaseSchema = z.object({
      /**
       * dataType: int4
-      * defaultValue: nextval('enum_tests_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -1265,7 +1244,6 @@ export const EnumTestsTableBaseSchema = z.object({
     payment_method: z.enum(ENUM_TEST_PAYMENT_METHODS).nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     created_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
 });
@@ -1637,7 +1615,6 @@ import { z } from 'zod';
 export const FilesTableBaseSchema = z.object({
      /**
       * dataType: uuid
-      * defaultValue: gen_random_uuid()
       */
     id: z.string(),
      /**
@@ -1666,12 +1643,10 @@ export const FilesTableBaseSchema = z.object({
     binary_data: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: bool
-      * defaultValue: false
       */
     is_encrypted: z.boolean().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     upload_time: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -1688,7 +1663,6 @@ export const FilesTableBaseSchema = z.object({
     tags: z.array(z.string()).nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: int4
-      * defaultValue: 0
       */
     access_count: z.number().nullable().transform((value) => value ?? undefined).optional(),
 });
@@ -1788,7 +1762,7 @@ export const FilesTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    metadata: z.any().nullable().optional(),
+    metadata: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: _text
       */
@@ -2044,7 +2018,6 @@ import { z } from 'zod';
 export const GeographicDataTableBaseSchema = z.object({
      /**
       * dataType: int4
-      * defaultValue: nextval('geographic_data_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -2089,7 +2062,6 @@ export const GeographicDataTableBaseSchema = z.object({
     established_date: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     last_updated: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
 });
@@ -2436,17 +2408,14 @@ export const InventoryTableBaseSchema = z.object({
     product_id: z.number(),
      /**
       * dataType: int4
-      * defaultValue: 0
       */
     stock_quantity: z.number(),
      /**
       * dataType: int4
-      * defaultValue: 0
       */
     reserved_quantity: z.number().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: int2
-      * defaultValue: 10
       */
     reorder_level: z.number().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -2463,7 +2432,6 @@ export const InventoryTableBaseSchema = z.object({
     warehouse_locations: z.array(z.string()).nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     updated_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
 });
@@ -2533,7 +2501,7 @@ export const InventoryTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    supplierInfo: z.any().nullable().optional(),
+    supplierInfo: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: _text
       */
@@ -2726,7 +2694,6 @@ import { z } from 'zod';
 export const NetworkLogsTableBaseSchema = z.object({
      /**
       * dataType: int8
-      * defaultValue: nextval('network_logs_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -2743,7 +2710,6 @@ export const NetworkLogsTableBaseSchema = z.object({
     mac_address: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     request_time: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -2752,12 +2718,10 @@ export const NetworkLogsTableBaseSchema = z.object({
     response_time: z.any().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: int8
-      * defaultValue: 0
       */
     bytes_sent: z.number().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: int8
-      * defaultValue: 0
       */
     bytes_received: z.number().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -2871,7 +2835,7 @@ export const NetworkLogsTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    headers: z.any().nullable().optional(),
+    headers: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
 });
 
 /**
@@ -3095,7 +3059,6 @@ import { z } from 'zod';
 export const OrdersTableBaseSchema = z.object({
      /**
       * dataType: int8
-      * defaultValue: nextval('orders_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -3108,7 +3071,6 @@ export const OrdersTableBaseSchema = z.object({
     user_id: z.number().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: order_status
-      * defaultValue: 'pending'::order_status
       */
     status: z.any().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -3117,17 +3079,14 @@ export const OrdersTableBaseSchema = z.object({
     total_amount: z.number(),
      /**
       * dataType: money
-      * defaultValue: 0
       */
     tax_amount: z.number().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: money
-      * defaultValue: 0
       */
     shipping_cost: z.number().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: date
-      * defaultValue: CURRENT_DATE
       */
     order_date: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -3148,7 +3107,6 @@ export const OrdersTableBaseSchema = z.object({
     metadata: z.any().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     created_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
 });
@@ -3249,7 +3207,7 @@ export const OrdersTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    metadata: z.any().nullable().optional(),
+    metadata: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: timestamptz
       * defaultValue: now()
@@ -3492,7 +3450,6 @@ import { z } from 'zod';
 export const OrdersItemsTableBaseSchema = z.object({
      /**
       * dataType: int8
-      * defaultValue: nextval('orders_items_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -3513,12 +3470,10 @@ export const OrdersItemsTableBaseSchema = z.object({
     unit_price: z.number(),
      /**
       * dataType: numeric
-      * defaultValue: 0
       */
     discount_percent: z.number().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: numeric
-      * defaultValue: (((quantity)::numeric * unit_price) * ((1)::numeric - (discount_percent / (100)::numeric)))
       */
     line_total: z.number().nullable().transform((value) => value ?? undefined).optional(),
 });
@@ -3751,7 +3706,6 @@ export const POST_STATUSES = ['draft', 'published', 'archived'] as const;
 export const PostsTableBaseSchema = z.object({
      /**
       * dataType: int4
-      * defaultValue: nextval('posts_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -3768,17 +3722,14 @@ export const PostsTableBaseSchema = z.object({
     content: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: bool
-      * defaultValue: false
       */
     published: z.boolean().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: varchar
-      * defaultValue: 'draft'::character varying
       */
     status: z.enum(POST_STATUSES).nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: int4
-      * defaultValue: 0
       */
     views: z.number().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -3795,7 +3746,6 @@ export const PostsTableBaseSchema = z.object({
     published_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     updated_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
 });
@@ -3879,7 +3829,7 @@ export const PostsTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    metadata: z.any().nullable().optional(),
+    metadata: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: timestamptz
       */
@@ -3976,23 +3926,11 @@ type TableReadRecord = z.output<typeof PostsTableSchema>;
  * Read record (casing transformed) for the "public.posts" table.
  */
 export interface PostRecord {
-    /**
-    */
     id: TableReadRecord['id'];
-    /**
-    */
     userId?: TableReadRecord['userId'];
-    /**
-    */
     title: TableReadRecord['title'];
-    /**
-    */
     content?: TableReadRecord['content'];
-    /**
-    */
     published?: TableReadRecord['published'];
-    /**
-    */
     status?: TableReadRecord['status'];
     /**
     * Number of views for the post
@@ -4020,14 +3958,8 @@ export interface PostRecord {
  * Insert record (casing transformed) for the "public.posts" table.
  */
 export interface PostInsertRecord {
-    /**
-    */
     userId?: TableInsertRecord['userId'];
-    /**
-    */
     title: TableInsertRecord['title'];
-    /**
-    */
     content?: TableInsertRecord['content'];
     /**
     * @default: false
@@ -4241,7 +4173,6 @@ import { z } from 'zod';
 export const ProductsTableBaseSchema = z.object({
      /**
       * dataType: int4
-      * defaultValue: nextval('products_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -4270,7 +4201,6 @@ export const ProductsTableBaseSchema = z.object({
     dimensions: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: bool
-      * defaultValue: true
       */
     is_active: z.boolean().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -4283,7 +4213,6 @@ export const ProductsTableBaseSchema = z.object({
     description: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     created_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
 });
@@ -4589,7 +4518,6 @@ import { z } from 'zod';
 export const TimeSeriesTableBaseSchema = z.object({
      /**
       * dataType: int8
-      * defaultValue: nextval('time_series_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -4618,7 +4546,6 @@ export const TimeSeriesTableBaseSchema = z.object({
     readings: z.array(z.number()).nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: bool
-      * defaultValue: false
       */
     anomaly_detected: z.boolean().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -4627,7 +4554,6 @@ export const TimeSeriesTableBaseSchema = z.object({
     data_quality: z.number().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     created_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
 });
@@ -4915,7 +4841,6 @@ export const USER_ROLES = ['admin', 'editor', 'viewer'] as const;
 export const UsersTableBaseSchema = z.object({
      /**
       * dataType: int4
-      * defaultValue: nextval('users_id_seq'::regclass)
       */
     id: z.number(),
      /**
@@ -4928,7 +4853,6 @@ export const UsersTableBaseSchema = z.object({
     email: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: varchar
-      * defaultValue: 'active'::character varying
       */
     status: z.string().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -4937,7 +4861,6 @@ export const UsersTableBaseSchema = z.object({
     profile: z.any().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     created_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -5005,7 +4928,7 @@ export const UsersTableInsertBaseSchema = z.object({
      /**
       * dataType: jsonb
       */
-    profile: z.any().nullable().optional(),
+    profile: z.any().nullable().transform((value) => value ? JSON.stringify(value) : value).optional(),
      /**
       * dataType: timestamptz
       * defaultValue: now()
@@ -5094,29 +5017,13 @@ type TableReadRecord = z.output<typeof UsersTableSchema>;
  * Read record (casing transformed) for the "public.users" table.
  */
 export interface UserRecord {
-    /**
-    */
     id: TableReadRecord['id'];
-    /**
-    */
     name: TableReadRecord['name'];
-    /**
-    */
     email?: TableReadRecord['email'];
-    /**
-    */
     status?: TableReadRecord['status'];
-    /**
-    */
     profile?: TableReadRecord['profile'];
-    /**
-    */
     createdAt?: TableReadRecord['createdAt'];
-    /**
-    */
     roles?: TableReadRecord['roles'];
-    /**
-    */
     dates?: TableReadRecord['dates'];
 }
 
@@ -5137,18 +5044,12 @@ export interface UserInsertRecord {
     * @default: 'active'::character varying
     */
     status?: TableInsertRecord['status'];
-    /**
-    */
     profile?: TableInsertRecord['profile'];
     /**
     * @default: now()
     */
     createdAt?: TableInsertRecord['createdAt'];
-    /**
-    */
     roles?: TableInsertRecord['roles'];
-    /**
-    */
     dates?: TableInsertRecord['dates'];
 }
 
@@ -5181,7 +5082,6 @@ import { z } from 'zod';
 export const UsersSessionsTableBaseSchema = z.object({
      /**
       * dataType: uuid
-      * defaultValue: gen_random_uuid()
       */
     id: z.string(),
      /**
@@ -5198,12 +5098,10 @@ export const UsersSessionsTableBaseSchema = z.object({
     expires_at: z.coerce.date(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     created_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
      /**
       * dataType: timestamptz
-      * defaultValue: now()
       */
     last_used_at: z.coerce.date().nullable().transform((value) => value ?? undefined).optional(),
      /**
@@ -5504,7 +5402,7 @@ import { z } from 'zod';
 
 
 /**
- * Base read schema for the "public.view_user_posts" table.
+ * Base read schema for the "public.view_user_posts" view.
  * Validates raw rows read from the database (no casing transforms applied yet).
  */
 export const ViewUserPostsBaseSchema = z.object({
@@ -5531,13 +5429,13 @@ export const ViewUserPostsBaseSchema = z.object({
 });
 
 /**
- * The base record type for the "public.view_user_posts" table.
+ * The base record type for the "public.view_user_posts" view.
  * This type represents the raw database record without case transforms.
  */
 export type ViewUserPostBaseRecord = z.output<typeof ViewUserPostsBaseSchema>;
 
 /**
- * Read transform for the "public.view_user_posts" table.
+ * Read transform for the "public.view_user_posts" view.
  * Maps database fields to app case properties.
  */
 export const transformViewUserPostBaseRecord = (data: ViewUserPostBaseRecord): {
@@ -5555,7 +5453,7 @@ export const transformViewUserPostBaseRecord = (data: ViewUserPostBaseRecord): {
 });
 
 /**
- * Read schema for the "public.view_user_posts" table (after casing transform).
+ * Read schema for the "public.view_user_posts" view (after casing transform).
  */
 export const ViewUserPostsSchema = ViewUserPostsBaseSchema.transform(transformViewUserPostBaseRecord);
 
@@ -5565,20 +5463,10 @@ type TableReadRecord = z.output<typeof ViewUserPostsSchema>;
  * Read record (casing transformed) for the "public.view_user_posts" view.
  */
 export interface ViewUserPostRecord {
-    /**
-    */
     userId?: TableReadRecord['userId'];
-    /**
-    */
     userName?: TableReadRecord['userName'];
-    /**
-    */
     postId?: TableReadRecord['postId'];
-    /**
-    */
     postTitle?: TableReadRecord['postTitle'];
-    /**
-    */
     postContent?: TableReadRecord['postContent'];
 }
 

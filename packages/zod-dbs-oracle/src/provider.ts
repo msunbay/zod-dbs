@@ -1,4 +1,4 @@
-import { ZodDbsProvider } from 'zod-dbs-core';
+import type { ZodDbsProvider } from 'zod-dbs-core';
 
 import { OracleProvider } from './OracleProvider.js';
 

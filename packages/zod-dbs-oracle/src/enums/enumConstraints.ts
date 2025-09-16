@@ -14,7 +14,7 @@ export function parseEnumValues(
 
   for (const constraint of constraints) {
     // Unescape any escaped quotes for all checks
-    let checkClause = constraint.replace(/\\"/g, '"');
+    const checkClause = constraint.replace(/\\"/g, '"');
 
     // col = ANY (ARRAY[...])
     let values = parseAnyArrayConstraint(checkClause);
@@ -41,7 +41,6 @@ export function parseEnumValues(
     values = parseArrayContainsConstraint(columnName, checkClause);
     if (values.length > 0) {
       enumValues = enumValues.concat(values);
-      continue;
     }
   }
 

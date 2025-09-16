@@ -1,5 +1,4 @@
 import { cosmiconfig } from 'cosmiconfig';
-import { DEFAULT_CONFIGURATION } from 'zod-dbs';
 
 import { getConfiguration } from '../../../src/config.js';
 
@@ -21,12 +20,12 @@ describe.sequential('getConfiguration', () => {
     if (typeof anyVi.unstubAllEnvs === 'function') anyVi.unstubAllEnvs();
   });
 
-  it('should return default config when no configuration file is found', async () => {
+  it('should return empty config when no configuration file is found', async () => {
     mockExplorer.search.mockResolvedValue(null);
 
     const config = await getConfiguration();
 
-    expect(config).toEqual(DEFAULT_CONFIGURATION);
+    expect(config).toEqual({});
     expect(cosmiconfig).toHaveBeenCalledWith('zod-dbs');
   });
 
@@ -48,7 +47,6 @@ describe.sequential('getConfiguration', () => {
     const config = await getConfiguration();
 
     expect(config).toEqual({
-      ...DEFAULT_CONFIGURATION,
       host: 'conf-host',
       port: 5432,
       user: 'conf-user',
@@ -72,7 +70,6 @@ describe.sequential('getConfiguration', () => {
     const config = await getConfiguration();
 
     expect(config).toEqual({
-      ...DEFAULT_CONFIGURATION,
       host: 'db.example.com',
       outputDir: './schemas',
     });
@@ -86,7 +83,7 @@ describe.sequential('getConfiguration', () => {
 
     const config = await getConfiguration();
 
-    expect(config).toEqual(DEFAULT_CONFIGURATION);
+    expect(config).toEqual({});
   });
 
   it('applies environment variable overrides for defaults (no config file)', async () => {
@@ -101,7 +98,6 @@ describe.sequential('getConfiguration', () => {
     const config = await getConfiguration();
 
     expect(config).toEqual({
-      ...DEFAULT_CONFIGURATION,
       host: 'env-host',
       user: 'env-user',
       password: 'env-pass',
@@ -137,7 +133,6 @@ describe.sequential('getConfiguration', () => {
     const config = await getConfiguration();
 
     expect(config).toEqual({
-      ...DEFAULT_CONFIGURATION,
       host: 'env-host2',
       user: 'env-user2',
       password: 'env-pass2',
@@ -172,7 +167,6 @@ describe.sequential('getConfiguration', () => {
     const config = await getConfiguration();
 
     expect(config).toEqual({
-      ...DEFAULT_CONFIGURATION,
       host: 'env-host-partial',
       user: 'conf-user',
       password: 'env-pass-partial',

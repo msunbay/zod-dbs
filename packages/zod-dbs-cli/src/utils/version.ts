@@ -1,5 +1,5 @@
-import fs from 'fs/promises';
-import path from 'path';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 import { logDebug, toError } from 'zod-dbs-core';
 
 export const getAppVersion = async (): Promise<string> => {

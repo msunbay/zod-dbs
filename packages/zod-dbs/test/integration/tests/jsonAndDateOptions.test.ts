@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 import { generateZodSchemas } from '../../../src/generateZodSchemas.js';
 import {
@@ -26,7 +26,7 @@ describe('JSON and date handling options', () => {
     const outputFiles = await getOutputFiles(outputDir);
 
     for (const file of outputFiles) {
-      const content = fs.readFileSync(file, 'utf8');
+      const content = await fs.readFile(file, 'utf8');
       expect(content).toMatchSnapshot(path.relative(outputDir, file));
     }
   });
@@ -47,7 +47,7 @@ describe('JSON and date handling options', () => {
     const outputFiles = await getOutputFiles(outputDir);
 
     for (const file of outputFiles) {
-      const content = fs.readFileSync(file, 'utf8');
+      const content = await fs.readFile(file, 'utf8');
       expect(content).not.toMatch(/JSON\.stringify/);
       expect(content).toMatchSnapshot(path.relative(outputDir, file));
     }
@@ -69,7 +69,7 @@ describe('JSON and date handling options', () => {
     const outputFiles = await getOutputFiles(outputDir);
 
     for (const file of outputFiles) {
-      const content = fs.readFileSync(file, 'utf8');
+      const content = await fs.readFile(file, 'utf8');
       expect(content).toMatchSnapshot(path.relative(outputDir, file));
     }
   });
@@ -90,7 +90,7 @@ describe('JSON and date handling options', () => {
     const outputFiles = await getOutputFiles(outputDir);
 
     for (const file of outputFiles) {
-      const content = fs.readFileSync(file, 'utf8');
+      const content = await fs.readFile(file, 'utf8');
       expect(content).toMatchSnapshot(path.relative(outputDir, file));
     }
   });
@@ -111,7 +111,7 @@ describe('JSON and date handling options', () => {
     const outputFiles = await getOutputFiles(outputDir);
 
     for (const file of outputFiles) {
-      const content = fs.readFileSync(file, 'utf8');
+      const content = await fs.readFile(file, 'utf8');
       if (file.includes('users.ts')) {
         expect(content).toMatch(/z\.coerce\.date\(\)/);
       }
@@ -138,7 +138,7 @@ describe('JSON and date handling options', () => {
     const outputFiles = await getOutputFiles(outputDir);
 
     for (const file of outputFiles) {
-      const content = fs.readFileSync(file, 'utf8');
+      const content = await fs.readFile(file, 'utf8');
       if (file.includes('users.ts')) {
         expect(content).not.toMatch(/z\.coerce\.date\(\)/);
       }

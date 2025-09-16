@@ -103,7 +103,7 @@ describe('PostgreSqlProvider', () => {
                 "schemaName": "custom_schema",
                 "tableName": "users",
                 "tableType": "table",
-                "type": "int",
+                "zodType": "int",
               },
             ],
             "name": "users",

@@ -14,7 +14,7 @@ Snowflake provider for zod-dbs.
 npm install zod-dbs-snowflake
 ```
 
-> Note: This package has a peer dependency on `snowflake-sdk`. If you don't already have it, install it:
+> Note: This package has a peer dependency on `snowflake-sdk`. If you don't already have it, you might need to install it (depending on your environment, package manager, etc):
 
 ```bash
 npm install snowflake-sdk
@@ -33,14 +33,17 @@ npx zod-dbs --provider snowflake \
 
 ### Provider Specific CLI Options
 
-| Option                | Description                        | Required |
-| --------------------- | ---------------------------------- | -------- |
-| `--schema-name <str>` | Name of the schema to introspect   | `true`   |
-| `--database <str>`    | Name of the database to connect to | `true`   |
-| `--account <str>`     | Snowflake account identifier       | `true`   |
-| `--token <str>`       | Snowflake token for authentication |          |
-| `--warehouse <str>`   | Snowflake warehouse to use         |          |
-| `--role <str>`        | Snowflake role to use              |          |
+| Option                   | Description                                                       | Required |
+| ------------------------ | ----------------------------------------------------------------- | -------- |
+| `--host <host>`          | Snowflake account URL host (e.g., xy12345.snowflakecomputing.com) |          |
+| `--account <account>`    | Snowflake account identifier (required)                           | `true`   |
+| `--user <user>`          | Username for authentication                                       |          |
+| `--password <password>`  | Password for authentication                                       |          |
+| `--database <db>`        | Database name to connect to (required)                            | `true`   |
+| `--schema-name <schema>` | Schema name to introspect (required)                              | `true`   |
+| `--token <token>`        | JWT token for authentication                                      |          |
+| `--role <role>`          | Role to assume after connecting                                   |          |
+| `--warehouse <name>`     | Virtual warehouse to use                                          |          |
 
 ### Configuration File Example
 
@@ -65,10 +68,10 @@ export default config;
 
 ```ts
 import { generateZodSchemas } from 'zod-dbs';
-import { SnowflakeProvider } from 'zod-dbs-snowflake';
+import { createProvider } from 'zod-dbs-snowflake';
 
 await generateZodSchemas({
-  provider: new SnowflakeProvider(),
+  provider: createProvider(),
   config: {
     account: '<account>',
     host: '<account>.snowflakecomputing.com',

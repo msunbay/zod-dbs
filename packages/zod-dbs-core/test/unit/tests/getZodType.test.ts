@@ -6,6 +6,7 @@ describe('getZodType', () => {
       const stringTypes = [
         'text',
         'varchar',
+        'varchar(255)',
         'bpchar',
         'bytea',
         'inet',
@@ -17,6 +18,8 @@ describe('getZodType', () => {
         'name',
         'time',
         'timetz',
+        'string',
+        'objectid',
       ];
 
       stringTypes.forEach((udtName) => {
@@ -39,6 +42,8 @@ describe('getZodType', () => {
         'int2',
         'int4',
         'int8',
+        'int128',
+        'long',
         'serial',
         'serial4',
         'serial8',
@@ -57,7 +62,14 @@ describe('getZodType', () => {
 
   describe('number types', () => {
     it('should return "number" for numeric types', () => {
-      const numberTypes = ['float4', 'float8', 'numeric', 'money'];
+      const numberTypes = [
+        'float4',
+        'float8',
+        'numeric',
+        'money',
+        'decimal128',
+        'double precision',
+      ];
 
       numberTypes.forEach((udtName) => {
         expect(getZodType(udtName)).toBe('number');
@@ -127,6 +139,7 @@ describe('getZodType', () => {
         { udtName: '_timestamp', expected: 'date' },
         { udtName: '_uuid', expected: 'uuid' },
         { udtName: '_jsonb', expected: 'json' },
+        { udtName: '_varchar(10)', expected: 'string' },
       ];
 
       arrayMappings.forEach(({ udtName, expected }) => {
@@ -141,6 +154,12 @@ describe('getZodType', () => {
     it('should handle mixed case array types', () => {
       expect(getZodType('_VarChar')).toBe('string');
       expect(getZodType('_VARCHAR')).toBe('string');
+    });
+  });
+
+  describe('object types', () => {
+    it('should return "object" for object type', () => {
+      expect(getZodType('object')).toBe('object');
     });
   });
 

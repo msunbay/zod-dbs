@@ -5,6 +5,7 @@
 export const parseAnyArrayConstraint = (constraint: string): string[] => {
   // Unescape any escaped quotes
   let clause = constraint.replace(/\\"/g, '"');
+
   // Remove all leading/trailing parentheses (robust for nested cases)
   while (clause.startsWith('(') && clause.endsWith(')')) {
     clause = clause.slice(1, -1);
@@ -12,7 +13,7 @@ export const parseAnyArrayConstraint = (constraint: string): string[] => {
 
   // Match col = ANY ((ARRAY['a'::type, ...])::type[])
   const arrayMatch = clause.match(
-    /ANY\s*\(\s*(?:\(+)?ARRAY\[(.*?)\](?:\))*(::[a-zA-Z0-9_ \[\]]+)?\s*\)/
+    /ANY\s*\(\s*(?:\(+)?ARRAY\[(.*?)\](?:\))*(::[a-zA-Z0-9_ [\]]+)?\s*\)/i
   );
 
   if (arrayMatch) {

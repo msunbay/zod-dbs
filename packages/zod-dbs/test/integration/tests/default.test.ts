@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 import { generateZodSchemas } from '../../../src/generateZodSchemas.js';
 import {
@@ -24,7 +24,7 @@ it('generates correct zod schemas with default options', async () => {
   const outputFiles = await getOutputFiles(outputDir);
 
   for (const file of outputFiles) {
-    const content = fs.readFileSync(file, 'utf8');
+    const content = await fs.readFile(file, 'utf8');
     expect(content).toMatchSnapshot(path.relative(outputDir, file));
   }
 });

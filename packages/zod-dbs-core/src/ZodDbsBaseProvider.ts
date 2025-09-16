@@ -16,7 +16,7 @@ import { logDebug } from './utils/debug.js';
 export interface ZodDbsProviderOptions {
   name: string;
   displayName?: string;
-  defaultConfiguration?: Partial<ZodDbsConfig>;
+  configurationDefaults?: Partial<ZodDbsConfig>;
   options?: ZodDbsProviderOption[];
 }
 
@@ -28,18 +28,18 @@ export interface ZodDbsProviderOptions {
 export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
   name: string;
   displayName?: string;
-  defaultConfiguration?: ZodDbsConfig;
+  configurationDefaults?: Partial<ZodDbsConfig>;
   options: ZodDbsProviderOption[];
 
   constructor(options: ZodDbsProviderOptions) {
     this.name = options.name;
     this.displayName = options.displayName;
-    this.defaultConfiguration = options.defaultConfiguration;
+    this.configurationDefaults = options.configurationDefaults;
     this.options = options.options || [];
   }
 
   protected initConfiguration(config: ZodDbsConfig): ZodDbsConfig {
-    return { ...this.defaultConfiguration, ...config };
+    return { ...this.configurationDefaults, ...config };
   }
 
   protected async createSchemaInfo(
@@ -78,7 +78,7 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
 
     if (include) {
       if (typeof include === 'string') {
-        const includeRegex = new RegExp(include);
+        const includeRegex = new RegExp(include, 'i');
         filteredColumns = filteredColumns.filter((column) =>
           includeRegex.test(column.tableName)
         );
@@ -91,7 +91,7 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
 
     if (exclude) {
       if (typeof exclude === 'string') {
-        const excludeRegex = new RegExp(exclude);
+        const excludeRegex = new RegExp(exclude, 'i');
         filteredColumns = filteredColumns.filter(
           (column) => !excludeRegex.test(column.tableName)
         );
@@ -112,7 +112,9 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
   protected createColumnModel(column: ZodDbsColumnInfo): ZodDbsColumn {
     return {
       ...column,
-      type: this.getZodType(column.dataType),
+      name: column.name,
+      tableName: column.tableName,
+      zodType: this.getZodType(column.dataType),
       isWritable:
         column.isWritable ?? (!column.isSerial && column.tableType === 'table'),
       isReadOptional: column.isNullable,
@@ -127,7 +129,7 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
     const tablesMap = new Map<string, ZodDbsTable>();
 
     for (const column of columns) {
-      const key = `${column.schemaName}:${column.tableName}`;
+      const key = `${column.schemaName}:${column.tableName}`.toLowerCase();
       let table = tablesMap.get(key);
 
       let columnModel = this.createColumnModel(column);
@@ -150,7 +152,7 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
       table.columns.push(columnModel);
     }
 
-    let tables = Array.from(tablesMap.values());
+    const tables = Array.from(tablesMap.values());
 
     // sort tables by type and name
     tables.sort((a, b) => {
@@ -167,6 +169,8 @@ export abstract class ZodDbsBaseProvider implements ZodDbsProvider {
     config: ZodDbsProviderConfig
   ): Promise<ZodDbsSchemaInfo> {
     const finalConfig = this.initConfiguration(config);
+
+    logDebug(`Starting schema introspection for provider`, { finalConfig });
 
     const columns = await this.fetchSchemaInfo(finalConfig);
     const filteredColumns = this.filterColumns(columns, finalConfig);

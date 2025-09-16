@@ -1,4 +1,4 @@
-import { ZodDbsFieldCasing } from 'zod-dbs-core';
+import type { ZodDbsFieldCasing } from 'zod-dbs-core';
 
 import { singularize } from './singularize.js';
 
@@ -75,7 +75,6 @@ export const convertCaseFormat = (
       return snakeCase(name);
     case 'PascalCase':
       return pascalCase(name);
-    case 'passthrough':
     default:
       return name;
   }
@@ -88,8 +87,6 @@ export const formatSingularString = (
   switch (format) {
     case 'PascalCase':
       return singularPascalCase(name);
-
-    case 'passthrough':
     default:
       return name;
   }

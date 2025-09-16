@@ -13,12 +13,12 @@ import type {
   ZodDbsTableRenderModel,
 } from './types.js';
 
-import { convertCaseFormat, formatSingularString } from '../utils/casing.js';
 import { renderMustacheTemplate } from '../utils/mustache.js';
 import {
   formatEnumConstantName,
   formatEnumTypeName,
-  formatJsonSchemaName,
+  formatObjectSchemaName,
+  formatPropertyName,
   formatRecordTransformName,
   formatTableRecordName,
   formatTableSchemaName,
@@ -33,15 +33,32 @@ export interface ZodDbsRendererOptions {
   ) => ZodDbsTableRenderModel | Promise<ZodDbsTableRenderModel>;
 }
 
-export class ZodBaseRenderer implements ZodDbsRenderer {
+export interface ZodDbsRenderZodTypeParams {
+  zodType: ZodDbsColumnType;
+  config: ZodDbsConfig;
+  isReadField: boolean;
+}
+
+export abstract class ZodBaseRenderer implements ZodDbsRenderer {
+  public name = 'ZodBaseRenderer';
   protected options: ZodDbsRendererOptions;
 
   constructor(options: ZodDbsRendererOptions = {}) {
     this.options = options;
   }
 
-  protected getSchemaTemplateName(config: ZodDbsConfig): string {
+  protected getSchemaTemplateName(
+    model: ZodDbsTableRenderModel,
+    config: ZodDbsConfig
+  ): string {
     if (!config.caseTransform) return 'schema.simple';
+
+    // Check if any columns needs case transformation
+    const needsTransform = model.readableColumns.some(
+      (col) => col.propertyName !== col.name
+    );
+
+    if (!needsTransform) return 'schema.simple';
     return 'schema';
   }
 
@@ -75,11 +92,11 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
    * Takes a ZodDbsColumnType and returns the corresponding Zod type string.
    * e.g 'z.string()' for 'string', 'z.number()' for 'number'.
    */
-  protected renderZodType(
-    zodType: ZodDbsColumnType,
-    config: ZodDbsConfig,
-    isReadField: boolean
-  ): string {
+  protected renderZodType({
+    zodType,
+    config,
+    isReadField,
+  }: ZodDbsRenderZodTypeParams): string {
     const { coerceDates, defaultUnknown } = config;
 
     switch (zodType) {
@@ -106,18 +123,26 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
     column: ZodDbsColumnBaseRenderModel,
     config: ZodDbsConfig
   ): string {
-    let zodType = this.renderZodType(column.type, config, true);
-
-    if (column.isEnum) zodType = `z.enum(${column.enumConstantName})`;
-    if (column.isArray) zodType = `z.array(${zodType})`;
+    let zodType = this.renderZodType({
+      zodType: column.zodType,
+      config,
+      isReadField: true,
+    });
 
     if (
-      column.type === 'json' &&
+      column.zodType === 'json' &&
       config.jsonSchemaImportLocation &&
       column.jsonSchemaName
     ) {
       zodType = column.jsonSchemaName;
     }
+
+    if (column.zodType === 'object' && column.objectDefinition) {
+      zodType = column.jsonSchemaName;
+    }
+
+    if (column.isEnum) zodType = `z.enum(${column.enumConstantName})`;
+    if (column.isArray) zodType = `z.array(${zodType})`;
 
     if (column.isNullable) {
       zodType = `${zodType}.nullable()`;
@@ -126,7 +151,7 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
     if (column.isReadOptional || column.isNullable) {
       if (column.isArray && config.defaultEmptyArray)
         zodType = `${zodType}.transform((value) => value ?? [])`;
-      else if (config.defaultNullsToUndefined)
+      else if (config.nullsToUndefined)
         zodType = `${zodType}.transform((value) => value ?? undefined)`;
 
       if (column.isReadOptional) {
@@ -141,8 +166,13 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
     column: ZodDbsColumnBaseRenderModel,
     config: ZodDbsConfig
   ): string {
-    let zodType = this.renderZodType(column.type, config, false);
-    const baseType = this.getBaseType(column.type);
+    let zodType = this.renderZodType({
+      zodType: column.zodType,
+      config,
+      isReadField: false,
+    });
+
+    const baseType = this.getBaseType(column.zodType);
 
     if (baseType === 'string' && !column.isEnum) {
       if (column.writeTransforms?.includes('trim')) {
@@ -168,16 +198,20 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
       }
     }
 
-    if (column.isEnum) zodType = `z.enum(${column.enumConstantName})`;
-    if (column.isArray) zodType = `z.array(${zodType})`;
-
     if (
-      column.type === 'json' &&
+      column.zodType === 'json' &&
       config.jsonSchemaImportLocation &&
       column.jsonSchemaName
     ) {
       zodType = column.jsonSchemaName;
     }
+
+    if (column.zodType === 'object' && column.objectDefinition) {
+      zodType = column.jsonSchemaName;
+    }
+
+    if (column.isEnum) zodType = `z.enum(${column.enumConstantName})`;
+    if (column.isArray) zodType = `z.array(${zodType})`;
 
     if (!column.isEnum && (baseType === 'string' || baseType === 'number')) {
       if (column.minLen !== undefined && column.minLen !== null) {
@@ -193,14 +227,14 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
       zodType = `${zodType}.nullable()`;
     }
 
-    if (column.type === 'json' && config.stringifyJson) {
+    if (column.zodType === 'json' && config.stringifyJson) {
       if (!column.isNullable)
         zodType = `${zodType}.transform((value) => JSON.stringify(value))`;
       else
         zodType = `${zodType}.transform((value) => value ? JSON.stringify(value) : value)`;
     }
 
-    if (column.type === 'date' && config.stringifyDates) {
+    if (column.zodType === 'date' && config.stringifyDates) {
       if (column.isArray) {
         if (!column.isNullable)
           zodType = `${zodType}.transform((value) => value.map(date => date.toISOString()))`;
@@ -227,18 +261,19 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
   ): ZodDbsColumnRenderModel {
     const baseModel = {
       isOptional: column.isReadOptional,
-      propertyName: convertCaseFormat(column.name, config.fieldNameCasing),
+      propertyName: formatPropertyName(column.name, config.fieldNameCasing),
       enumConstantName: formatEnumConstantName({
         tableName: column.tableName,
         colName: column.name,
         singularize: config.singularization,
       }),
-      jsonSchemaName: formatJsonSchemaName({
+      jsonSchemaName: formatObjectSchemaName({
         tableName: column.tableName,
         columnName: column.name,
         casing: config.objectNameCasing,
         singularize: config.singularization,
       }),
+      hasDescriptionFields: !!column.description || !!column.isDeprecated,
       ...column,
     };
 
@@ -249,6 +284,88 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
     };
   }
 
+  protected createEnums(
+    columns: ZodDbsColumnRenderModel[],
+    config: ZodDbsConfig
+  ) {
+    return columns
+      .filter((column) => column.isEnum)
+      .map((column) => {
+        const enumValues = column.enumValues || [];
+
+        if (!column.enumConstantName)
+          throw new Error(
+            `Enum constant name not defined for column ${column.name} in table ${column.tableName}`
+          );
+
+        return {
+          constantName: column.enumConstantName,
+          typeName:
+            column.enumTypeName ??
+            formatEnumTypeName({
+              tableName: column.tableName,
+              colName: column.name,
+              casing: config.objectNameCasing,
+              singularize: config.singularization,
+            }),
+          values: enumValues.map((value, index) => ({
+            value,
+            last: index === enumValues.length - 1,
+          })),
+        };
+      });
+  }
+
+  protected async createObjectModels(
+    table: ZodDbsTable,
+    config: ZodDbsConfig
+  ): Promise<ZodDbsTableRenderModel[]> {
+    const columns = table.columns.filter(
+      (column) => column.objectDefinition
+    ) as (ZodDbsColumn & { objectDefinition: ZodDbsTable })[];
+
+    const objectModels: ZodDbsTableRenderModel[] = [];
+
+    for (const column of columns) {
+      const model = await this.createTableModel(
+        {
+          ...column.objectDefinition,
+          name: formatObjectSchemaName({
+            tableName: table.name,
+            columnName: column.name,
+            suffix: '',
+          }),
+        },
+        {
+          ...config,
+          jsonSchemaImportLocation: undefined,
+          nullsToUndefined: false,
+        }
+      );
+
+      objectModels.push(model);
+    }
+
+    return objectModels;
+  }
+
+  protected createObjectSchemaImports(
+    columns: ZodDbsColumnRenderModel[],
+    config: ZodDbsConfig
+  ): ZodDbsImport[] | undefined {
+    const objectFields = columns.filter(
+      (col) => col.zodType === 'object' && col.objectDefinition
+    );
+
+    return objectFields.map((col) => ({
+      name: col.jsonSchemaName,
+      fileName:
+        config.moduleResolution === 'esm'
+          ? `${col.jsonSchemaName}.js`
+          : `${col.jsonSchemaName}`,
+    })) as ZodDbsImport[];
+  }
+
   protected createJsonSchemaImports(
     columns: ZodDbsColumnRenderModel[],
     config: ZodDbsConfig
@@ -256,12 +373,13 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
     if (!config.jsonSchemaImportLocation) return undefined;
 
     const jsonFields = columns.filter(
-      (col) => col.type === 'json' && col.jsonSchemaName
+      (col) => col.zodType === 'json' && col.jsonSchemaName
     );
 
     return jsonFields.map((col, index) => ({
       name: col.jsonSchemaName,
       last: index === jsonFields.length - 1,
+      fileName: config.jsonSchemaImportLocation,
     })) as ZodDbsImport[];
   }
 
@@ -273,17 +391,21 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
       .map((column) => ({
         ...column,
         isOptional: column.isWriteOptional,
+        hasDescriptionFields:
+          column.hasDescriptionFields ||
+          !!column.defaultValue ||
+          !!column.maxLen,
       }));
   }
 
-  protected async createTableModel(
+  protected async createReadableColumns(
     table: ZodDbsTable,
     config: ZodDbsConfig
-  ): Promise<ZodDbsTableRenderModel> {
+  ): Promise<ZodDbsColumnRenderModel[]> {
     const readableColumns: ZodDbsColumnRenderModel[] = [];
 
     for (const column of table.columns) {
-      let model = this.createColumnModel(column, config);
+      const model = this.createColumnModel(column, config);
 
       if (this.options.onColumnModelCreated) {
         const modifiedModel = await this.options.onColumnModelCreated(model);
@@ -309,42 +431,36 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
       }
     }
 
+    return readableColumns;
+  }
+
+  protected async createTableModel(
+    table: ZodDbsTable,
+    config: ZodDbsConfig
+  ): Promise<ZodDbsTableRenderModel> {
+    const readableColumns = await this.createReadableColumns(table, config);
+
+    const enums = this.createEnums(readableColumns, config);
     const writableColumns = this.createWritableColumns(readableColumns);
     const jsonSchemaImports = this.createJsonSchemaImports(
       readableColumns,
       config
     );
+    const objectSchemaImports = this.createObjectSchemaImports(
+      readableColumns,
+      config
+    );
 
-    const enums = readableColumns
-      .filter((column) => column.isEnum)
-      .map((column) => {
-        const enumValues = column.enumValues || [];
-
-        return {
-          constantName: column.enumConstantName!,
-          typeName:
-            column.enumTypeName ??
-            formatEnumTypeName({
-              tableName: column.tableName,
-              colName: column.name,
-              casing: config.objectNameCasing,
-              singularize: config.singularization,
-            }),
-          values: enumValues.map((value, index) => ({
-            value,
-            last: index === enumValues.length - 1,
-          })),
-        };
-      });
+    const fullName = table.schemaName
+      ? `${table.schemaName}.${table.name}`
+      : table.name;
 
     const tableModel: ZodDbsTableRenderModel = {
+      fullName,
       type: table.type,
       tableName: table.name,
       schemaName: table.schemaName,
-      tableSingularName: formatSingularString(
-        table.name,
-        config.objectNameCasing
-      ),
+
       tableReadBaseSchemaName: formatTableSchemaName({
         table,
         operation: 'read',
@@ -432,6 +548,7 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
       jsonSchemaImportLocation: config.jsonSchemaImportLocation,
       jsonSchemaImports,
       hasJsonSchemaImports: !!jsonSchemaImports?.length,
+      objectSchemaImports,
       readableColumns,
       writableColumns,
       enums,
@@ -456,9 +573,37 @@ export class ZodBaseRenderer implements ZodDbsRenderer {
     table: ZodDbsTable,
     config: ZodDbsConfig
   ): Promise<string> {
-    const templateName = this.getSchemaTemplateName(config);
     const model = await this.createTableModel(table, config);
+    const templateName = this.getSchemaTemplateName(model, config);
 
     return await this.renderTemplate(templateName, model);
+  }
+
+  public async renderSchemaFiles(
+    table: ZodDbsTable,
+    config: ZodDbsConfig
+  ): Promise<{ name: string; content: string }[]> {
+    const model = await this.createTableModel(table, config);
+    const objectModels = await this.createObjectModels(table, config);
+
+    const templateName = this.getSchemaTemplateName(model, config);
+
+    const mainFileContent = await this.renderTemplate(templateName, model);
+    const files = [{ name: 'schema', content: mainFileContent }];
+
+    // Generate separate files for object schemas
+    for (const objectModel of objectModels) {
+      const objectContent = await this.renderTemplate(
+        templateName,
+        objectModel
+      );
+
+      files.push({
+        name: objectModel.tableReadSchemaName ?? objectModel.tableName,
+        content: objectContent,
+      });
+    }
+
+    return files;
   }
 }
