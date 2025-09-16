@@ -1,6 +1,6 @@
 {
   "name": "zod-dbs-dynamodb",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "DynamoDB provider for zod-dbs",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
