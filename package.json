@@ -54,7 +54,7 @@
     "testcontainers": "^11.5.1",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4",
-    "zod": "^4.0.17",
+    "zod": "^4.1.8",
     "zod-dbs-core": "workspace:*",
     "zod-dbs": "workspace:*",
     "zod-dbs-dynamodb": "workspace:*",
