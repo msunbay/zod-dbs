@@ -158,16 +158,28 @@ jobs:
                 echo "No changes since $last_tag and version already published; skipping $name"
                 continue
               fi
-              if [ -n "$BUMP_TYPE" ] && [ "$DRY_INPUT" != "true" ]; then
-                echo "Bumping $name ($version) -> $BUMP_TYPE"
-                (cd "$dir" && npm version "$BUMP_TYPE" --no-git-tag-version >/dev/null)
-                version=$(jq -r .version "$pkg_json")
-                BUMPED_PKGS+=("$name@$version")
-                FILES_TO_COMMIT+=("$pkg_json")
-              else
-                echo "Would bump $name but dry-run or no bump type specified; skipping"
-                continue
-              fi
+            fi
+
+            # If package changed and a bump type was requested, bump the version now.
+            # This applies whether or not the current package version is already published,
+            # which allows selecting "major" for all changed packages.
+            if [ "$changed" = "1" ] && [ -n "$BUMP_TYPE" ] && [ "$DRY_INPUT" != "true" ]; then
+              echo "Bumping $name ($version) -> $BUMP_TYPE"
+              (cd "$dir" && npm version "$BUMP_TYPE" --no-git-tag-version >/dev/null)
+              version=$(jq -r .version "$pkg_json")
+              BUMPED_PKGS+=("$name@$version")
+              FILES_TO_COMMIT+=("$pkg_json")
+            elif [ "$changed" = "1" ]; then
+              echo "Would bump $name but dry-run or no bump type specified; will publish current version"
+            fi
+
+            echo "Preparing to publish $name@$version from $dir"
+
+            # Re-check registry: avoid attempting to publish a version that already exists
+            published_final=$(npm view "$name@$version" version 2>/dev/null || true)
+            if [ "$published_final" = "$version" ]; then
+              echo "$name@$version already exists on registry; skipping publish"
+              continue
             fi
 
             echo "Publishing $name@$version from $dir"
