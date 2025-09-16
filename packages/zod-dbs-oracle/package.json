@@ -1,6 +1,6 @@
 {
   "name": "zod-dbs-oracle",
-  "version": "0.0.8",
+  "version": "1.0.0",
   "description": "Oracle provider for zod-dbs",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
