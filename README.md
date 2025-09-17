@@ -212,17 +212,32 @@ In addition to CLI options, you can use configuration files to set your options.
 The configuration options are the same as the cli options, but defined in camelCase properties.
 Each provider defined its own set of configuration options so if you want a type safe config file, you need to import the provider library as well.
 
-#### Example Configuration File
+#### Example Configuration Files
+
+**.zod-dbsrc**
+
+```json
+{
+  "provider": "mysql",
+
+  "user": "test",
+  "password": "secret",
+  "host": "localhost",
+  "database": "mydb",
+
+  "zodVersion": "4"
+}
+```
 
 **zod-dbs.config.ts:**
 
 ```typescript
-import { createProvider } from 'zod-dbs-pg'; // import 'zod-dbs-pg' if using provider: "pg"
+import { createProvider } from 'zod-dbs-pg';
 
 import type { ZodDbsCliConfig } from 'zod-dbs-cli';
 
 const config: ZodDbsCliConfig = {
-  provider: createProvider(), // or just "pg"
+  provider: createProvider(),
 
   // Database options
   user: 'postgres',
