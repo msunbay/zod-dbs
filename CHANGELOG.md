@@ -38,4 +38,4 @@
 
 - Some exported types and utility functions have been removed / renamed.
 - The property `ZodDbsColumn.type` has been renamed to `ZodDbsColumn.zodType` to better reflect its purpose.
-- Config files needs to import the provider types to get proper typed config files. Either add `import 'zod-dbs-[provider]` in your zod-dbs.config.ts file. Or add `zod-dbs-[provider]` to tsconfig.json `types` field.
+- Config files needs to import the provider types to get proper typed config files. Either add `import 'zod-dbs-[provider]` in your zod-dbs.config.ts file. Or add `zod-dbs-[provider]` to the tsconfig.json `types` field.
