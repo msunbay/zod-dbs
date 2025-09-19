@@ -71,7 +71,7 @@ export const runCommander = ({
 
   cmd.option(
     '--config-name <name>',
-    'Name of configuration file. E.g. "development" will load "zod-dbs-development.ts"'
+    `Name of configuration file. E.g. "development" will load "${appName}-development.ts`
   );
 
   // Add provider-specific dynamic options before parsing the full CLI
@@ -116,31 +116,31 @@ export const runCommander = ({
   outputOptions.addOption(
     new Option(
       '--no-case-transform',
-      'Disable case transformations / conversions for generated schemas.'
+      'Disable case transformations / conversions for generated schemas'
     )
   );
   outputOptions.addOption(
     new Option(
       '--no-singularization',
-      'Disable singularization of type and enum names.'
+      'Disable singularization of type and enum names'
     )
   );
   outputOptions.addOption(
     new Option(
       '--no-coerce-dates',
-      'Disable using z.coerce.date() for date fields in read schemas.'
+      'Disable using z.coerce.date() for date fields in read schemas'
     )
   );
   outputOptions.addOption(
     new Option(
       '--no-stringify-json',
-      'Disable using JSON.stringify() on json fields in write schemas.'
+      'Disable using JSON.stringify() on json fields in write schemas'
     )
   );
   outputOptions.addOption(
     new Option(
       '--no-nulls-to-undefined',
-      'Disable transforming null values to undefined in generated read schemas.'
+      'Disable transforming null values to undefined in generated read schemas'
     )
   );
   outputOptions.addOption(

@@ -2,7 +2,7 @@
 
 exports[`outputs provider help 1`] = `
 "
-zod-dbs CLI v1.0.21
+zod-dbs CLI v2.0.1
 
 Usage: zod-dbs [options]
 
@@ -13,7 +13,7 @@ Options:
   -p,--provider <name>                  Database provider to use
   --config-name <name>                  Name of configuration file. E.g.
                                         "development" will load
-                                        "zod-dbs-development.ts"
+                                        "zod-dbs-development.ts
   -h, --help                            display help for command
 
 PostgreSQL options:
@@ -42,15 +42,15 @@ Output options:
   --zod-version <value>                 Zod version to use. (defaults to 3)
                                         (choices: "3", "4", "4-mini")
   --no-case-transform                   Disable case transformations /
-                                        conversions for generated schemas.
+                                        conversions for generated schemas
   --no-singularization                  Disable singularization of type and enum
-                                        names.
+                                        names
   --no-coerce-dates                     Disable using z.coerce.date() for date
-                                        fields in read schemas.
+                                        fields in read schemas
   --no-stringify-json                   Disable using JSON.stringify() on json
-                                        fields in write schemas.
+                                        fields in write schemas
   --no-nulls-to-undefined               Disable transforming null values to
-                                        undefined in generated read schemas.
+                                        undefined in generated read schemas
   --stringify-dates                     Whether to convert dates to ISO strings
                                         in write schemas. (defaults to false)
   --default-empty-array                 Whether to use empty arrays as defaults
