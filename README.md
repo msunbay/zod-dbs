@@ -229,15 +229,28 @@ Each provider defined its own set of configuration options so if you want a type
 }
 ```
 
+#### TypeScript configuration file
+
+Example of a TypeScript configuration file with proper typed provider options.
+Add the types for your chosen provider in the tsconfig.json file:
+
+**tsconfig.json:**
+
+```json
+{
+  "compilerOptions": {
+    "types": ["zod-dbs-pg"]
+  }
+}
+```
+
 **zod-dbs.config.ts:**
 
 ```typescript
-import { createProvider } from 'zod-dbs-pg';
-
 import type { ZodDbsCliConfig } from 'zod-dbs-cli';
 
 const config: ZodDbsCliConfig = {
-  provider: createProvider(),
+  provider: "pg"
 
   // Database options
   user: 'postgres',
