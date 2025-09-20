@@ -16,6 +16,10 @@ export const logSetting = (name: string, value: string | boolean | object) => {
       : name;
   }
 
+  if (typeof value === 'function') {
+    displayValue = 'function() { ... }';
+  }
+
   console.info(
     `- ${chalk.white(name)}: ${chalk.blue(maskSensitiveValue(name, displayValue))}`
   );
