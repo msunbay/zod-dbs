@@ -20,7 +20,7 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
   const silent = isSilentMode();
 
   if (!silent) {
-    logAppName(`${appName} CLI v${appVersion}`);
+    logAppName(`${appName} CLI`);
   }
 
   const config = await getConfiguration(cliOptions);

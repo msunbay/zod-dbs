@@ -2,7 +2,7 @@
 
 exports[`CLI accepts custom config file name 1`] = `
 "
-zod-dbs CLI v2.0.1
+zod-dbs CLI
 
 - provider: test-provider (Test Provider)
 - outputDir: ./test/integration/output/customConfigFile
