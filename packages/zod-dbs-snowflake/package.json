@@ -1,6 +1,6 @@
 {
   "name": "zod-dbs-snowflake",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Snowflake provider for zod-dbs",
   "keywords": [
     "zod",

@@ -1,6 +1,6 @@
 {
   "name": "zod-dbs-mysql",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "MySQL provider for zod-dbs",
   "keywords": [
     "zod",

@@ -1,6 +1,6 @@
 {
   "name": "zod-dbs-pg",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "PostgreSQL provider for zod-dbs",
   "keywords": [
     "zod",
