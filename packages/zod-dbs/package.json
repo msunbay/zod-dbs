@@ -8,6 +8,27 @@
   "engines": {
     "node": ">=20.0.0"
   },
+  "keywords": [
+    "zod",
+    "zod-dbs",
+    "typescript",
+    "database",
+    "schema",
+    "schema-generator",
+    "type-safe",
+    "validation",
+    "sql",
+    "nosql",
+    "postgresql",
+    "mysql",
+    "mongodb",
+    "mssql",
+    "oracle",
+    "sqlite",
+    "snowflake",
+    "codegen",
+    "database-schema"
+  ],
   "scripts": {
     "build": "rm -rf ./dist && tsc --project tsconfig.build.json",
     "test": "pnpm run test:unit",

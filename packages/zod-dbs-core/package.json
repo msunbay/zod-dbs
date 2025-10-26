@@ -2,6 +2,18 @@
   "name": "zod-dbs-core",
   "version": "2.0.1",
   "description": "Shared core functionality for zod-dbs packages",
+  "keywords": [
+    "zod",
+    "zod-dbs",
+    "typescript",
+    "database",
+    "schema",
+    "type-safe",
+    "validation",
+    "core",
+    "introspection",
+    "schema-generator"
+  ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "type": "module",
