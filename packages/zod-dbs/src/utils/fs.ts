@@ -24,7 +24,7 @@ export function clearTablesDirectory(outputPath: string) {
     if (file.isDirectory()) continue;
     if (!file.name.endsWith('.ts')) continue;
 
-    const filePath = path.join(file.path, file.name);
+    const filePath = path.join(file.parentPath, file.name);
     unlinkSync(filePath);
   }
 
