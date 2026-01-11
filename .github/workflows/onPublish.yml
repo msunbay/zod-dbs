@@ -51,16 +51,9 @@ jobs:
         run: pnpm run build
 
       - name: Publish changed workspace packages to npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           set -euo pipefail
           sudo apt-get update && sudo apt-get install -y jq >/dev/null
-
-          # Ensure npm auth is configured for pnpm/npm
-          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
-          echo "always-auth=true" >> ~/.npmrc
-          echo "registry=https://registry.npmjs.org/" >> ~/.npmrc
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
