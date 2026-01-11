@@ -1,3 +1,7 @@
+## v2.0.3
+
+- Fixed node 24 support
+
 ## v2.0.0
 
 ### Bugfixes
