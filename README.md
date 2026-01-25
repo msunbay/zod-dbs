@@ -6,6 +6,8 @@
 
 **zod-dbs** is a code generation tool that creates [Zod](https://github.com/colinhacks/zod) schemas and TypeScript types from your database schema. It generates validation schemas that match your database structure, helping keep your TypeScript types synchronized with your database schema.
 
+If you are looking for a PostgreSQL solution only, then you can also use simpler [**zod-pg**](https://www.npmjs.com/package/zod-pg) cli.
+
 ## Table of Contents
 
 - [Key Features](#key-features)
