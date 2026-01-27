@@ -1,6 +1,6 @@
 {
   "name": "zod-dbs-sqlite",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "SQLite provider for zod-dbs",
   "keywords": [
     "zod",

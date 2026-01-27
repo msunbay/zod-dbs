@@ -15,21 +15,34 @@ export function clearTablesDirectory(outputPath: string) {
     return;
   }
 
-  const files = readdirSync(outputPath, {
-    recursive: true,
-    withFileTypes: true,
-  });
+  let deleted = 0;
 
-  for (const file of files) {
-    if (file.isDirectory()) continue;
-    if (!file.name.endsWith('.ts')) continue;
+  function walk(dir: string) {
+    const entries = readdirSync(dir, { withFileTypes: true });
 
-    const filePath = path.join(file.parentPath, file.name);
-    unlinkSync(filePath);
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+
+      if (entry.isDirectory()) {
+        walk(fullPath);
+        continue;
+      }
+
+      if (!entry.name.endsWith('.ts')) continue;
+
+      try {
+        unlinkSync(fullPath);
+        deleted += 1;
+      } catch (err) {
+        logDebug(`Failed to delete file ${fullPath}: ${String(err)}`);
+      }
+    }
   }
 
-  if (files.length > 0) {
-    logDebug(`Deleted all .ts files in ${outputPath}`);
+  walk(outputPath);
+
+  if (deleted > 0) {
+    logDebug(`Deleted ${deleted} .ts file(s) in ${outputPath}`);
   }
 }
 

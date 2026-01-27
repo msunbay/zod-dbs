@@ -1,10 +1,9 @@
-## v1.0.6
+# zod-dbs-cli
 
-## 2.0.3
+## 2.0.6
 
 ### Patch Changes
 
 - Updated dependencies
   - zod-dbs-core@2.0.3
-
-- Fixed enum detection for ENUM column types.
+  - zod-dbs@2.0.4

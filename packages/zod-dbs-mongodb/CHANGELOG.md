@@ -1,10 +1,8 @@
-## v1.0.6
+# zod-dbs-mongodb
 
-## 2.0.3
+## 1.0.3
 
 ### Patch Changes
 
 - Updated dependencies
   - zod-dbs-core@2.0.3
-
-- Fixed enum detection for ENUM column types.

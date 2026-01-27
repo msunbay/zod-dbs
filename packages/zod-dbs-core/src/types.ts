@@ -269,9 +269,23 @@ export interface ZodDbsDatabaseClient {
  * This interface is usually extended by specific providers to include additional options.
  */
 export interface ZodDbsProviderConfig extends ZodDbsHooks {
-  /** Regex pattern(s) to include only specific tables */
+  /**
+   * Regex pattern or an array of strings to include only specific tables
+   * @example
+   * // exact string matching
+   * config = { include: ['users', 'orders'] }
+   * // regex matching
+   * config = { include: '^user_.*' }
+   */
   include?: string | string[];
-  /** Regex pattern(s) to exclude specific tables */
+  /**
+   * Regex pattern or an array of strings to exclude specific tables
+   * @example
+   * // exact string matching
+   * config = { exclude: ['migrations', 'logs'] }
+   * // regex matching
+   * config = { exclude: '^(temp|backup)_.*' }
+   */
   exclude?: string | string[];
   /** If true, will log debug information to the console */
   debug?: boolean;

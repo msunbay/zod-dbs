@@ -8,11 +8,12 @@
   "engines": {
     "node": ">=20.0.0"
   },
-  "packageManager": "pnpm@10.15.1",
+  "packageManager": "pnpm@10.28.2",
   "scripts": {
     "build": "pnpm run -r build",
     "start": "pnpm run build && node index.js",
     "dev": "tsx dev.ts",
+    "fix": "biome check . --fix && prettier --write .",
     "test": "pnpm run build && pnpm run test:unit && pnpm run test:integration && pnpm run test:types && pnpm run test:lint",
     "test:unit": "pnpm run -r test:unit",
     "test:integration:dynamodb": "pnpm vitest --project integration:dynamodb run",
@@ -28,7 +29,8 @@
     "test:types": "tsc --noEmit && pnpm run -r test:types",
     "test:lint": "biome ci --diagnostic-level error",
     "test:lint:fix": "biome check --write",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "new-version": "changeset && changeset version && pnpm fix && pnpm i"
   },
   "repository": {
     "type": "git",
@@ -39,6 +41,7 @@
   "devDependencies": {
     "@aws-sdk/client-dynamodb": "^3.879.0",
     "@biomejs/biome": "2.2.3",
+    "@changesets/cli": "^2.29.8",
     "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
     "@testcontainers/mongodb": "^10.28.0",
     "@testcontainers/mssqlserver": "^11.5.1",
@@ -55,8 +58,8 @@
     "typescript": "^5.9.2",
     "vitest": "^3.2.4",
     "zod": "^4.3.5",
-    "zod-dbs-core": "workspace:*",
     "zod-dbs": "workspace:*",
+    "zod-dbs-core": "workspace:*",
     "zod-dbs-dynamodb": "workspace:*",
     "zod-dbs-mongodb": "workspace:*",
     "zod-dbs-mssql": "workspace:*",

@@ -1,6 +1,6 @@
 {
   "name": "zod-dbs-dynamodb",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "DynamoDB provider for zod-dbs",
   "keywords": [
     "zod",

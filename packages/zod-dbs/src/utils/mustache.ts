@@ -14,7 +14,13 @@ export const loadMustacheTemplate = async (
   templateName: string
 ): Promise<string> => {
   if (templateCache.has(templateName)) {
-    return templateCache.get(templateName)!;
+    const template = templateCache.get(templateName);
+
+    if (template) {
+      return template;
+    }
+
+    throw new Error(`Template cache entry for "${templateName}" is invalid.`);
   }
 
   const templatePath = path.join(
