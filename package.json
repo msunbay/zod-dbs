@@ -31,7 +31,7 @@
     "test:lint:fix": "biome check --write",
     "format": "prettier --write .",
     "new-version": "changeset && changeset version && pnpm fix && pnpm i",
-    "publish-packages": "pnpm run build && pnpm publish -r"
+    "publish-packages": "pnpm run build && pnpm publish --recursive --provenance --access public"
   },
   "repository": {
     "type": "git",
