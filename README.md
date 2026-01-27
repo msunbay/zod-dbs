@@ -262,11 +262,13 @@ const config: ZodDbsCliConfig = {
 
   // Output options
   outputDir: './src/generated',
-  include: ['users', 'posts'],
-  exclude: ['^temp_'],
   zodVersion: '4',
   stringifyDates: true,
   defaultEmptyArray: true,
+
+  // NOTE: When providing an array of strings for the "include" / "exclude" option, it uses exact table name matching. Regex expressions are only supported when providing a single string value.
+  include: ['users', 'posts'], 
+  exclude: '^temp_',
 };
 
 export default config;
