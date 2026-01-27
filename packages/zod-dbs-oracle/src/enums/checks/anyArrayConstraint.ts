@@ -7,22 +7,22 @@ export const parseAnyArrayConstraint = (constraint: string): string[] => {
   let clause = constraint.replace(/\\"/g, '"');
 
   // Remove all leading/trailing parentheses (robust for nested cases)
-  while (clause.startsWith('(') && clause.endsWith(')')) {
+  while (clause.startsWith("(") && clause.endsWith(")")) {
     clause = clause.slice(1, -1);
   }
 
   // Match col = ANY ((ARRAY['a'::type, ...])::type[])
   const arrayMatch = clause.match(
-    /ANY\s*\(\s*(?:\(+)?ARRAY\[(.*?)\](?:\))*(::[a-zA-Z0-9_ [\]]+)?\s*\)/i
+    /ANY\s*\(\s*(?:\(+)?ARRAY\[(.*?)\](?:\))*(::[a-zA-Z0-9_ [\]]+)?\s*\)/i,
   );
 
   if (arrayMatch) {
-    return arrayMatch[1].split(',').map((v) =>
+    return arrayMatch[1].split(",").map((v) =>
       v
         .trim()
         // Remove any ::type cast (e.g., ::text, ::character varying, etc.)
-        .replace(/'::[a-zA-Z0-9_ ]+/g, '')
-        .replace(/'/g, '')
+        .replace(/'::[a-zA-Z0-9_ ]+/g, "")
+        .replace(/'/g, ""),
     );
   }
 

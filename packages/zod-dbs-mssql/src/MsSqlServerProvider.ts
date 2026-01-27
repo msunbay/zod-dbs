@@ -1,9 +1,8 @@
-import { logDebug, sql, ZodDbsBaseProvider } from 'zod-dbs-core';
+import type { ZodDbsColumnInfo, ZodDbsProviderConfig } from "zod-dbs-core";
+import { logDebug, sql, ZodDbsBaseProvider } from "zod-dbs-core";
 
-import type { ZodDbsColumnInfo, ZodDbsProviderConfig } from 'zod-dbs-core';
-
-import { createClient } from './client.js';
-import { parseEnumValues } from './utils.js';
+import { createClient } from "./client.js";
+import { parseEnumValues } from "./utils.js";
 
 interface RawColumnInfo {
   tableName: string;
@@ -29,49 +28,49 @@ interface RawColumnInfo {
 export class MsSqlServerProvider extends ZodDbsBaseProvider {
   constructor() {
     super({
-      name: 'mssql',
-      displayName: 'Microsoft SQL Server',
+      name: "mssql",
+      displayName: "Microsoft SQL Server",
       configurationDefaults: {
-        host: 'localhost',
+        host: "localhost",
         port: 1433,
-        schemaName: 'dbo',
+        schemaName: "dbo",
       },
       options: [
         {
-          name: 'connection-string',
-          type: 'string',
+          name: "connection-string",
+          type: "string",
           description:
-            'Full database connection string (overrides other connection options)',
+            "Full database connection string (overrides other connection options)",
         },
         {
-          name: 'host',
-          type: 'string',
-          description: 'Database host',
+          name: "host",
+          type: "string",
+          description: "Database host",
         },
         {
-          name: 'port',
-          type: 'number',
-          description: 'Database server port',
+          name: "port",
+          type: "number",
+          description: "Database server port",
         },
         {
-          name: 'user',
-          type: 'string',
-          description: 'Database user',
+          name: "user",
+          type: "string",
+          description: "Database user",
         },
         {
-          name: 'password',
-          type: 'string',
-          description: 'Database password',
+          name: "password",
+          type: "string",
+          description: "Database password",
         },
         {
-          name: 'database',
-          type: 'string',
-          description: 'Database name',
+          name: "database",
+          type: "string",
+          description: "Database name",
         },
         {
-          name: 'schema-name',
-          type: 'string',
-          description: 'Database schema to introspect',
+          name: "schema-name",
+          type: "string",
+          description: "Database schema to introspect",
         },
       ],
     });
@@ -84,13 +83,13 @@ export class MsSqlServerProvider extends ZodDbsBaseProvider {
   protected createColumnInfo(column: RawColumnInfo): ZodDbsColumnInfo {
     const parsedColumn: ZodDbsColumnInfo = {
       maxLen: column.characterMaximumLength ?? undefined,
-      isEnum: column.dataType === 'enum',
-      isSerial: column.extra?.includes('auto_increment') ?? false,
+      isEnum: column.dataType === "enum",
+      isSerial: column.extra?.includes("auto_increment") ?? false,
       isArray: false,
       schemaName: column.tableSchema,
-      tableType: 'table',
+      tableType: "table",
       name: column.name,
-      isNullable: column.isNullable === 'YES',
+      isNullable: column.isNullable === "YES",
       dataType: column.dataType,
       tableName: column.tableName,
       defaultValue: column.defaultValue ?? undefined,
@@ -104,21 +103,21 @@ export class MsSqlServerProvider extends ZodDbsBaseProvider {
   }
 
   public override async fetchSchemaInfo(
-    config: ZodDbsProviderConfig
+    config: ZodDbsProviderConfig,
   ): Promise<ZodDbsColumnInfo[]> {
     const { schemaName } = config;
 
     if (!schemaName) {
       throw new Error(
-        "MsSqlServerProvider requires a 'schemaName' in the configuration"
+        "MsSqlServerProvider requires a 'schemaName' in the configuration",
       );
     }
 
-    config.onProgress?.('connecting');
+    config.onProgress?.("connecting");
     const client = await this.createClient(config);
     await client.connect();
 
-    config.onProgress?.('fetchingSchema');
+    config.onProgress?.("fetchingSchema");
     logDebug(`Retrieving schema information for schema '${schemaName}'`);
 
     try {
@@ -139,7 +138,7 @@ export class MsSqlServerProvider extends ZodDbsBaseProvider {
           WHERE TABLE_SCHEMA = '${schemaName}'
           ORDER BY TABLE_NAME, ORDINAL_POSITION
         `,
-        [schemaName]
+        [schemaName],
       );
 
       return result.map((column) => this.createColumnInfo(column));

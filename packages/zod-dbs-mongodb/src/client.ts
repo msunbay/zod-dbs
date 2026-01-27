@@ -1,21 +1,20 @@
-import { MongoClient } from 'mongodb';
-import { createConnectionString, logDebug } from 'zod-dbs-core';
-
-import type { ZodDbsProviderConfig } from 'zod-dbs-core';
-import type { ZodDbsMongoDbClient } from './types.js';
+import { MongoClient } from "mongodb";
+import type { ZodDbsProviderConfig } from "zod-dbs-core";
+import { createConnectionString, logDebug } from "zod-dbs-core";
+import type { ZodDbsMongoDbClient } from "./types.js";
 
 export async function createClient(
-  config: ZodDbsProviderConfig
+  config: ZodDbsProviderConfig,
 ): Promise<ZodDbsMongoDbClient> {
   const uri =
     config.connectionString ??
     createConnectionString({
-      scheme: 'mongodb',
+      scheme: "mongodb",
       ...config,
       database: undefined,
     });
 
-  logDebug('Creating MongoDB client', {
+  logDebug("Creating MongoDB client", {
     uri,
     directConnection: config.directConnection,
     replicaSet: config.replicaSet,
@@ -37,7 +36,7 @@ export async function createClient(
     },
     async query(_stmt: string, _params?: any[]) {
       // MongoDB is not SQL; this client is only used by the provider directly via driver APIs.
-      throw new Error('MongoDB client does not support raw SQL queries');
+      throw new Error("MongoDB client does not support raw SQL queries");
     },
     async end() {
       if (connected) {

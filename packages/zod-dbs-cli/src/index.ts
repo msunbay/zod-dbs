@@ -9,14 +9,14 @@ export type {
   ZodDbsProvider,
   ZodDbsProviderConfig,
   ZodDbsProviderOption,
-  ZodDbsRenderer,
   ZodDbsRenderedFile,
+  ZodDbsRenderer,
   ZodDbsSchemaInfo,
   ZodDbsTable,
   ZodDbsTableType,
   ZodDbsTransform,
   ZodDbsZodVersion,
-} from 'zod-dbs-core';
-export { getZodType, ZodDbsBaseProvider } from 'zod-dbs-core';
-export { runCli } from './cli.js';
-export type { ZodDbsCliConfig } from './types.js';
+} from "zod-dbs-core";
+export { getZodType, ZodDbsBaseProvider } from "zod-dbs-core";
+export { runCli } from "./cli.js";
+export type { ZodDbsCliConfig } from "./types.js";

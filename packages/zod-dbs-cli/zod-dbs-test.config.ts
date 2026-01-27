@@ -1,18 +1,18 @@
-import type { ZodDbsCliConfig } from './src/types.js';
+import type { ZodDbsCliConfig } from "./src/types.js";
 
 const config: ZodDbsCliConfig = {
   provider: {
-    name: 'test-provider',
-    displayName: 'Test Provider',
+    name: "test-provider",
+    displayName: "Test Provider",
     getSchemaInformation: async () => {
       return { tables: [] };
     },
   },
 
-  outputDir: './test/integration/output/customConfigFile',
-  include: ['users', 'posts'],
-  exclude: ['^temp_'],
-  zodVersion: '4',
+  outputDir: "./test/integration/output/customConfigFile",
+  include: ["users", "posts"],
+  exclude: ["^temp_"],
+  zodVersion: "4",
   stringifyDates: true,
   defaultEmptyArray: true,
   caseTransform: false,

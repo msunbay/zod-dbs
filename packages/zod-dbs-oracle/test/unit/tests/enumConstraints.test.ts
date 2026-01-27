@@ -1,282 +1,282 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from "vitest";
 
-import { parseEnumValues } from '../../../src/enums/enumConstraints.js';
+import { parseEnumValues } from "../../../src/enums/enumConstraints.js";
 
-describe('parseEnumValues', () => {
-  describe('ANY ARRAY constraints', () => {
-    it('should parse basic ANY ARRAY constraint', () => {
+describe("parseEnumValues", () => {
+  describe("ANY ARRAY constraints", () => {
+    it("should parse basic ANY ARRAY constraint", () => {
       expect(
-        parseEnumValues('status', [
+        parseEnumValues("status", [
           "(status = ANY (ARRAY['active','inactive']))",
-        ])
-      ).toEqual(['active', 'inactive']);
+        ]),
+      ).toEqual(["active", "inactive"]);
     });
 
-    it('should parse ANY ARRAY constraint with type casting', () => {
+    it("should parse ANY ARRAY constraint with type casting", () => {
       expect(
-        parseEnumValues('brand', [
+        parseEnumValues("brand", [
           "((\"orchardBrand\" = ANY (ARRAY['orchard'::text, 'awal'::text, 'sme'::text])))",
-        ])
-      ).toEqual(['orchard', 'awal', 'sme']);
+        ]),
+      ).toEqual(["orchard", "awal", "sme"]);
     });
 
-    it('should parse ANY ARRAY constraint with complex type casting', () => {
+    it("should parse ANY ARRAY constraint with complex type casting", () => {
       expect(
-        parseEnumValues('category', [
+        parseEnumValues("category", [
           "(category = ANY ((ARRAY['food','drinks','snacks'])::character varying[]))",
-        ])
-      ).toEqual(['food', 'drinks', 'snacks']);
+        ]),
+      ).toEqual(["food", "drinks", "snacks"]);
     });
 
-    it('should handle ANY ARRAY with extra parentheses', () => {
+    it("should handle ANY ARRAY with extra parentheses", () => {
       expect(
-        parseEnumValues('priority', [
+        parseEnumValues("priority", [
           "(((priority = ANY (ARRAY['high','medium','low']))))",
-        ])
-      ).toEqual(['high', 'medium', 'low']);
+        ]),
+      ).toEqual(["high", "medium", "low"]);
     });
 
-    it('should handle ANY ARRAY with escaped quotes', () => {
+    it("should handle ANY ARRAY with escaped quotes", () => {
       // Note: The parser removes quotes and doesn't handle escaped quotes properly
       expect(
-        parseEnumValues('status', ["(status = ANY (ARRAY['simple','basic']))"])
-      ).toEqual(['simple', 'basic']);
+        parseEnumValues("status", ["(status = ANY (ARRAY['simple','basic']))"]),
+      ).toEqual(["simple", "basic"]);
     });
   });
 
-  describe('IN constraints', () => {
-    it('should parse basic IN constraint', () => {
-      expect(parseEnumValues('type', ["(type IN ('foo','bar'))"])).toEqual([
-        'foo',
-        'bar',
+  describe("IN constraints", () => {
+    it("should parse basic IN constraint", () => {
+      expect(parseEnumValues("type", ["(type IN ('foo','bar'))"])).toEqual([
+        "foo",
+        "bar",
       ]);
     });
 
-    it('should parse IN constraint with quoted column name', () => {
+    it("should parse IN constraint with quoted column name", () => {
       expect(
-        parseEnumValues('status', [
+        parseEnumValues("status", [
           "(\"status\" IN ('pending','approved','rejected'))",
-        ])
-      ).toEqual(['pending', 'approved', 'rejected']);
+        ]),
+      ).toEqual(["pending", "approved", "rejected"]);
     });
 
-    it('should parse IN constraint with type casting', () => {
+    it("should parse IN constraint with type casting", () => {
       expect(
-        parseEnumValues('level', [
+        parseEnumValues("level", [
           "(level IN ('beginner'::text,'intermediate'::text,'advanced'::text))",
-        ])
-      ).toEqual(['beginner', 'intermediate', 'advanced']);
+        ]),
+      ).toEqual(["beginner", "intermediate", "advanced"]);
     });
 
-    it('should handle IN constraint with extra whitespace', () => {
+    it("should handle IN constraint with extra whitespace", () => {
       expect(
-        parseEnumValues('role', ["( role IN ( 'admin' , 'user' , 'guest' ) )"])
-      ).toEqual(['admin', 'user', 'guest']);
+        parseEnumValues("role", ["( role IN ( 'admin' , 'user' , 'guest' ) )"]),
+      ).toEqual(["admin", "user", "guest"]);
     });
 
-    it('should handle IN constraint without surrounding parentheses', () => {
+    it("should handle IN constraint without surrounding parentheses", () => {
       expect(
-        parseEnumValues('role', ["role IN ('admin','user','guest')"])
-      ).toEqual(['admin', 'user', 'guest']);
+        parseEnumValues("role", ["role IN ('admin','user','guest')"]),
+      ).toEqual(["admin", "user", "guest"]);
     });
   });
 
-  describe('OR constraints', () => {
-    it('should parse basic OR constraint', () => {
+  describe("OR constraints", () => {
+    it("should parse basic OR constraint", () => {
       expect(
-        parseEnumValues('color', [
+        parseEnumValues("color", [
           "(color = 'red' OR color = 'blue' OR color = 'green')",
-        ])
-      ).toEqual(['red', 'blue', 'green']);
+        ]),
+      ).toEqual(["red", "blue", "green"]);
     });
 
-    it('should parse OR constraint with quoted column names', () => {
+    it("should parse OR constraint with quoted column names", () => {
       expect(
-        parseEnumValues('state', [
-          '("state" = \'active\' OR "state" = \'inactive\' OR "state" = \'pending\')',
-        ])
-      ).toEqual(['active', 'inactive', 'pending']);
+        parseEnumValues("state", [
+          "(\"state\" = 'active' OR \"state\" = 'inactive' OR \"state\" = 'pending')",
+        ]),
+      ).toEqual(["active", "inactive", "pending"]);
     });
 
-    it('should handle OR constraint with mixed quoting', () => {
+    it("should handle OR constraint with mixed quoting", () => {
       expect(
-        parseEnumValues('mode', [
+        parseEnumValues("mode", [
           "(mode = 'read' OR \"mode\" = 'write' OR mode = 'execute')",
-        ])
-      ).toEqual(['read', 'write', 'execute']);
+        ]),
+      ).toEqual(["read", "write", "execute"]);
     });
 
-    it('should handle OR constraint with extra whitespace', () => {
+    it("should handle OR constraint with extra whitespace", () => {
       expect(
-        parseEnumValues('grade', [
+        parseEnumValues("grade", [
           "( grade = 'A'  OR  grade = 'B'  OR  grade = 'C' )",
-        ])
-      ).toEqual(['A', 'B', 'C']);
+        ]),
+      ).toEqual(["A", "B", "C"]);
     });
   });
 
-  describe('Array contains (<@) constraints', () => {
-    it('should parse basic array contains constraint', () => {
+  describe("Array contains (<@) constraints", () => {
+    it("should parse basic array contains constraint", () => {
       expect(
-        parseEnumValues('tag', [
+        parseEnumValues("tag", [
           "(tag <@ ARRAY['important','urgent','normal'])",
-        ])
-      ).toEqual(['important', 'urgent', 'normal']);
+        ]),
+      ).toEqual(["important", "urgent", "normal"]);
     });
 
-    it('should parse array contains constraint with type casting', () => {
+    it("should parse array contains constraint with type casting", () => {
       expect(
-        parseEnumValues('department', [
+        parseEnumValues("department", [
           "(department <@ ARRAY['sales'::text,'marketing'::text,'engineering'::text])",
-        ])
-      ).toEqual(['sales', 'marketing', 'engineering']);
+        ]),
+      ).toEqual(["sales", "marketing", "engineering"]);
     });
 
-    it('should handle array contains with extra whitespace', () => {
+    it("should handle array contains with extra whitespace", () => {
       expect(
-        parseEnumValues('size', [
+        parseEnumValues("size", [
           "( size <@ ARRAY[ 'small' , 'medium' , 'large' ] )",
-        ])
-      ).toEqual(['small', 'medium', 'large']);
+        ]),
+      ).toEqual(["small", "medium", "large"]);
     });
   });
 
-  describe('Multiple constraints', () => {
-    it('should combine values from multiple constraint types', () => {
+  describe("Multiple constraints", () => {
+    it("should combine values from multiple constraint types", () => {
       expect(
-        parseEnumValues('status', [
+        parseEnumValues("status", [
           "(status = ANY (ARRAY['draft','published']))",
           "(status IN ('archived','deleted'))",
           "(status = 'pending' OR status = 'reviewing')",
-        ])
+        ]),
       ).toEqual([
-        'draft',
-        'published',
-        'archived',
-        'deleted',
-        'pending',
-        'reviewing',
+        "draft",
+        "published",
+        "archived",
+        "deleted",
+        "pending",
+        "reviewing",
       ]);
     });
 
-    it('should handle duplicate values across constraints', () => {
+    it("should handle duplicate values across constraints", () => {
       expect(
-        parseEnumValues('type', [
+        parseEnumValues("type", [
           "(type = ANY (ARRAY['public','private']))",
           "(type IN ('public','internal'))",
-        ])
-      ).toEqual(['public', 'private', 'public', 'internal']);
+        ]),
+      ).toEqual(["public", "private", "public", "internal"]);
     });
 
-    it('should handle multiple constraints of the same type', () => {
+    it("should handle multiple constraints of the same type", () => {
       expect(
-        parseEnumValues('category', [
+        parseEnumValues("category", [
           "(category = ANY (ARRAY['food','drinks']))",
           "(category = ANY (ARRAY['snacks','desserts']))",
-        ])
-      ).toEqual(['food', 'drinks', 'snacks', 'desserts']);
+        ]),
+      ).toEqual(["food", "drinks", "snacks", "desserts"]);
     });
   });
 
-  describe('Edge cases and error handling', () => {
-    it('should return empty array for unrecognized constraint patterns', () => {
+  describe("Edge cases and error handling", () => {
+    it("should return empty array for unrecognized constraint patterns", () => {
       expect(
-        parseEnumValues('status', [
+        parseEnumValues("status", [
           "(status > 'value')",
           "(status LIKE 'pattern%')",
-          '(status IS NOT NULL)',
-        ])
+          "(status IS NOT NULL)",
+        ]),
       ).toEqual([]);
     });
 
-    it('should return empty array for malformed constraints', () => {
+    it("should return empty array for malformed constraints", () => {
       expect(
-        parseEnumValues('status', [
+        parseEnumValues("status", [
           "(status = ANY ARRAY['broken')",
           "(status IN ('missing_close'",
           "(status = 'incomplete' OR",
-        ])
+        ]),
       ).toEqual([]);
     });
 
-    it('should handle empty constraint array', () => {
-      expect(parseEnumValues('status', [])).toEqual([]);
+    it("should handle empty constraint array", () => {
+      expect(parseEnumValues("status", [])).toEqual([]);
     });
 
-    it('should handle constraints for different column names', () => {
+    it("should handle constraints for different column names", () => {
       // Note: parseAnyArrayConstraint doesn't check column names, only IN and OR constraints do
       expect(
-        parseEnumValues('status', [
+        parseEnumValues("status", [
           "(other_column = ANY (ARRAY['value1','value2']))",
           "(different_col IN ('value3','value4'))",
-        ])
-      ).toEqual(['value1', 'value2']); // ANY ARRAY will still match regardless of column name
+        ]),
+      ).toEqual(["value1", "value2"]); // ANY ARRAY will still match regardless of column name
     });
 
-    it('should properly filter by column name for IN and OR constraints', () => {
+    it("should properly filter by column name for IN and OR constraints", () => {
       expect(
-        parseEnumValues('status', [
+        parseEnumValues("status", [
           "(status IN ('correct1','correct2'))",
           "(other_column IN ('wrong1','wrong2'))",
           "(status = 'correct3' OR status = 'correct4')",
           "(other_column = 'wrong3' OR other_column = 'wrong4')",
-        ])
-      ).toEqual(['correct1', 'correct2', 'correct3', 'correct4']);
+        ]),
+      ).toEqual(["correct1", "correct2", "correct3", "correct4"]);
     });
 
-    it('should handle special quote scenarios', () => {
+    it("should handle special quote scenarios", () => {
       // Test basic functionality with simple values
       expect(
-        parseEnumValues('message', [
+        parseEnumValues("message", [
           "(message = ANY (ARRAY['hello','world','test']))",
-        ])
-      ).toEqual(['hello', 'world', 'test']);
+        ]),
+      ).toEqual(["hello", "world", "test"]);
     });
 
-    it('should handle special characters in values', () => {
+    it("should handle special characters in values", () => {
       expect(
-        parseEnumValues('code', [
+        parseEnumValues("code", [
           "(code = ANY (ARRAY['US-001','CA-002','UK-003']))",
-        ])
-      ).toEqual(['US-001', 'CA-002', 'UK-003']);
+        ]),
+      ).toEqual(["US-001", "CA-002", "UK-003"]);
     });
 
-    it('should handle numeric-like string values', () => {
+    it("should handle numeric-like string values", () => {
       expect(
-        parseEnumValues('version', ["(version IN ('1.0','2.0','3.0'))"])
-      ).toEqual(['1.0', '2.0', '3.0']);
+        parseEnumValues("version", ["(version IN ('1.0','2.0','3.0'))"]),
+      ).toEqual(["1.0", "2.0", "3.0"]);
     });
 
-    it('should handle single value constraints', () => {
+    it("should handle single value constraints", () => {
       expect(
-        parseEnumValues('singleton', ["(singleton = ANY (ARRAY['only']))"])
-      ).toEqual(['only']);
+        parseEnumValues("singleton", ["(singleton = ANY (ARRAY['only']))"]),
+      ).toEqual(["only"]);
     });
   });
 
-  describe('Real-world PostgreSQL constraint examples', () => {
-    it('should parse complex nested constraint from PostgreSQL', () => {
+  describe("Real-world PostgreSQL constraint examples", () => {
+    it("should parse complex nested constraint from PostgreSQL", () => {
       expect(
-        parseEnumValues('user_role', [
+        parseEnumValues("user_role", [
           "((\"user_role\" = ANY ((ARRAY['admin'::character varying, 'moderator'::character varying, 'user'::character varying])::character varying[])))",
-        ])
-      ).toEqual(['admin', 'moderator', 'user']);
+        ]),
+      ).toEqual(["admin", "moderator", "user"]);
     });
 
-    it('should parse enum-like constraint with table prefix', () => {
+    it("should parse enum-like constraint with table prefix", () => {
       expect(
-        parseEnumValues('priority', [
+        parseEnumValues("priority", [
           "(priority = ANY (ARRAY['low'::text, 'medium'::text, 'high'::text, 'critical'::text]))",
-        ])
-      ).toEqual(['low', 'medium', 'high', 'critical']);
+        ]),
+      ).toEqual(["low", "medium", "high", "critical"]);
     });
 
-    it('should handle PostgreSQL generated constraint names', () => {
+    it("should handle PostgreSQL generated constraint names", () => {
       expect(
-        parseEnumValues('order_status', [
+        parseEnumValues("order_status", [
           "(order_status = ANY (ARRAY['pending'::text, 'processing'::text, 'shipped'::text, 'delivered'::text, 'cancelled'::text]))",
-        ])
-      ).toEqual(['pending', 'processing', 'shipped', 'delivered', 'cancelled']);
+        ]),
+      ).toEqual(["pending", "processing", "shipped", "delivered", "cancelled"]);
     });
   });
 });

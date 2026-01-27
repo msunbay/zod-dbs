@@ -1,11 +1,11 @@
-import mustache from 'mustache';
-import ora from 'ora';
+import mustache from "mustache";
+import ora from "ora";
 
 const PROGRESS_STATUS: Record<string, string> = {
-  connecting: 'Connecting to database...',
-  fetchingSchema: 'Fetching schema information...',
-  generating: 'Generating {{total}} Zod schemas...',
-  done: 'Done',
+  connecting: "Connecting to database...",
+  fetchingSchema: "Fetching schema information...",
+  generating: "Generating {{total}} Zod schemas...",
+  done: "Done",
 };
 
 const silentProgressHandler = {

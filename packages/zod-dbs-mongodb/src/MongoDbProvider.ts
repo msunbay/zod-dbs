@@ -1,9 +1,3 @@
-import {
-  logDebug,
-  parseConnectionString,
-  ZodDbsBaseProvider,
-} from 'zod-dbs-core';
-
 import type {
   ZodDbsColumn,
   ZodDbsColumnInfo,
@@ -12,13 +6,18 @@ import type {
   ZodDbsProviderConfig,
   ZodDbsTable,
   ZodDbsTableType,
-} from 'zod-dbs-core';
+} from "zod-dbs-core";
+import {
+  logDebug,
+  parseConnectionString,
+  ZodDbsBaseProvider,
+} from "zod-dbs-core";
 
-import { createClient } from './client.js';
+import { createClient } from "./client.js";
 
 type CollectionInfo = {
   name: string;
-  type?: 'collection' | 'view';
+  type?: "collection" | "view";
   options?: { validator?: { $jsonSchema?: any } };
 };
 
@@ -28,53 +27,53 @@ export class MongoDbProvider
 {
   constructor() {
     super({
-      name: 'mongodb',
-      displayName: 'MongoDB',
+      name: "mongodb",
+      displayName: "MongoDB",
       configurationDefaults: {
         port: 27017,
-        host: 'localhost',
+        host: "localhost",
         sampleSize: 50,
         nullsToUndefined: false,
         stringifyJson: false,
       },
       options: [
         {
-          name: 'connection-string',
-          type: 'string',
+          name: "connection-string",
+          type: "string",
           description:
-            'Full database connection string (overrides other connection options)',
+            "Full database connection string (overrides other connection options)",
         },
         {
-          name: 'host',
-          type: 'string',
-          description: 'MongoDB host',
+          name: "host",
+          type: "string",
+          description: "MongoDB host",
         },
         {
-          name: 'port',
-          type: 'number',
-          description: 'MongoDB port',
+          name: "port",
+          type: "number",
+          description: "MongoDB port",
         },
         {
-          name: 'database',
-          type: 'string',
-          description: 'MongoDB database name',
+          name: "database",
+          type: "string",
+          description: "MongoDB database name",
         },
         {
-          name: 'sample-size',
-          type: 'number',
+          name: "sample-size",
+          type: "number",
           description:
-            'Number of documents to sample per collection when no validator exists',
+            "Number of documents to sample per collection when no validator exists",
         },
         {
-          name: 'direct-connection',
-          type: 'boolean',
+          name: "direct-connection",
+          type: "boolean",
           description:
-            'Connect directly to the specified MongoDB host without topology discovery (useful with single-node replica sets)',
+            "Connect directly to the specified MongoDB host without topology discovery (useful with single-node replica sets)",
         },
         {
-          name: 'replica-set',
-          type: 'string',
-          description: 'Replica set name for MongoDB connections',
+          name: "replica-set",
+          type: "string",
+          description: "Replica set name for MongoDB connections",
         },
       ],
     });
@@ -87,7 +86,7 @@ export class MongoDbProvider
       // If connection string is provided, try to parse out the database name if not explicitly set
       if (!withDefaults.database) {
         const { database } = parseConnectionString(
-          withDefaults.connectionString
+          withDefaults.connectionString,
         );
 
         withDefaults.database = database;
@@ -123,9 +122,9 @@ export class MongoDbProvider
     } = args;
 
     const bt = Array.isArray(bsonType)
-      ? bsonType.map((t) => `${t}`).join('|')
-      : bsonType || 'any';
-    const dt = isArray ? 'array' : bt.toLowerCase();
+      ? bsonType.map((t) => `${t}`).join("|")
+      : bsonType || "any";
+    const dt = isArray ? "array" : bt.toLowerCase();
     const isNullable = !required; // default to optional unless explicitly required
 
     return {
@@ -138,7 +137,7 @@ export class MongoDbProvider
       tableName: collection,
       schemaName,
       description,
-      tableType: 'table',
+      tableType: "table",
       enumValues: undefined,
       isEnum: false,
       isSerial: false,
@@ -148,10 +147,10 @@ export class MongoDbProvider
   }
 
   public async fetchSchemaInfo(
-    config: ZodDbsProviderConfig
+    config: ZodDbsProviderConfig,
   ): Promise<ZodDbsColumnInfo[]> {
     const database = config.database;
-    if (!database) throw new Error('MongoDB: database is required');
+    if (!database) throw new Error("MongoDB: database is required");
 
     const client = await this.createClient(config);
     await client.connect();
@@ -169,26 +168,26 @@ export class MongoDbProvider
 
       for (const coll of collections) {
         const tableType: ZodDbsTableType =
-          coll.type === 'view' ? 'view' : 'table';
+          coll.type === "view" ? "view" : "table";
 
         // Prefer $jsonSchema from validator if present
         const schema = coll.options?.validator?.$jsonSchema;
         const requiredSet = new Set<string>(schema?.required || []);
 
-        if (schema?.properties && typeof schema.properties === 'object') {
+        if (schema?.properties && typeof schema.properties === "object") {
           for (const [field, def] of Object.entries<any>(schema.properties)) {
             const bsonType = def?.bsonType ?? def?.type;
 
             const isArray = (
               Array.isArray(bsonType) ? bsonType : [bsonType]
-            ).some((t) => String(t).toLowerCase() === 'array');
+            ).some((t) => String(t).toLowerCase() === "array");
 
             // If the field is an object (or array of objects), collect a shallow object definition (as array)
             let objectFields: ZodDbsColumn[] | undefined;
 
             if (
               !isArray &&
-              String(bsonType).toLowerCase() === 'object' &&
+              String(bsonType).toLowerCase() === "object" &&
               def?.properties
             ) {
               const requiredChildren = new Set<string>(def?.required || []);
@@ -201,14 +200,14 @@ export class MongoDbProvider
                     Array.isArray(childBsonType)
                       ? childBsonType
                       : [childBsonType]
-                  ).some((t: any) => String(t).toLowerCase() === 'array');
+                  ).some((t: any) => String(t).toLowerCase() === "array");
 
                   const childBaseType = childIsArray
-                    ? (v?.items?.bsonType ?? v?.items?.type ?? 'any')
+                    ? (v?.items?.bsonType ?? v?.items?.type ?? "any")
                     : childBsonType;
 
                   const childDataType = String(
-                    childIsArray ? 'array' : childBaseType || 'any'
+                    childIsArray ? "array" : childBaseType || "any",
                   ).toLowerCase();
 
                   return {
@@ -227,20 +226,20 @@ export class MongoDbProvider
                     isReadOptional: !requiredChildren.has(k),
                     isWriteOptional: !requiredChildren.has(k),
                     tableName: coll.name,
-                    tableType: 'table',
+                    tableType: "table",
                     isSerial: false,
                   };
-                }
+                },
               );
             } else if (isArray) {
               const itemType = def?.items?.bsonType ?? def?.items?.type;
 
               if (
-                String(itemType).toLowerCase() === 'object' &&
+                String(itemType).toLowerCase() === "object" &&
                 def?.items?.properties
               ) {
                 const requiredChildren = new Set<string>(
-                  def?.items?.required || []
+                  def?.items?.required || [],
                 );
 
                 objectFields = Object.entries<any>(def.items.properties).map(
@@ -251,14 +250,14 @@ export class MongoDbProvider
                       Array.isArray(childBsonType)
                         ? childBsonType
                         : [childBsonType]
-                    ).some((t: any) => String(t).toLowerCase() === 'array');
+                    ).some((t: any) => String(t).toLowerCase() === "array");
 
                     const childBaseType = childIsArray
-                      ? (v?.items?.bsonType ?? v?.items?.type ?? 'any')
+                      ? (v?.items?.bsonType ?? v?.items?.type ?? "any")
                       : childBsonType;
 
                     const childDataType = String(
-                      childIsArray ? 'array' : childBaseType || 'any'
+                      childIsArray ? "array" : childBaseType || "any",
                     ).toLowerCase();
 
                     return {
@@ -277,10 +276,10 @@ export class MongoDbProvider
                       isReadOptional: !requiredChildren.has(k),
                       isWriteOptional: !requiredChildren.has(k),
                       tableName: coll.name,
-                      tableType: 'table',
+                      tableType: "table",
                       isSerial: false,
                     };
-                  }
+                  },
                 );
               }
             }
@@ -289,14 +288,14 @@ export class MongoDbProvider
               collection: coll.name,
               schemaName: database,
               name: field,
-              bsonType: isArray ? (def?.items?.bsonType ?? 'array') : bsonType,
+              bsonType: isArray ? (def?.items?.bsonType ?? "array") : bsonType,
               required: requiredSet.has(field),
               description: def?.description,
               isArray,
               objectDefinition: objectFields
                 ? {
                     name: `${coll.name}.${field}`,
-                    type: 'object',
+                    type: "object",
                     columns: objectFields,
                   }
                 : undefined,
@@ -321,25 +320,25 @@ export class MongoDbProvider
         >();
 
         const detectType = (v: any): string => {
-          if (v === null || v === undefined) return 'null';
-          if (Array.isArray(v)) return 'array';
+          if (v === null || v === undefined) return "null";
+          if (Array.isArray(v)) return "array";
           const t = typeof v;
-          if (t === 'string') return 'string';
-          if (t === 'boolean') return 'boolean';
-          if (t === 'number') return Number.isInteger(v) ? 'int' : 'number';
-          if (v && typeof v === 'object') {
+          if (t === "string") return "string";
+          if (t === "boolean") return "boolean";
+          if (t === "number") return Number.isInteger(v) ? "int" : "number";
+          if (v && typeof v === "object") {
             // Rough checks for BSON types
             const tag = v?._bsontype;
-            if (tag === 'ObjectId') return 'objectid';
-            if (tag === 'Decimal128') return 'decimal128';
-            if (v instanceof Date) return 'date';
-            return 'object';
+            if (tag === "ObjectId") return "objectid";
+            if (tag === "Decimal128") return "decimal128";
+            if (v instanceof Date) return "date";
+            return "object";
           }
-          return 'any';
+          return "any";
         };
 
         for (const doc of docs) {
-          if (!doc || typeof doc !== 'object') continue;
+          if (!doc || typeof doc !== "object") continue;
           for (const [k, v] of Object.entries(doc)) {
             const stat = fieldStats.get(k) || {
               seen: 0,
@@ -350,8 +349,8 @@ export class MongoDbProvider
             stat.seen++;
             const ty = detectType(v);
             stat.types.add(ty);
-            if (ty === 'null') stat.nulls++;
-            if (ty === 'array') stat.arrays = true;
+            if (ty === "null") stat.nulls++;
+            if (ty === "array") stat.arrays = true;
             fieldStats.set(k, stat);
           }
         }
@@ -359,9 +358,9 @@ export class MongoDbProvider
         for (const [field, stat] of fieldStats.entries()) {
           const required = stat.seen === docs.length && stat.nulls === 0;
           const isArray = stat.arrays;
-          let dataType: string = 'any';
+          let dataType: string = "any";
           if (stat.types.size === 1) dataType = Array.from(stat.types)[0];
-          else if (stat.types.size > 1) dataType = 'json';
+          else if (stat.types.size > 1) dataType = "json";
 
           const info = this.createColumnInfo({
             collection: coll.name,

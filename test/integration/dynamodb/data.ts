@@ -1,30 +1,30 @@
-import { randomUUID } from 'node:crypto';
-import { CreateTableCommand, PutItemCommand } from '@aws-sdk/client-dynamodb';
+import { randomUUID } from "node:crypto";
+import { CreateTableCommand, PutItemCommand } from "@aws-sdk/client-dynamodb";
 
-import type { ZodDbsDynamoClient } from 'zod-dbs-dynamodb';
+import type { ZodDbsDynamoClient } from "zod-dbs-dynamodb";
 
 export async function seedTestData(client: ZodDbsDynamoClient) {
   // Create a Users table
   await client.driver.send(
     new CreateTableCommand({
-      TableName: 'Users',
+      TableName: "Users",
       KeySchema: [
-        { AttributeName: 'id', KeyType: 'HASH' },
-        { AttributeName: 'sort', KeyType: 'RANGE' },
+        { AttributeName: "id", KeyType: "HASH" },
+        { AttributeName: "sort", KeyType: "RANGE" },
       ],
       AttributeDefinitions: [
-        { AttributeName: 'id', AttributeType: 'S' },
-        { AttributeName: 'sort', AttributeType: 'S' },
+        { AttributeName: "id", AttributeType: "S" },
+        { AttributeName: "sort", AttributeType: "S" },
       ],
-      BillingMode: 'PAY_PER_REQUEST',
-    })
+      BillingMode: "PAY_PER_REQUEST",
+    }),
   );
 
   // Add a few items with varying optional attributes
   for (let i = 0; i < 5; i++) {
     await client.driver.send(
       new PutItemCommand({
-        TableName: 'Users',
+        TableName: "Users",
         Item: {
           id: { S: randomUUID() },
           sort: { S: `v${i}` },
@@ -37,28 +37,28 @@ export async function seedTestData(client: ZodDbsDynamoClient) {
           },
           // Make 'tags' sporadic to infer optionality
           ...(i % 2 === 0
-            ? { tags: { L: [{ S: 'alpha' }, { S: 'beta' }] } }
+            ? { tags: { L: [{ S: "alpha" }, { S: "beta" }] } }
             : {}),
         },
-      })
+      }),
     );
   }
 
   // Create a Products table with numeric, set and map attributes
   await client.driver.send(
     new CreateTableCommand({
-      TableName: 'Products',
-      KeySchema: [{ AttributeName: 'id', KeyType: 'HASH' }],
-      AttributeDefinitions: [{ AttributeName: 'id', AttributeType: 'S' }],
-      BillingMode: 'PAY_PER_REQUEST',
-    })
+      TableName: "Products",
+      KeySchema: [{ AttributeName: "id", KeyType: "HASH" }],
+      AttributeDefinitions: [{ AttributeName: "id", AttributeType: "S" }],
+      BillingMode: "PAY_PER_REQUEST",
+    }),
   );
 
   // Seed some products showing N, SS, NS, BOOL, M and B types
   for (let i = 0; i < 4; i++) {
     await client.driver.send(
       new PutItemCommand({
-        TableName: 'Products',
+        TableName: "Products",
         Item: {
           id: { S: `prod-${i}` },
           name: { S: `Product ${i}` },
@@ -74,37 +74,37 @@ export async function seedTestData(client: ZodDbsDynamoClient) {
           metadata: {
             M: {
               sku: { S: `SKU-${1000 + i}` },
-              dimensions: { M: { w: { N: '10' }, h: { N: '20' } } },
+              dimensions: { M: { w: { N: "10" }, h: { N: "20" } } },
             },
           },
           // binary blob
           image: { B: Buffer.from(`image-${i}`) },
         },
-      })
+      }),
     );
   }
 
   // Create an Orders table that demonstrates lists, nulls and nested maps
   await client.driver.send(
     new CreateTableCommand({
-      TableName: 'Orders',
+      TableName: "Orders",
       KeySchema: [
-        { AttributeName: 'orderId', KeyType: 'HASH' },
-        { AttributeName: 'createdAt', KeyType: 'RANGE' },
+        { AttributeName: "orderId", KeyType: "HASH" },
+        { AttributeName: "createdAt", KeyType: "RANGE" },
       ],
       AttributeDefinitions: [
-        { AttributeName: 'orderId', AttributeType: 'S' },
-        { AttributeName: 'createdAt', AttributeType: 'S' },
+        { AttributeName: "orderId", AttributeType: "S" },
+        { AttributeName: "createdAt", AttributeType: "S" },
       ],
-      BillingMode: 'PAY_PER_REQUEST',
-    })
+      BillingMode: "PAY_PER_REQUEST",
+    }),
   );
 
   // Seed some orders with mixed lists and nulls
   for (let i = 0; i < 3; i++) {
     await client.driver.send(
       new PutItemCommand({
-        TableName: 'Orders',
+        TableName: "Orders",
         Item: {
           orderId: { S: `order-${i}` },
           createdAt: { S: new Date(Date.now() - i * 1000).toISOString() },
@@ -115,13 +115,13 @@ export async function seedTestData(client: ZodDbsDynamoClient) {
               {
                 M: {
                   productId: { S: `prod-${i}` },
-                  qty: { N: '1' },
+                  qty: { N: "1" },
                 },
               },
               {
                 M: {
                   productId: { S: `prod-${(i + 1) % 4}` },
-                  qty: { N: '2' },
+                  qty: { N: "2" },
                 },
               },
             ],
@@ -136,26 +136,26 @@ export async function seedTestData(client: ZodDbsDynamoClient) {
             },
           },
         },
-      })
+      }),
     );
   }
 
   // Create a Sessions table to demonstrate binary sets (BS) and TTL attribute
   await client.driver.send(
     new CreateTableCommand({
-      TableName: 'Sessions',
-      KeySchema: [{ AttributeName: 'sessionId', KeyType: 'HASH' }],
+      TableName: "Sessions",
+      KeySchema: [{ AttributeName: "sessionId", KeyType: "HASH" }],
       AttributeDefinitions: [
-        { AttributeName: 'sessionId', AttributeType: 'S' },
+        { AttributeName: "sessionId", AttributeType: "S" },
       ],
-      BillingMode: 'PAY_PER_REQUEST',
-    })
+      BillingMode: "PAY_PER_REQUEST",
+    }),
   );
 
   for (let i = 0; i < 3; i++) {
     await client.driver.send(
       new PutItemCommand({
-        TableName: 'Sessions',
+        TableName: "Sessions",
         Item: {
           sessionId: { S: `sess-${randomUUID()}` },
           userId: { S: `user-${i}` },
@@ -166,7 +166,7 @@ export async function seedTestData(client: ZodDbsDynamoClient) {
             N: String(Math.floor(Date.now() / 1000) + 3600 * (i + 1)),
           },
         },
-      })
+      }),
     );
   }
 }

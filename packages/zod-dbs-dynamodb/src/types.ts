@@ -1,11 +1,11 @@
-import type { ZodDbsDatabaseClient } from 'zod-dbs-core';
+import type { ZodDbsDatabaseClient } from "zod-dbs-core";
 
 // Narrow driver typing lazily to avoid hard dependency in type space.
 export interface ZodDbsDynamoClient extends ZodDbsDatabaseClient {
   driver: any; // DynamoDBClient
 }
 
-declare module 'zod-dbs-core' {
+declare module "zod-dbs-core" {
   interface ZodDbsProviderConfig {
     /**
      * AWS region for DynamoDB

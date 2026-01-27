@@ -1,22 +1,20 @@
-import { generateZodSchemas } from 'zod-dbs';
-import { logDebug, toError } from 'zod-dbs-core';
-
-import type { ZodDbsCliConfig, ZodDbsCliOptions } from './types.js';
-
-import { detectDebugMode, getConfiguration } from './config.js';
-import { runCommander } from './program.js';
-import { loadProvider } from './provider.js';
-import { isSilentMode } from './utils/args.js';
-import { logAppName, logEmpty, logError, logSetting } from './utils/logger.js';
-import { createProgressHandler } from './utils/progress.js';
-import { getAppVersion } from './utils/version.js';
+import { generateZodSchemas } from "zod-dbs";
+import { logDebug, toError } from "zod-dbs-core";
+import { detectDebugMode, getConfiguration } from "./config.js";
+import { runCommander } from "./program.js";
+import { loadProvider } from "./provider.js";
+import type { ZodDbsCliConfig, ZodDbsCliOptions } from "./types.js";
+import { isSilentMode } from "./utils/args.js";
+import { logAppName, logEmpty, logError, logSetting } from "./utils/logger.js";
+import { createProgressHandler } from "./utils/progress.js";
+import { getAppVersion } from "./utils/version.js";
 
 export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
   detectDebugMode();
-  logDebug('Starting zod-dbs CLI with options:', cliOptions);
+  logDebug("Starting zod-dbs CLI with options:", cliOptions);
 
   const appVersion = cliOptions.appVersion ?? (await getAppVersion());
-  const appName = cliOptions.appName || 'zod-dbs';
+  const appName = cliOptions.appName || "zod-dbs";
   const silent = isSilentMode();
 
   if (!silent) {
@@ -41,7 +39,7 @@ export const runCli = async (cliOptions: ZodDbsCliOptions = {}) => {
       ...options,
     };
 
-    logDebug('Final configuration:', cliConfig);
+    logDebug("Final configuration:", cliConfig);
 
     if (!cliConfig.silent) {
       logSettings(cliConfig);

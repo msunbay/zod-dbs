@@ -1,22 +1,21 @@
-import { logDebug } from 'zod-dbs-core';
-
 import type {
   ZodDbsConfig,
   ZodDbsProvider,
   ZodDbsRenderer,
   ZodDbsSchemaInfo,
   ZodDbsZodVersion,
-} from 'zod-dbs-core';
+} from "zod-dbs-core";
+import { logDebug } from "zod-dbs-core";
 
-import { DEFAULT_CONFIGURATION, DEFAULT_OUTPUT_DIR } from './constants.js';
-import { generateConstantsFile } from './generate/generateConstantsFile.js';
-import { generateIndexFiles } from './generate/generateIndexFiles.js';
-import { generateSchemaFiles } from './generate/generateSchemaFile.js';
-import { generateTypesFile } from './generate/generateTypesFile.js';
-import { Zod3Renderer } from './renderers/Zod3Renderer.js';
-import { Zod4MiniRenderer } from './renderers/Zod4MiniRenderer.js';
-import { Zod4Renderer } from './renderers/Zod4Renderer.js';
-import { clearTablesDirectory } from './utils/index.js';
+import { DEFAULT_CONFIGURATION, DEFAULT_OUTPUT_DIR } from "./constants.js";
+import { generateConstantsFile } from "./generate/generateConstantsFile.js";
+import { generateIndexFiles } from "./generate/generateIndexFiles.js";
+import { generateSchemaFiles } from "./generate/generateSchemaFile.js";
+import { generateTypesFile } from "./generate/generateTypesFile.js";
+import { Zod3Renderer } from "./renderers/Zod3Renderer.js";
+import { Zod4MiniRenderer } from "./renderers/Zod4MiniRenderer.js";
+import { Zod4Renderer } from "./renderers/Zod4Renderer.js";
+import { clearTablesDirectory } from "./utils/index.js";
 
 export interface ZodDbsGenerateOptions {
   provider: ZodDbsProvider;
@@ -25,11 +24,11 @@ export interface ZodDbsGenerateOptions {
 }
 
 const createRenderer = (zodVersion: ZodDbsZodVersion | undefined) => {
-  if (zodVersion === '4') {
+  if (zodVersion === "4") {
     return new Zod4Renderer();
   }
 
-  if (zodVersion === '4-mini') {
+  if (zodVersion === "4-mini") {
     return new Zod4MiniRenderer();
   }
 
@@ -49,7 +48,7 @@ export const generateZodSchemas = async ({
     ...config,
   };
 
-  logDebug('Using generation configuration:', generateConfig);
+  logDebug("Using generation configuration:", generateConfig);
 
   const {
     outputDir = DEFAULT_OUTPUT_DIR,
@@ -66,13 +65,13 @@ export const generateZodSchemas = async ({
 
   const schema = await provider.getSchemaInformation(config);
 
-  onProgress?.('generating', { total: schema.tables.length });
+  onProgress?.("generating", { total: schema.tables.length });
 
   logDebug(`Generating zod schemas for ${schema.tables.length} tables'`);
 
   const schemaRenderer = renderer ?? createRenderer(zodVersion);
 
-  logDebug(`Using renderer: ${schemaRenderer.name ?? '<unknown>'}`);
+  logDebug(`Using renderer: ${schemaRenderer.name ?? "<unknown>"}`);
 
   for (const table of schema.tables) {
     await generateSchemaFiles(table, schemaRenderer, generateConfig);
@@ -82,7 +81,7 @@ export const generateZodSchemas = async ({
   await generateConstantsFile(schema, generateConfig);
   await generateTypesFile(schema, generateConfig);
 
-  onProgress?.('done');
+  onProgress?.("done");
 
   return schema;
 };

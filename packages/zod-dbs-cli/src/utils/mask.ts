@@ -1,5 +1,5 @@
 const maskConnectionString = (connectionString: string): string => {
-  if (!connectionString) return '';
+  if (!connectionString) return "";
 
   let masked = connectionString;
 
@@ -9,10 +9,10 @@ const maskConnectionString = (connectionString: string): string => {
     // Only attempt URL parsing if it looks like a URL (has a scheme:)
     if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(masked)) {
       // If it contains authority (//), URL will preserve userinfo
-      if (masked.includes('//')) {
+      if (masked.includes("//")) {
         const url = new URL(masked);
         if (url.password) {
-          url.password = '****';
+          url.password = "****";
         }
         // Normalize URL (might reorder params), then continue with further masking
         masked = url.toString();
@@ -27,24 +27,24 @@ const maskConnectionString = (connectionString: string): string => {
   masked = masked.replace(
     /(\/\/)([^/?#@]*)(@)/,
     (_m, p1: string, userinfo: string, p3: string) => {
-      const idx = userinfo.indexOf(':');
+      const idx = userinfo.indexOf(":");
       if (idx === -1) return `${p1}${userinfo}${p3}`;
       const userPart = userinfo.slice(0, idx + 1); // include colon
       return `${p1}${userPart}****${p3}`;
-    }
+    },
   );
 
   // 3) Mask sensitive query parameters in URLs: ?password=...&token=...
   masked = masked.replace(
     /([?&])(password|pwd|token|sessiontoken|secret|clientsecret|client[_-]?secret|accesskeyid|secretaccesskey|access[_-]?key|secret[_-]?key|api[_-]?key|accountkey)=([^&#]*)/gi,
-    (_m, sep: string, key: string) => `${sep}${key}=****`
+    (_m, sep: string, key: string) => `${sep}${key}=****`,
   );
 
   // 4) Mask DSN-style key=value pairs (e.g., mssql/oracle). Apply only on DSN-like strings
   // to avoid clobbering URL query strings.
   if (
-    masked.includes(';') ||
-    (!/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(masked) && !masked.includes('?'))
+    masked.includes(";") ||
+    (!/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(masked) && !masked.includes("?"))
   ) {
     masked = masked.replace(
       /(\b(password|pwd|token|sessiontoken|secret|clientsecret|client[_-]?secret|accesskeyid|secretaccesskey|access[_-]?key|secret[_-]?key|api[_-]?key|accountkey)\s*=\s*)('(?:[^']*)'|"(?:[^"]*)"|[^;&\s'")]+)/gi,
@@ -54,7 +54,7 @@ const maskConnectionString = (connectionString: string): string => {
         if (value?.startsWith('"') && value.endsWith('"'))
           return `${prefix}"****"`;
         return `${prefix}****`;
-      }
+      },
     );
   }
 
@@ -63,21 +63,21 @@ const maskConnectionString = (connectionString: string): string => {
 
 export const maskSensitiveValue = (
   name: string,
-  value: string | undefined
+  value: string | undefined,
 ): string => {
-  if (!value) return '';
+  if (!value) return "";
 
   const lowerName = name.toLowerCase();
 
   if (
-    lowerName.includes('password') ||
-    lowerName.includes('secret') ||
-    lowerName.includes('token')
+    lowerName.includes("password") ||
+    lowerName.includes("secret") ||
+    lowerName.includes("token")
   ) {
-    return '****';
+    return "****";
   }
 
-  if (name === 'connectionString') {
+  if (name === "connectionString") {
     return maskConnectionString(value);
   }
 

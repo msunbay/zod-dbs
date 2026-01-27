@@ -1,14 +1,13 @@
-import { logDebug, sql, ZodDbsBaseProvider } from 'zod-dbs-core';
-
 import type {
   ZodDbsColumnInfo,
   ZodDbsProviderConfig,
   ZodDbsTableType,
-} from 'zod-dbs-core';
+} from "zod-dbs-core";
+import { logDebug, sql, ZodDbsBaseProvider } from "zod-dbs-core";
 
-import { createClient } from './client.js';
-import { getEnumConstraints } from './enumConstraints.js';
-import { isArrayType, isSerialType } from './utils.js';
+import { createClient } from "./client.js";
+import { getEnumConstraints } from "./enumConstraints.js";
+import { isArrayType, isSerialType } from "./utils.js";
 
 interface RawColumnInfo {
   name: string;
@@ -35,57 +34,57 @@ interface RawColumnInfo {
 export class PostgreSqlProvider extends ZodDbsBaseProvider {
   constructor() {
     super({
-      name: 'pg',
-      displayName: 'PostgreSQL',
+      name: "pg",
+      displayName: "PostgreSQL",
       configurationDefaults: {
-        user: 'postgres',
-        password: 'postgres',
-        host: 'localhost',
+        user: "postgres",
+        password: "postgres",
+        host: "localhost",
         port: 5432,
-        database: 'postgres',
-        schemaName: 'public',
+        database: "postgres",
+        schemaName: "public",
       },
       options: [
         {
-          name: 'connection-string',
-          type: 'string',
+          name: "connection-string",
+          type: "string",
           description:
-            'Full database connection string (overrides other connection options)',
+            "Full database connection string (overrides other connection options)",
         },
         {
-          name: 'host',
-          type: 'string',
-          description: 'Database host',
+          name: "host",
+          type: "string",
+          description: "Database host",
         },
         {
-          name: 'port',
-          type: 'number',
-          description: 'Database server port',
+          name: "port",
+          type: "number",
+          description: "Database server port",
         },
         {
-          name: 'user',
-          type: 'string',
-          description: 'Database user',
+          name: "user",
+          type: "string",
+          description: "Database user",
         },
         {
-          name: 'password',
-          type: 'string',
-          description: 'Database password',
+          name: "password",
+          type: "string",
+          description: "Database password",
         },
         {
-          name: 'database',
-          type: 'string',
-          description: 'Database name',
+          name: "database",
+          type: "string",
+          description: "Database name",
         },
         {
-          name: 'schema-name',
-          type: 'string',
-          description: 'Database schema to introspect',
+          name: "schema-name",
+          type: "string",
+          description: "Database schema to introspect",
         },
         {
-          name: 'ssl',
-          type: 'boolean',
-          description: 'Use SSL connection',
+          name: "ssl",
+          type: "boolean",
+          description: "Use SSL connection",
         },
       ],
     });
@@ -97,7 +96,7 @@ export class PostgreSqlProvider extends ZodDbsBaseProvider {
 
   protected createColumnInfo(
     column: RawColumnInfo,
-    schemaName?: string
+    schemaName?: string,
   ): ZodDbsColumnInfo {
     const parsedColumn: ZodDbsColumnInfo = {
       maxLen: column.maxLen ?? undefined,
@@ -120,11 +119,11 @@ export class PostgreSqlProvider extends ZodDbsBaseProvider {
     } else if (column.checkConstraints) {
       parsedColumn.enumValues = getEnumConstraints(
         column.name,
-        column.checkConstraints.map((c) => c.checkClause)
+        column.checkConstraints.map((c) => c.checkClause),
       );
 
       logDebug(
-        `Extracted enum values for column '${column.tableName}.${column.name}': ${JSON.stringify(parsedColumn.enumValues)}`
+        `Extracted enum values for column '${column.tableName}.${column.name}': ${JSON.stringify(parsedColumn.enumValues)}`,
       );
     }
 
@@ -134,15 +133,15 @@ export class PostgreSqlProvider extends ZodDbsBaseProvider {
   }
 
   public override async fetchSchemaInfo(
-    config: ZodDbsProviderConfig
+    config: ZodDbsProviderConfig,
   ): Promise<ZodDbsColumnInfo[]> {
     const { schemaName } = config;
 
-    config.onProgress?.('connecting');
+    config.onProgress?.("connecting");
     const client = await this.createClient(config);
     await client.connect();
 
-    config.onProgress?.('fetchingSchema');
+    config.onProgress?.("fetchingSchema");
     logDebug(`Retrieving schema information for schema '${schemaName}'`);
 
     try {
@@ -192,7 +191,7 @@ export class PostgreSqlProvider extends ZodDbsBaseProvider {
             AND NOT a.attisdropped
           ORDER BY c.relname, a.attnum;
         `,
-        [schemaName]
+        [schemaName],
       );
 
       logDebug(`Retrieved ${res.length} columns from schema '${schemaName}'`);

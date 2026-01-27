@@ -1,18 +1,18 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
+import fs from "node:fs/promises";
+import path from "node:path";
 
-import { generateZodSchemas } from '../../../src/generateZodSchemas.js';
-import { Zod4Renderer } from '../../../src/renderers/Zod4Renderer.js';
+import { generateZodSchemas } from "../../../src/generateZodSchemas.js";
+import { Zod4Renderer } from "../../../src/renderers/Zod4Renderer.js";
 import {
   createTestProvider,
   getOutputDir,
   getOutputFiles,
-} from '../testDbUtils.js';
+} from "../testDbUtils.js";
 
 const provider = createTestProvider();
 
-it('generates schemas using a custom renderer', async () => {
-  const outputDir = getOutputDir('generate', 'customRenderer');
+it("generates schemas using a custom renderer", async () => {
+  const outputDir = getOutputDir("generate", "customRenderer");
 
   class CustomRenderer extends Zod4Renderer {
     protected override renderReadField() {
@@ -31,15 +31,15 @@ it('generates schemas using a custom renderer', async () => {
     renderer,
     config: {
       outputDir,
-      moduleResolution: 'esm',
-      include: ['users'],
+      moduleResolution: "esm",
+      include: ["users"],
     },
   });
 
   const outputFiles = await getOutputFiles(outputDir);
 
   for (const file of outputFiles) {
-    const content = await fs.readFile(file, 'utf8');
+    const content = await fs.readFile(file, "utf8");
     expect(content).toMatchSnapshot(path.relative(outputDir, file));
   }
 });

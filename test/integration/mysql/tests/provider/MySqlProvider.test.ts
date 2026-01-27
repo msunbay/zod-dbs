@@ -1,10 +1,10 @@
-import { MySqlProvider } from 'zod-dbs-mysql';
+import { MySqlProvider } from "zod-dbs-mysql";
 
-import { getProviderConfig } from '../../../utils/context.js';
+import { getProviderConfig } from "../../../utils/context.js";
 
 const connectionConfig = getProviderConfig();
 
-it('returns raw schema column information', async () => {
+it("returns raw schema column information", async () => {
   const provider = new MySqlProvider();
 
   const info = await provider.fetchSchemaInfo({
@@ -14,10 +14,10 @@ it('returns raw schema column information', async () => {
 
   expect(info).toBeDefined();
   expect(info).toHaveLength(7);
-  expect(info).toMatchSnapshot('rawColumns');
+  expect(info).toMatchSnapshot("rawColumns");
 });
 
-it('returns schema models', async () => {
+it("returns schema models", async () => {
   const provider = new MySqlProvider();
 
   const info = await provider.getSchemaInformation(connectionConfig);
@@ -26,15 +26,15 @@ it('returns schema models', async () => {
   expect(info.tables).toBeDefined();
   expect(info.tables).toHaveLength(1);
 
-  const userTable = info.tables.find((t) => t.name === 'users')!;
+  const userTable = info.tables.find((t) => t.name === "users")!;
   expect(userTable).toBeDefined();
   expect(userTable.columns).toBeDefined();
   expect(userTable.columns).toHaveLength(7);
 
-  expect(userTable).toMatchSnapshot('userTable');
+  expect(userTable).toMatchSnapshot("userTable");
 });
 
-it('throws if schemaName and database is missing', async () => {
+it("throws if schemaName and database is missing", async () => {
   const provider = new MySqlProvider();
 
   await expect(
@@ -42,8 +42,8 @@ it('throws if schemaName and database is missing', async () => {
       ...connectionConfig,
       database: undefined,
       schemaName: undefined,
-    })
+    }),
   ).rejects.toThrowErrorMatchingInlineSnapshot(
-    `[Error: MySQL provider requires a database/schema name to fetch schema information.]`
+    `[Error: MySQL provider requires a database/schema name to fetch schema information.]`,
   );
 });

@@ -16,15 +16,15 @@ interface ZodDbsConnectionConfig {
 }
 
 export const createConnectionString = (
-  options: ZodDbsConnectionConfig
+  options: ZodDbsConnectionConfig,
 ): string => {
   const {
-    host = 'localhost',
+    host = "localhost",
     port,
     database,
     user,
     password,
-    scheme = 'db',
+    scheme = "db",
   } = options;
 
   let connectionString = `${scheme}://`;
@@ -55,7 +55,7 @@ export const createConnectionString = (
  * Parses database connection strings, e.g., 'postgresql://user:pass@localhost:5432/dbname'
  */
 export const parseConnectionString = (
-  connectionString: string
+  connectionString: string,
 ): ZodDbsConnectionConfig => {
   const url = new URL(connectionString);
   const user = url.username;
@@ -63,7 +63,7 @@ export const parseConnectionString = (
   const host = url.hostname;
   const port = url.port ? parseInt(url.port, 10) : undefined;
   const database = url.pathname.slice(1); // Remove leading '/'
-  const scheme = url.protocol.replace(':', ''); // Remove trailing ':'
+  const scheme = url.protocol.replace(":", ""); // Remove trailing ':'
 
   return {
     host,

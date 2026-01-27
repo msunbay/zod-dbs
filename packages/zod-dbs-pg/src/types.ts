@@ -1,6 +1,6 @@
-import type { ConnectionOptions } from 'node:tls';
+import type { ConnectionOptions } from "node:tls";
 
-declare module 'zod-dbs-core' {
+declare module "zod-dbs-core" {
   interface ZodDbsProviderConfig {
     /**
      * Full database connection string (overrides other connection options)

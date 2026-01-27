@@ -1,14 +1,13 @@
-import { promises } from 'node:fs';
-import { logDebug } from 'zod-dbs-core';
-
+import { promises } from "node:fs";
 import type {
   ZodDbsConfig,
   ZodDbsSchemaInfo,
   ZodDbsTableType,
-} from 'zod-dbs-core';
+} from "zod-dbs-core";
+import { logDebug } from "zod-dbs-core";
 
-import { ensureFolder, getOutputFolder } from '../utils/fs.js';
-import { renderMustacheTemplate } from '../utils/mustache.js';
+import { ensureFolder, getOutputFolder } from "../utils/fs.js";
+import { renderMustacheTemplate } from "../utils/mustache.js";
 
 const generateSchemasIndexFile = async (
   schema: ZodDbsSchemaInfo,
@@ -16,14 +15,14 @@ const generateSchemasIndexFile = async (
   {
     outputDir,
     moduleResolution,
-  }: Pick<ZodDbsConfig, 'outputDir' | 'moduleResolution'>
+  }: Pick<ZodDbsConfig, "outputDir" | "moduleResolution">,
 ) => {
   const exports = schema.tables
     .filter((table) => table.type === type)
     .map((table) => ({
       ...table,
       fileName:
-        moduleResolution === 'esm'
+        moduleResolution === "esm"
           ? `${table.name.toLowerCase()}/index.js`
           : table.name.toLowerCase(),
     }));
@@ -35,28 +34,28 @@ const generateSchemasIndexFile = async (
   }
 
   if (!outputDir) {
-    throw new Error('Output directory is not defined in config');
+    throw new Error("Output directory is not defined in config");
   }
 
-  const content = await renderMustacheTemplate('index', { exports });
+  const content = await renderMustacheTemplate("index", { exports });
 
   const folderPath = `${outputDir}/${getOutputFolder(type)}`;
   const filePath = `${folderPath}/index.ts`;
 
   await ensureFolder(folderPath);
 
-  await promises.writeFile(filePath, content, 'utf8');
+  await promises.writeFile(filePath, content, "utf8");
 
   logDebug(`Generated "${filePath}" file`);
 };
 
 export const generateIndexFiles = async (
   schema: ZodDbsSchemaInfo,
-  config: ZodDbsConfig
+  config: ZodDbsConfig,
 ): Promise<void> => {
-  await generateSchemasIndexFile(schema, 'table', config);
-  await generateSchemasIndexFile(schema, 'view', config);
-  await generateSchemasIndexFile(schema, 'materialized_view', config);
-  await generateSchemasIndexFile(schema, 'foreign_table', config);
-  await generateSchemasIndexFile(schema, 'unknown', config);
+  await generateSchemasIndexFile(schema, "table", config);
+  await generateSchemasIndexFile(schema, "view", config);
+  await generateSchemasIndexFile(schema, "materialized_view", config);
+  await generateSchemasIndexFile(schema, "foreign_table", config);
+  await generateSchemasIndexFile(schema, "unknown", config);
 };

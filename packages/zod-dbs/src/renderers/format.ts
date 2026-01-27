@@ -1,10 +1,10 @@
-import pluralize from 'pluralize';
+import pluralize from "pluralize";
 
 import type {
   ZodDbsCasing,
   ZodDbsFieldCasing,
   ZodDbsTable,
-} from 'zod-dbs-core';
+} from "zod-dbs-core";
 
 import {
   convertCaseFormat,
@@ -12,47 +12,47 @@ import {
   singularPascalCase,
   singularUpperCase,
   snakeCase,
-} from '../utils/casing.js';
+} from "../utils/casing.js";
 
-const MVIEW_PREFIXES = ['mv_', 'mview_'];
-const VIEW_PREFIXES = ['v_', 'view_'];
+const MVIEW_PREFIXES = ["mv_", "mview_"];
+const VIEW_PREFIXES = ["v_", "view_"];
 
-export type Operation = 'read' | 'insert' | 'update' | 'write';
+export type Operation = "read" | "insert" | "update" | "write";
 
 const getOperationSuffix = (type: Operation): string => {
   switch (type) {
-    case 'insert':
-      return 'Insert';
-    case 'update':
-      return 'Update';
-    case 'write':
-      return 'Write';
-    case 'read':
-      return '';
+    case "insert":
+      return "Insert";
+    case "update":
+      return "Update";
+    case "write":
+      return "Write";
+    case "read":
+      return "";
     default:
-      return '';
+      return "";
   }
 };
 
 export const getSchemaPrefix = (table: ZodDbsTable): string => {
   switch (table.type) {
-    case 'table':
-    case 'foreign_table':
-      return 'Table';
-    case 'materialized_view':
+    case "table":
+    case "foreign_table":
+      return "Table";
+    case "materialized_view":
       // If the table name starts with a known materialized view prefix, return an empty string
       // to avoid adding 'Mv' prefix unnecessarily.
       return MVIEW_PREFIXES.some((prefix) => table.name.startsWith(prefix))
-        ? ''
-        : 'Mv';
-    case 'view':
+        ? ""
+        : "Mv";
+    case "view":
       // If the table name starts with a known view prefix, return an empty string
       // to avoid adding 'View' prefix unnecessarily.
       return VIEW_PREFIXES.some((prefix) => table.name.startsWith(prefix))
-        ? ''
-        : 'View';
+        ? ""
+        : "View";
     default:
-      return '';
+      return "";
   }
 };
 
@@ -60,8 +60,8 @@ export const formatRecordTransformName = ({
   table,
   operation: type,
   singularize = true,
-  casing = 'camelCase',
-  suffix = 'BaseRecord',
+  casing = "camelCase",
+  suffix = "BaseRecord",
 }: {
   table: ZodDbsTable;
   operation: Operation;
@@ -80,8 +80,8 @@ export const formatRecordTransformName = ({
 export const formatTableSchemaName = ({
   table,
   operation: type,
-  casing = 'PascalCase',
-  suffix = 'Schema',
+  casing = "PascalCase",
+  suffix = "Schema",
 }: {
   table: ZodDbsTable;
   operation: Operation;
@@ -97,8 +97,8 @@ export const formatTableRecordName = ({
   table,
   operation,
   singularize = true,
-  casing = 'PascalCase',
-  suffix = 'Record',
+  casing = "PascalCase",
+  suffix = "Record",
 }: {
   table: ZodDbsTable;
   operation: Operation;
@@ -117,9 +117,9 @@ export const formatTableRecordName = ({
 export const formatObjectSchemaName = ({
   tableName,
   columnName,
-  casing = 'PascalCase',
+  casing = "PascalCase",
   singularize = true,
-  suffix = 'Schema',
+  suffix = "Schema",
 }: {
   tableName: string;
   columnName: string;
@@ -156,7 +156,7 @@ export const formatEnumConstantName = ({
 export const formatEnumTypeName = ({
   tableName,
   colName,
-  casing = 'PascalCase',
+  casing = "PascalCase",
   singularize = true,
 }: {
   tableName: string;
@@ -177,9 +177,9 @@ export const formatEnumTypeName = ({
 
 export const formatPropertyName = (
   columnName: string,
-  casing: ZodDbsFieldCasing = 'camelCase'
+  casing: ZodDbsFieldCasing = "camelCase",
 ): string => {
   // Remove leading underscores
-  const normalizedColumnName = columnName.replace(/^_+/, '');
+  const normalizedColumnName = columnName.replace(/^_+/, "");
   return convertCaseFormat(normalizedColumnName, casing);
 };

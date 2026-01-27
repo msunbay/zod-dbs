@@ -2,7 +2,7 @@ import type {
   ZodDbsConfig,
   ZodDbsProvider,
   ZodDbsRenderer,
-} from 'zod-dbs-core';
+} from "zod-dbs-core";
 
 /**
  * Configuration options for the zod-dbs CLI.

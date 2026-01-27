@@ -1,14 +1,14 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
-    reporters: 'dot',
+    reporters: "dot",
     projects: [
       {
         test: {
-          name: 'unit',
-          environment: 'node',
-          include: ['test/unit/**/*.test.ts'],
+          name: "unit",
+          environment: "node",
+          include: ["test/unit/**/*.test.ts"],
           globals: true,
         },
       },

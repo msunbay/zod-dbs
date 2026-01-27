@@ -1,10 +1,10 @@
 // src/database/checks/orConstraint.ts
 export function parseOrConstraint(
   columnName: string,
-  clause: string
+  clause: string,
 ): string[] {
   const match = clause.match(
-    /\(\s*((?:"?[a-zA-Z0-9_]+"?\s*=\s*'[^']+'\s*OR\s*)+"?[a-zA-Z0-9_]+"?\s*=\s*'[^']+')\s*\)/
+    /\(\s*((?:"?[a-zA-Z0-9_]+"?\s*=\s*'[^']+'\s*OR\s*)+"?[a-zA-Z0-9_]+"?\s*=\s*'[^']+')\s*\)/,
   );
   if (match) {
     const orParts = match[1].split(/\s+OR\s+/);

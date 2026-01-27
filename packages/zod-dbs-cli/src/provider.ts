@@ -1,25 +1,24 @@
-import { logDebug, toError } from 'zod-dbs-core';
+import type { ZodDbsProvider } from "zod-dbs-core";
+import { logDebug, toError } from "zod-dbs-core";
+import type { ZodDbsCliConfig } from "./types.js";
 
-import type { ZodDbsProvider } from 'zod-dbs-core';
-import type { ZodDbsCliConfig } from './types.js';
-
-import { getArgumentValue } from './utils/args.js';
-import { logError } from './utils/logger.js';
+import { getArgumentValue } from "./utils/args.js";
+import { logError } from "./utils/logger.js";
 
 const importProvider = async (
-  provider: string | ZodDbsProvider
+  provider: string | ZodDbsProvider,
 ): Promise<ZodDbsProvider> => {
   if (!provider)
     throw new Error(
-      'Provider must be specified through the --provider flag or in a config file'
+      "Provider must be specified through the --provider flag or in a config file",
     );
 
-  if (typeof provider !== 'string') {
-    logDebug('Using provided provider instance:', provider);
+  if (typeof provider !== "string") {
+    logDebug("Using provided provider instance:", provider);
     return provider;
   }
 
-  const name = provider.startsWith('zod-dbs-')
+  const name = provider.startsWith("zod-dbs-")
     ? provider
     : `zod-dbs-${provider}`;
 
@@ -44,13 +43,13 @@ const importProvider = async (
 
 export const loadProvider = async (
   override: ZodDbsProvider | string | undefined,
-  config: ZodDbsCliConfig
+  config: ZodDbsCliConfig,
 ) => {
   try {
     const providerOrName =
       override ??
-      getArgumentValue('-p') ??
-      getArgumentValue('--provider') ??
+      getArgumentValue("-p") ??
+      getArgumentValue("--provider") ??
       config.provider;
 
     return await importProvider(providerOrName);

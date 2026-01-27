@@ -1,15 +1,15 @@
-import type { ZodDbsConfig } from 'zod-dbs-core';
+import type { ZodDbsConfig } from "zod-dbs-core";
 
-export const DEFAULT_OUTPUT_DIR = './zod-schemas';
+export const DEFAULT_OUTPUT_DIR = "./zod-schemas";
 
 // Base defaults independent of environment.
 export const DEFAULT_CONFIGURATION: ZodDbsConfig = {
-  zodVersion: '3',
+  zodVersion: "3",
   outputDir: DEFAULT_OUTPUT_DIR,
-  moduleResolution: 'commonjs',
+  moduleResolution: "commonjs",
 
-  fieldNameCasing: 'camelCase',
-  objectNameCasing: 'PascalCase',
+  fieldNameCasing: "camelCase",
+  objectNameCasing: "PascalCase",
 
   caseTransform: true,
   singularization: true,

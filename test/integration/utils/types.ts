@@ -1,4 +1,4 @@
-import type { ZodDbsProviderConfig } from 'zod-dbs-core';
+import type { ZodDbsProviderConfig } from "zod-dbs-core";
 
 export interface TestDbContext {
   config: ZodDbsProviderConfig;

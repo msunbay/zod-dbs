@@ -1,7 +1,7 @@
 export const toError = (error: unknown): Error => {
   if (
     error instanceof Error &&
-    'errors' in error &&
+    "errors" in error &&
     Array.isArray(error.errors)
   ) {
     return new Error(error.errors[0]);

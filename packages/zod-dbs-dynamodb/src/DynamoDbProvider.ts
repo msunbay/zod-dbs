@@ -2,17 +2,16 @@ import {
   DescribeTableCommand,
   ListTablesCommand,
   ScanCommand,
-} from '@aws-sdk/client-dynamodb';
-import { logDebug, ZodDbsBaseProvider } from 'zod-dbs-core';
-
+} from "@aws-sdk/client-dynamodb";
 import type {
   ZodDbsColumnInfo,
   ZodDbsProvider,
   ZodDbsProviderConfig,
-} from 'zod-dbs-core';
+} from "zod-dbs-core";
+import { logDebug, ZodDbsBaseProvider } from "zod-dbs-core";
 
-import { createClient } from './client.js';
-import { logEntriesToFile } from './debug.js';
+import { createClient } from "./client.js";
+import { logEntriesToFile } from "./debug.js";
 
 export class DynamoDbProvider
   extends ZodDbsBaseProvider
@@ -20,45 +19,45 @@ export class DynamoDbProvider
 {
   constructor() {
     super({
-      name: 'dynamo',
-      displayName: 'DynamoDB',
+      name: "dynamo",
+      displayName: "DynamoDB",
       configurationDefaults: {
-        region: 'us-east-1',
+        region: "us-east-1",
         sampleSize: 50,
         nullsToUndefined: false,
         stringifyJson: false,
       },
       options: [
         {
-          name: 'region',
-          type: 'string',
-          description: 'AWS region for DynamoDB',
+          name: "region",
+          type: "string",
+          description: "AWS region for DynamoDB",
         },
         {
-          name: 'access-key-id',
-          type: 'string',
-          description: 'AWS Access Key ID (for local or custom endpoints)',
+          name: "access-key-id",
+          type: "string",
+          description: "AWS Access Key ID (for local or custom endpoints)",
         },
         {
-          name: 'secret-access-key',
-          type: 'string',
-          description: 'AWS Secret Access Key (for local or custom endpoints)',
+          name: "secret-access-key",
+          type: "string",
+          description: "AWS Secret Access Key (for local or custom endpoints)",
         },
         {
-          name: 'session-token',
-          type: 'string',
-          description: 'AWS Session Token (for local or custom endpoints)',
+          name: "session-token",
+          type: "string",
+          description: "AWS Session Token (for local or custom endpoints)",
         },
         {
-          name: 'endpoint',
-          type: 'string',
-          description: 'Override endpoint (e.g., for local DynamoDB)',
+          name: "endpoint",
+          type: "string",
+          description: "Override endpoint (e.g., for local DynamoDB)",
         },
         {
-          name: 'sample-size',
-          type: 'number',
+          name: "sample-size",
+          type: "number",
           description:
-            'Number of items to sample per table when inferring schema',
+            "Number of items to sample per table when inferring schema",
         },
       ],
     });
@@ -86,7 +85,7 @@ export class DynamoDbProvider
       tableName,
       schemaName: undefined,
       description: undefined,
-      tableType: 'table',
+      tableType: "table",
       enumValues: undefined,
       isEnum: false,
       isSerial: false,
@@ -102,32 +101,32 @@ export class DynamoDbProvider
     isNullable: boolean;
   } {
     if (value === null || value === undefined)
-      return { type: 'any', isNullable: true };
+      return { type: "any", isNullable: true };
 
-    if (value.S !== undefined) return { type: 'string', isNullable: false };
-    if (value.N !== undefined) return { type: 'number', isNullable: false };
-    if (value.BOOL !== undefined) return { type: 'boolean', isNullable: false };
-    if (value.M !== undefined) return { type: 'object', isNullable: false };
-    if (value.L !== undefined) return { type: 'array', isNullable: false };
-    if (value.B !== undefined) return { type: 'string', isNullable: false }; // treat binary as base64 string
-    if (value.SS !== undefined) return { type: 'array', isNullable: false };
-    if (value.NS !== undefined) return { type: 'array', isNullable: false };
-    if (value.BS !== undefined) return { type: 'array', isNullable: false };
+    if (value.S !== undefined) return { type: "string", isNullable: false };
+    if (value.N !== undefined) return { type: "number", isNullable: false };
+    if (value.BOOL !== undefined) return { type: "boolean", isNullable: false };
+    if (value.M !== undefined) return { type: "object", isNullable: false };
+    if (value.L !== undefined) return { type: "array", isNullable: false };
+    if (value.B !== undefined) return { type: "string", isNullable: false }; // treat binary as base64 string
+    if (value.SS !== undefined) return { type: "array", isNullable: false };
+    if (value.NS !== undefined) return { type: "array", isNullable: false };
+    if (value.BS !== undefined) return { type: "array", isNullable: false };
 
-    return { type: 'any', isNullable: true };
+    return { type: "any", isNullable: true };
   }
 
   public async fetchSchemaInfo(
-    config: ZodDbsProviderConfig
+    config: ZodDbsProviderConfig,
   ): Promise<ZodDbsColumnInfo[]> {
-    config.onProgress?.('Connecting to DynamoDB');
+    config.onProgress?.("Connecting to DynamoDB");
     const client = await this.createClient(config);
     await client.connect();
 
     try {
       const driver = client.driver;
 
-      config.onProgress?.('Retrieving table list');
+      config.onProgress?.("Retrieving table list");
       const listTablesResp = await driver.send(new ListTablesCommand({}));
       const tableNames: string[] = listTablesResp?.TableNames || [];
       logDebug(`Retrieving DynamoDB tables`, { count: tableNames.length });
@@ -142,15 +141,15 @@ export class DynamoDbProvider
         try {
           config.onProgress?.(`Scanning table ${tableName}`);
           const descResp = await driver.send(
-            new DescribeTableCommand({ TableName: tableName })
+            new DescribeTableCommand({ TableName: tableName }),
           );
           keyAttributes = (descResp.Table?.KeySchema || []).map(
-            (k: any) => k.AttributeName
+            (k: any) => k.AttributeName,
           );
 
           // Scan items to infer other attributes
           const scanResp = await driver.send(
-            new ScanCommand({ TableName: tableName, Limit: sampleSize })
+            new ScanCommand({ TableName: tableName, Limit: sampleSize }),
           );
 
           const attributeStats = new Map<
@@ -176,8 +175,8 @@ export class DynamoDbProvider
           for (const [attr, stat] of attributeStats.entries()) {
             let dataType: string;
             if (stat.types.size === 1) dataType = [...stat.types][0];
-            else if (stat.types.size === 0) dataType = 'any';
-            else dataType = 'json';
+            else if (stat.types.size === 0) dataType = "any";
+            else dataType = "json";
 
             const isNullable = stat.nulls > 0 && stat.nulls < stat.seen;
             const colInfo = this.createColumnInfo({

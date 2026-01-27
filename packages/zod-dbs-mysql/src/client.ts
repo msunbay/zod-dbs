@@ -1,12 +1,11 @@
-import { createConnection } from 'mysql2/promise';
-import { logDebug } from 'zod-dbs-core';
-
-import type { ZodDbsDatabaseClient, ZodDbsProviderConfig } from 'zod-dbs-core';
+import { createConnection } from "mysql2/promise";
+import type { ZodDbsDatabaseClient, ZodDbsProviderConfig } from "zod-dbs-core";
+import { logDebug } from "zod-dbs-core";
 
 export const createClient = async (
-  config: ZodDbsProviderConfig
+  config: ZodDbsProviderConfig,
 ): Promise<ZodDbsDatabaseClient> => {
-  logDebug('Creating MySQL client', config);
+  logDebug("Creating MySQL client", config);
 
   const client = config.connectionString
     ? await createConnection(config.connectionString)

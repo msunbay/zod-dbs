@@ -1,13 +1,12 @@
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { logDebug } from 'zod-dbs-core';
-
-import type { ZodDbsProviderConfig } from 'zod-dbs-core';
-import type { ZodDbsDynamoClient } from './types.js';
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import type { ZodDbsProviderConfig } from "zod-dbs-core";
+import { logDebug } from "zod-dbs-core";
+import type { ZodDbsDynamoClient } from "./types.js";
 
 export async function createClient(
-  config: ZodDbsProviderConfig
+  config: ZodDbsProviderConfig,
 ): Promise<ZodDbsDynamoClient> {
-  logDebug('Creating DynamoDB client', {
+  logDebug("Creating DynamoDB client", {
     region: config.region,
     endpoint: config.endpoint,
   });
@@ -37,7 +36,7 @@ export async function createClient(
       }
     },
     async query(_stmt: string) {
-      throw new Error('DynamoDB client does not support raw SQL queries');
+      throw new Error("DynamoDB client does not support raw SQL queries");
     },
     async end() {
       connected = false;

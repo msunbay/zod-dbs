@@ -1,14 +1,13 @@
-import { inject } from 'vitest';
-import { createConnectionString } from 'zod-dbs-core';
-
-import type { ZodDbsProviderConfig } from 'zod-dbs-core';
+import { inject } from "vitest";
+import type { ZodDbsProviderConfig } from "zod-dbs-core";
+import { createConnectionString } from "zod-dbs-core";
 
 export const getProviderConnectionString = (scheme: string): string => {
   //@ts-expect-error
-  const config: ZodDbsProviderConfig = inject('providerConfig');
+  const config: ZodDbsProviderConfig = inject("providerConfig");
 
   if (!config) {
-    throw new Error('Provider config not found in test context');
+    throw new Error("Provider config not found in test context");
   }
 
   return createConnectionString({ ...config, scheme });
@@ -16,10 +15,10 @@ export const getProviderConnectionString = (scheme: string): string => {
 
 export const getProviderConfig = (): ZodDbsProviderConfig => {
   //@ts-expect-error
-  const config = inject('providerConfig');
+  const config = inject("providerConfig");
 
   if (!config) {
-    throw new Error('Provider config not found in test context');
+    throw new Error("Provider config not found in test context");
   }
 
   return config;

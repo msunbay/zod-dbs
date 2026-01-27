@@ -1,1 +1,1 @@
-declare module 'oracledb';
+declare module "oracledb";

@@ -1,12 +1,11 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import { ZodDbsBaseProvider } from 'zod-dbs-core';
+import fs from "node:fs/promises";
+import path from "node:path";
+import type { ZodDbsColumnInfo, ZodDbsProvider } from "zod-dbs-core";
+import { ZodDbsBaseProvider } from "zod-dbs-core";
 
-import type { ZodDbsColumnInfo, ZodDbsProvider } from 'zod-dbs-core';
+import rawColumns from "./fixtures/raw-columns.json" with { type: "json" };
 
-import rawColumns from './fixtures/raw-columns.json' with { type: 'json' };
-
-export const getOutputDir = (testSuite: string, subPath = ''): string =>
+export const getOutputDir = (testSuite: string, subPath = ""): string =>
   path.resolve(import.meta.dirname, `./output/`, testSuite, subPath);
 
 export async function getOutputFiles(dir: string): Promise<string[]> {
@@ -32,7 +31,7 @@ export async function deleteOutputFiles(dir: string): Promise<void> {
 
 class TestProvider extends ZodDbsBaseProvider {
   constructor() {
-    super({ name: 'test' });
+    super({ name: "test" });
   }
 
   protected fetchSchemaInfo(): Promise<ZodDbsColumnInfo[]> {

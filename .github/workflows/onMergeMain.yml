@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  test:
+  publish:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -30,7 +30,8 @@ jobs:
         with:
           run_install: true
 
-
+      - name: Run tests
+        run: pnpm test
 
       - name: Publish packages
         run: pnpm run publish-packages

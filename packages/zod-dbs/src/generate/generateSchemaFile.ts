@@ -1,15 +1,14 @@
-import { promises } from 'node:fs';
-import { logDebug } from 'zod-dbs-core';
+import { promises } from "node:fs";
+import type { ZodDbsConfig, ZodDbsRenderer, ZodDbsTable } from "zod-dbs-core";
+import { logDebug } from "zod-dbs-core";
 
-import type { ZodDbsConfig, ZodDbsRenderer, ZodDbsTable } from 'zod-dbs-core';
-
-import { ensureFolder, getOutputFolder } from '../utils/index.js';
-import { renderMustacheTemplate } from '../utils/mustache.js';
+import { ensureFolder, getOutputFolder } from "../utils/index.js";
+import { renderMustacheTemplate } from "../utils/mustache.js";
 
 async function generateSchemaFile(
   table: ZodDbsTable,
   renderer: ZodDbsRenderer,
-  config: ZodDbsConfig
+  config: ZodDbsConfig,
 ): Promise<void> {
   logDebug(`Generating schema for: ${table.type} ${table.name}`);
 
@@ -25,7 +24,7 @@ async function generateSchemaFile(
     await ensureFolder(folderPath);
 
     const fileName = `${folderPath}/${file.name}.ts`;
-    await promises.writeFile(fileName, file.content, 'utf8');
+    await promises.writeFile(fileName, file.content, "utf8");
 
     logDebug(`Generated "${fileName}"`);
   }
@@ -33,7 +32,7 @@ async function generateSchemaFile(
 
 async function generateSchemaIndexFile(
   table: ZodDbsTable,
-  config: ZodDbsConfig
+  config: ZodDbsConfig,
 ): Promise<void> {
   logDebug(`Generating schema index file for: ${table.type} ${table.name}`);
 
@@ -42,16 +41,16 @@ async function generateSchemaIndexFile(
     return;
   }
 
-  const output = await renderMustacheTemplate('schema-index', {
+  const output = await renderMustacheTemplate("schema-index", {
     ...table,
-    fileName: config.moduleResolution === 'esm' ? `schema.js` : 'schema',
+    fileName: config.moduleResolution === "esm" ? `schema.js` : "schema",
   });
 
   const folderPath = `${config.outputDir}/${getOutputFolder(table.type)}/${table.name.toLowerCase()}`;
   await ensureFolder(folderPath);
 
   const fileName = `${folderPath}/index.ts`;
-  await promises.writeFile(fileName, output, 'utf8');
+  await promises.writeFile(fileName, output, "utf8");
 
   logDebug(`Generated "${fileName}"`);
 }
@@ -59,7 +58,7 @@ async function generateSchemaIndexFile(
 export async function generateSchemaFiles(
   table: ZodDbsTable,
   renderer: ZodDbsRenderer,
-  config: ZodDbsConfig
+  config: ZodDbsConfig,
 ): Promise<void> {
   await generateSchemaFile(table, renderer, config);
   await generateSchemaIndexFile(table, config);

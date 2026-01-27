@@ -1,12 +1,12 @@
-import type { ZodDbsColumn, ZodDbsTableType } from 'zod-dbs-core';
+import type { ZodDbsColumn, ZodDbsTableType } from "zod-dbs-core";
 
 export type ZodDbsColumnBaseType =
-  | 'string'
-  | 'number'
-  | 'boolean'
-  | 'date'
-  | 'object'
-  | 'unknown';
+  | "string"
+  | "number"
+  | "boolean"
+  | "date"
+  | "object"
+  | "unknown";
 
 /**
  * Base model for a column with additional processing and naming information.

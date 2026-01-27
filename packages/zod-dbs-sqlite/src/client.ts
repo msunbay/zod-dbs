@@ -1,14 +1,13 @@
-import Database from 'better-sqlite3';
-import { logDebug } from 'zod-dbs-core';
-
-import type { ZodDbsDatabaseClient, ZodDbsProviderConfig } from 'zod-dbs-core';
+import Database from "better-sqlite3";
+import type { ZodDbsDatabaseClient, ZodDbsProviderConfig } from "zod-dbs-core";
+import { logDebug } from "zod-dbs-core";
 
 export const createClient = async (
-  config: ZodDbsProviderConfig
+  config: ZodDbsProviderConfig,
 ): Promise<ZodDbsDatabaseClient> => {
-  logDebug('Creating SQLite client', config);
+  logDebug("Creating SQLite client", config);
 
-  const dbPath = config.database || ':memory:';
+  const dbPath = config.database || ":memory:";
   const db = new Database(dbPath, { fileMustExist: false, readonly: false });
 
   const client: ZodDbsDatabaseClient = {

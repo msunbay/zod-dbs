@@ -1,18 +1,18 @@
-import { MongoDBContainer } from '@testcontainers/mongodb';
-import { createClient } from 'zod-dbs-mongodb';
+import { MongoDBContainer } from "@testcontainers/mongodb";
+import { createClient } from "zod-dbs-mongodb";
 
-import type { TestDbContext } from '../utils/types.js';
+import type { TestDbContext } from "../utils/types.js";
 
-import { seedTestData } from './data.js';
+import { seedTestData } from "./data.js";
 
 export async function setupTestDb(): Promise<TestDbContext> {
-  const container = await new MongoDBContainer('mongo:7').start();
+  const container = await new MongoDBContainer("mongo:7").start();
 
   const config = {
     host: container.getHost(),
     port: container.getFirstMappedPort(),
-    database: 'testdb',
-    replicaSet: 'rs0',
+    database: "testdb",
+    replicaSet: "rs0",
     directConnection: true,
   };
 

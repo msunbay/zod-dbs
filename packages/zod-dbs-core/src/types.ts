@@ -24,22 +24,22 @@ export interface ZodDbsTable {
  * Enum representing the different types of relations that can be processed.
  */
 export type ZodDbsTableType =
-  | 'table' // Regular table
-  | 'view' // Database view
-  | 'materialized_view' // Materialized view
-  | 'foreign_table' // Foreign data wrapper table
-  | 'object' // Custom object definition
-  | 'unknown'; // Unknown or unsupported type
+  | "table" // Regular table
+  | "view" // Database view
+  | "materialized_view" // Materialized view
+  | "foreign_table" // Foreign data wrapper table
+  | "object" // Custom object definition
+  | "unknown"; // Unknown or unsupported type
 
 /**
  * Transform types that can be applied to Zod write schemas.
  */
 export type ZodDbsTransform =
-  | 'trim'
-  | 'lowercase'
-  | 'uppercase'
-  | 'normalize'
-  | 'nonnegative';
+  | "trim"
+  | "lowercase"
+  | "uppercase"
+  | "normalize"
+  | "nonnegative";
 
 /**
  * This interface represents data about a database column returned by a provider.
@@ -134,7 +134,7 @@ export interface ZodDbsColumn extends ZodDbsColumnInfo {
  */
 export interface ZodDbsProviderOption {
   name: string;
-  type: 'string' | 'number' | 'boolean';
+  type: "string" | "number" | "boolean";
   description: string;
   required?: boolean;
   allowedValues?: string[];
@@ -162,7 +162,7 @@ export interface ZodDbsProvider {
    * Fetches schema information from the database.
    */
   getSchemaInformation: (
-    config: ZodDbsProviderConfig
+    config: ZodDbsProviderConfig,
   ) => Promise<ZodDbsSchemaInfo>;
 }
 
@@ -189,7 +189,7 @@ export interface ZodDbsRenderer {
    */
   renderSchemaFiles: (
     table: ZodDbsTable,
-    config: ZodDbsConfig
+    config: ZodDbsConfig,
   ) => Promise<ZodDbsRenderedFile[]>;
 }
 
@@ -197,36 +197,36 @@ export interface ZodDbsRenderer {
  * Available casing options for generated names.
  */
 export type ZodDbsCasing =
-  | 'PascalCase' // FirstLetterUppercase
-  | 'camelCase' // firstLetterLowercase
-  | 'snake_case'; // all_lowercase_with_underscores
+  | "PascalCase" // FirstLetterUppercase
+  | "camelCase" // firstLetterLowercase
+  | "snake_case"; // all_lowercase_with_underscores
 
 /**
  * Available casing options for generated field names.
  */
-export type ZodDbsFieldCasing = ZodDbsCasing | 'passthrough';
+export type ZodDbsFieldCasing = ZodDbsCasing | "passthrough";
 
 /**
  * Mapped Zod column types.
  */
 export type ZodDbsColumnType =
-  | 'email' // String with email validation
-  | 'url' // String with URL validation
-  | 'string' // Basic string type
-  | 'int' // Integer number
-  | 'number' // Decimal number
-  | 'boolean' // Boolean value
-  | 'date' // Date object
-  | 'uuid' // String with UUID validation
-  | 'json' // JSON object
-  | 'object' // Generic object
-  | 'unknown' // Unknown type
-  | 'any'; // Any type (fallback)
+  | "email" // String with email validation
+  | "url" // String with URL validation
+  | "string" // Basic string type
+  | "int" // Integer number
+  | "number" // Decimal number
+  | "boolean" // Boolean value
+  | "date" // Date object
+  | "uuid" // String with UUID validation
+  | "json" // JSON object
+  | "object" // Generic object
+  | "unknown" // Unknown type
+  | "any"; // Any type (fallback)
 
 /**
  * Supported Zod versions for code generation.
  */
-export type ZodDbsZodVersion = '3' | '4' | '4-mini';
+export type ZodDbsZodVersion = "3" | "4" | "4-mini";
 
 export interface ZodDbsHooks {
   /**
@@ -234,7 +234,7 @@ export interface ZodDbsHooks {
    */
   onProgress?: (
     status: string,
-    args?: { [key: string]: unknown; total?: number; index?: number }
+    args?: { [key: string]: unknown; total?: number; index?: number },
   ) => void;
 
   /**
@@ -242,7 +242,7 @@ export interface ZodDbsHooks {
    * Allows customization of individual column properties and Zod types.
    */
   onColumnModelCreated?: (
-    column: ZodDbsColumn
+    column: ZodDbsColumn,
   ) => ZodDbsColumn | Promise<ZodDbsColumn>;
 
   /**
@@ -250,7 +250,7 @@ export interface ZodDbsHooks {
    * Allows customization of the entire table model.
    */
   onTableModelCreated?: (
-    table: ZodDbsTable
+    table: ZodDbsTable,
   ) => ZodDbsTable | Promise<ZodDbsTable>;
 }
 
@@ -334,7 +334,7 @@ export interface ZodDbsConfig extends ZodDbsProviderConfig {
   /** Whether to suppress console output during generation */
   silent?: boolean;
   /** Module resolution strategy (affects import statements) */
-  moduleResolution?: 'esm' | 'commonjs';
+  moduleResolution?: "esm" | "commonjs";
   /** Output directory for generated files */
   outputDir?: string;
 }

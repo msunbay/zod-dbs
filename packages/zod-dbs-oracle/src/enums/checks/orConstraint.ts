@@ -1,9 +1,9 @@
 export function parseOrConstraint(
   columnName: string,
-  clause: string
+  clause: string,
 ): string[] {
   const match = clause.match(
-    /\(\s*((?:"?[a-zA-Z0-9_]+"?\s*=\s*'[^']+'\s*OR\s*)+"?[a-zA-Z0-9_]+"?\s*=\s*'[^']+')\s*\)/i
+    /\(\s*((?:"?[a-zA-Z0-9_]+"?\s*=\s*'[^']+'\s*OR\s*)+"?[a-zA-Z0-9_]+"?\s*=\s*'[^']+')\s*\)/i,
   );
 
   if (match) {

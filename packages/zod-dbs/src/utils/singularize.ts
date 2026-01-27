@@ -1,6 +1,6 @@
-import pluralize from 'pluralize';
+import pluralize from "pluralize";
 
-const IGNORED_WORDS = ['data', 'status'];
+const IGNORED_WORDS = ["data", "status"];
 
 export const singularize = (word: string): string => {
   if (IGNORED_WORDS.includes(word.toLowerCase())) {

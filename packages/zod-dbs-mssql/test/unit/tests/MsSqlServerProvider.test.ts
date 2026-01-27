@@ -1,11 +1,11 @@
-import { createClient } from '../../../src/client.js';
-import { MsSqlServerProvider } from '../../../src/MsSqlServerProvider.js';
+import { createClient } from "../../../src/client.js";
+import { MsSqlServerProvider } from "../../../src/MsSqlServerProvider.js";
 
-vi.mock('../../../src/client', () => ({
+vi.mock("../../../src/client", () => ({
   createClient: vi.fn(),
 }));
 
-describe('MsSqlServerProvider', () => {
+describe("MsSqlServerProvider", () => {
   let provider: MsSqlServerProvider;
   let mockClient: any;
 
@@ -21,14 +21,14 @@ describe('MsSqlServerProvider', () => {
     (createClient as any).mockReturnValue(mockClient);
   });
 
-  it('should call onProgress and client methods in the correct order', async () => {
+  it("should call onProgress and client methods in the correct order", async () => {
     const onProgress = vi.fn();
     const config = {
-      host: 'localhost',
+      host: "localhost",
       port: 5432,
-      database: 'test',
-      user: 'test',
-      password: 'password',
+      database: "test",
+      user: "test",
+      password: "password",
       onProgress,
     };
 
@@ -36,40 +36,40 @@ describe('MsSqlServerProvider', () => {
 
     await provider.getSchemaInformation(config);
 
-    expect(onProgress).toHaveBeenNthCalledWith(1, 'connecting');
-    expect(onProgress).toHaveBeenNthCalledWith(2, 'fetchingSchema');
+    expect(onProgress).toHaveBeenNthCalledWith(1, "connecting");
+    expect(onProgress).toHaveBeenNthCalledWith(2, "fetchingSchema");
 
-    expect(createClient).toHaveBeenCalledWith({ ...config, schemaName: 'dbo' });
+    expect(createClient).toHaveBeenCalledWith({ ...config, schemaName: "dbo" });
     expect(mockClient.connect).toHaveBeenCalledBefore(mockClient.query);
     expect(mockClient.query).toHaveBeenCalledBefore(mockClient.end);
     expect(mockClient.end).toHaveBeenCalled();
   });
 
-  it('should retrieve schema information and call the client with the correct query', async () => {
+  it("should retrieve schema information and call the client with the correct query", async () => {
     const mockData = [
       {
-        tableName: 'users',
-        tableSchema: 'test',
-        name: 'id',
+        tableName: "users",
+        tableSchema: "test",
+        name: "id",
         defaultValue: "nextval('users_id_seq'::regclass)",
-        dataType: 'int4',
+        dataType: "int4",
         isNullable: false,
         maxLen: undefined,
         description: undefined,
-        tableType: 'table',
-        schemaName: '',
+        tableType: "table",
+        schemaName: "",
       },
     ];
 
     mockClient.query.mockResolvedValue(mockData);
 
     const config = {
-      host: 'localhost',
+      host: "localhost",
       port: 5432,
-      database: 'test',
-      user: 'test',
-      password: 'password',
-      schemaName: 'custom_schema',
+      database: "test",
+      user: "test",
+      password: "password",
+      schemaName: "custom_schema",
     };
 
     provider = new MsSqlServerProvider();
@@ -77,7 +77,7 @@ describe('MsSqlServerProvider', () => {
     const result = await provider.getSchemaInformation(config);
 
     expect(mockClient.query).toHaveBeenCalledWith(expect.any(String), [
-      'custom_schema',
+      "custom_schema",
     ]);
 
     expect(result).toMatchInlineSnapshot(`
@@ -113,16 +113,16 @@ describe('MsSqlServerProvider', () => {
     `);
   });
 
-  it('should handle errors and ensure client.end is called', async () => {
-    const error = new Error('Test query error');
+  it("should handle errors and ensure client.end is called", async () => {
+    const error = new Error("Test query error");
     mockClient.query.mockRejectedValue(error);
 
     const config = {
-      host: 'localhost',
+      host: "localhost",
       port: 5432,
-      database: 'test',
-      user: 'test',
-      password: 'password',
+      database: "test",
+      user: "test",
+      password: "password",
     };
 
     provider = new MsSqlServerProvider();

@@ -1,4 +1,4 @@
-declare module 'zod-dbs-core' {
+declare module "zod-dbs-core" {
   interface ZodDbsProviderConfig {
     /**
      * The database file to connect to.

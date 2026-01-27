@@ -1,16 +1,15 @@
-import { sql, ZodDbsBaseProvider } from 'zod-dbs-core';
-
 import type {
   ZodDbsColumnInfo,
   ZodDbsProviderConfig,
   ZodDbsTableType,
-} from 'zod-dbs-core';
+} from "zod-dbs-core";
+import { sql, ZodDbsBaseProvider } from "zod-dbs-core";
 
-import { createClient } from './client.js';
+import { createClient } from "./client.js";
 
 interface RawTableRow {
   name: string;
-  type: 'table' | 'view';
+  type: "table" | "view";
 }
 
 interface RawColumnRow {
@@ -33,7 +32,7 @@ const parseMaxLen = (declType: string | null): number | undefined => {
 // Extract enum-like constraints from a CREATE TABLE SQL by scanning
 // CHECK (<ident> IN ('a','b', ...)) occurrences. Returns { columnName -> values[] }.
 const extractEnumMapFromCreateSql = (
-  createSql: string | null | undefined
+  createSql: string | null | undefined,
 ): Record<string, string[]> => {
   if (!createSql) return {};
 
@@ -49,8 +48,8 @@ const extractEnumMapFromCreateSql = (
     const listBody = m[2];
 
     const ident = rawIdent
-      .replace(/^[`"[]/, '')
-      .replace(/[`"\]]$/, '')
+      .replace(/^[`"[]/, "")
+      .replace(/[`"\]]$/, "")
       .toLowerCase();
 
     const valueRegex = /'((?:''|[^'])*)'/g;
@@ -69,17 +68,17 @@ const extractEnumMapFromCreateSql = (
 export class SqliteProvider extends ZodDbsBaseProvider {
   constructor() {
     super({
-      name: 'sqlite',
-      displayName: 'SQLite',
+      name: "sqlite",
+      displayName: "SQLite",
       configurationDefaults: {
-        database: ':memory:',
+        database: ":memory:",
       },
       options: [
         {
-          name: 'database',
-          type: 'string',
+          name: "database",
+          type: "string",
           description:
-            'Path to SQLite database file (or :memory: for in-memory)',
+            "Path to SQLite database file (or :memory: for in-memory)",
           required: true,
         },
       ],
@@ -93,9 +92,9 @@ export class SqliteProvider extends ZodDbsBaseProvider {
   protected createColumnInfo(
     table: RawTableRow,
     column: RawColumnRow,
-    enumMap?: Record<string, string[]>
+    enumMap?: Record<string, string[]>,
   ): ZodDbsColumnInfo {
-    const dataType = (column.type || 'text').toLowerCase();
+    const dataType = (column.type || "text").toLowerCase();
 
     const info: ZodDbsColumnInfo = {
       name: column.name,
@@ -104,9 +103,9 @@ export class SqliteProvider extends ZodDbsBaseProvider {
       maxLen: parseMaxLen(column.type),
       dataType,
       tableName: table.name,
-      tableType: (table.type as ZodDbsTableType) ?? 'table',
+      tableType: (table.type as ZodDbsTableType) ?? "table",
       isEnum: false,
-      isSerial: column.pk === 1 && /int/i.test(column.type || ''),
+      isSerial: column.pk === 1 && /int/i.test(column.type || ""),
       isArray: false,
     };
 
@@ -121,58 +120,58 @@ export class SqliteProvider extends ZodDbsBaseProvider {
 
   // Override to map SQLite declared types to ZodDbsColumnType categories
   protected override getZodType(dataType: string) {
-    const t = (dataType || '').toLowerCase();
+    const t = (dataType || "").toLowerCase();
 
     // Integer affinity
-    if (t.includes('int')) return 'int';
+    if (t.includes("int")) return "int";
     // Numeric/decimal/real/double/float affinity -> number
     if (
-      t.includes('real') ||
-      t.includes('floa') ||
-      t.includes('doub') ||
-      t.includes('dec') ||
-      t.includes('num')
+      t.includes("real") ||
+      t.includes("floa") ||
+      t.includes("doub") ||
+      t.includes("dec") ||
+      t.includes("num")
     )
-      return 'number';
+      return "number";
     // Booleans
-    if (t.includes('bool')) return 'boolean';
+    if (t.includes("bool")) return "boolean";
     // Date/time
-    if (t.includes('date') || t.includes('time')) return 'date';
+    if (t.includes("date") || t.includes("time")) return "date";
     // JSON
-    if (t.includes('json')) return 'json';
+    if (t.includes("json")) return "json";
     // Text affinity (includes varchar/char/clob/text)
-    if (t.includes('char') || t.includes('clob') || t.includes('text'))
-      return 'string';
+    if (t.includes("char") || t.includes("clob") || t.includes("text"))
+      return "string";
 
     return super.getZodType(dataType);
   }
 
   public async fetchSchemaInfo(
-    config: ZodDbsProviderConfig
+    config: ZodDbsProviderConfig,
   ): Promise<ZodDbsColumnInfo[]> {
-    config.onProgress?.('connecting');
+    config.onProgress?.("connecting");
     const client = await this.createClient(config);
     await client.connect();
 
-    config.onProgress?.('fetchingSchema');
+    config.onProgress?.("fetchingSchema");
 
     try {
       const tables = await client.query<RawTableRow[]>(
-        sql`SELECT name, type FROM sqlite_master WHERE type IN ('table','view') AND name NOT LIKE 'sqlite_%' ORDER BY name;`
+        sql`SELECT name, type FROM sqlite_master WHERE type IN ('table','view') AND name NOT LIKE 'sqlite_%' ORDER BY name;`,
       );
 
       const columns: ZodDbsColumnInfo[] = [];
       for (const tbl of tables) {
         // Read CREATE TABLE SQL once per table to parse CHECK enums
         const createRows = await client.query<{ sql: string }[]>(
-          'SELECT sql FROM sqlite_master WHERE type = ? AND name = ?',
-          ['table', tbl.name]
+          "SELECT sql FROM sqlite_master WHERE type = ? AND name = ?",
+          ["table", tbl.name],
         );
-        const createSql = createRows?.[0]?.sql ?? '';
+        const createSql = createRows?.[0]?.sql ?? "";
         const enumMap = extractEnumMapFromCreateSql(createSql);
 
         const pragma = await client.query<RawColumnRow[]>(
-          `PRAGMA table_info(${JSON.stringify(tbl.name)});`
+          `PRAGMA table_info(${JSON.stringify(tbl.name)});`,
         );
         for (const col of pragma) {
           columns.push(this.createColumnInfo(tbl, col, enumMap));

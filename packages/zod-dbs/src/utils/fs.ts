@@ -1,9 +1,8 @@
-import { existsSync, readdirSync, unlinkSync } from 'node:fs';
-import { mkdir } from 'node:fs/promises';
-import path from 'node:path';
-import { logDebug } from 'zod-dbs-core';
-
-import type { ZodDbsTableType } from 'zod-dbs-core';
+import { existsSync, readdirSync, unlinkSync } from "node:fs";
+import { mkdir } from "node:fs/promises";
+import path from "node:path";
+import type { ZodDbsTableType } from "zod-dbs-core";
+import { logDebug } from "zod-dbs-core";
 
 /**
  * Deletes all .ts files in the output schemas folder.
@@ -28,7 +27,7 @@ export function clearTablesDirectory(outputPath: string) {
         continue;
       }
 
-      if (!entry.name.endsWith('.ts')) continue;
+      if (!entry.name.endsWith(".ts")) continue;
 
       try {
         unlinkSync(fullPath);
@@ -56,15 +55,15 @@ export async function ensureFolder(folderPath: string) {
 
 export const getOutputFolder = (type: ZodDbsTableType): string => {
   switch (type) {
-    case 'table':
-      return 'tables';
-    case 'materialized_view':
-      return 'materialized_views';
-    case 'view':
-      return 'views';
-    case 'foreign_table':
-      return 'foreign_tables';
+    case "table":
+      return "tables";
+    case "materialized_view":
+      return "materialized_views";
+    case "view":
+      return "views";
+    case "foreign_table":
+      return "foreign_tables";
     default:
-      return 'others';
+      return "others";
   }
 };

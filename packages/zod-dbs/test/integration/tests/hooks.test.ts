@@ -1,32 +1,32 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
+import fs from "node:fs/promises";
+import path from "node:path";
 
-import { generateZodSchemas } from '../../../src/generateZodSchemas.js';
+import { generateZodSchemas } from "../../../src/generateZodSchemas.js";
 import {
   createTestProvider,
   getOutputDir,
   getOutputFiles,
-} from '../testDbUtils.js';
+} from "../testDbUtils.js";
 
 const provider = createTestProvider();
 
-describe('hook options', () => {
-  it('applies onColumnModelCreated hook to modify column schemas', async () => {
-    const outputDir = getOutputDir('hooks', 'column-hook');
+describe("hook options", () => {
+  it("applies onColumnModelCreated hook to modify column schemas", async () => {
+    const outputDir = getOutputDir("hooks", "column-hook");
 
     await generateZodSchemas({
       provider,
       config: {
-        moduleResolution: 'esm',
+        moduleResolution: "esm",
         outputDir,
-        include: ['users'],
+        include: ["users"],
         onColumnModelCreated: (column) => {
           // Add custom validation to email columns
-          if (column.name === 'email') {
+          if (column.name === "email") {
             return {
               ...column,
-              zodType: 'email',
-              writeTransforms: ['trim', 'lowercase'],
+              zodType: "email",
+              writeTransforms: ["trim", "lowercase"],
             };
           }
           return column;
@@ -37,10 +37,10 @@ describe('hook options', () => {
     const outputFiles = await getOutputFiles(outputDir);
 
     for (const file of outputFiles) {
-      const content = await fs.readFile(file, 'utf8');
+      const content = await fs.readFile(file, "utf8");
 
       // Check if email validation was applied
-      if (file.includes('schema.ts')) {
+      if (file.includes("schema.ts")) {
         expect(content).toMatch(/\.email\(\).trim\(\).lowercase\(\)/);
       }
 
@@ -48,15 +48,15 @@ describe('hook options', () => {
     }
   });
 
-  it('applies onTableModelCreated hook to modify table schemas', async () => {
-    const outputDir = getOutputDir('hooks', 'table-hook');
+  it("applies onTableModelCreated hook to modify table schemas", async () => {
+    const outputDir = getOutputDir("hooks", "table-hook");
 
     await generateZodSchemas({
       provider,
       config: {
-        moduleResolution: 'esm',
+        moduleResolution: "esm",
         outputDir,
-        include: ['users'],
+        include: ["users"],
         onTableModelCreated: (table) => {
           // Add a custom description to all tables
           return {
@@ -70,25 +70,25 @@ describe('hook options', () => {
     const outputFiles = await getOutputFiles(outputDir);
 
     for (const file of outputFiles) {
-      const content = await fs.readFile(file, 'utf8');
+      const content = await fs.readFile(file, "utf8");
 
       // Test captures the actual generated code
       expect(content).toMatchSnapshot(path.relative(outputDir, file));
     }
   });
 
-  it('applies both column and table hooks together', async () => {
-    const outputDir = getOutputDir('hooks', 'combined-hooks');
+  it("applies both column and table hooks together", async () => {
+    const outputDir = getOutputDir("hooks", "combined-hooks");
 
     await generateZodSchemas({
       provider,
       config: {
-        moduleResolution: 'esm',
+        moduleResolution: "esm",
         outputDir,
-        include: ['users'],
+        include: ["users"],
         onColumnModelCreated: (column) => {
           // Mark all string columns as trimmed
-          if (column.zodType === 'string') {
+          if (column.zodType === "string") {
             return {
               ...column,
               isTrimmed: true,
@@ -109,7 +109,7 @@ describe('hook options', () => {
     const outputFiles = await getOutputFiles(outputDir);
 
     for (const file of outputFiles) {
-      const content = await fs.readFile(file, 'utf8');
+      const content = await fs.readFile(file, "utf8");
 
       // Test captures the actual generated code
       expect(content).toMatchSnapshot(path.relative(outputDir, file));

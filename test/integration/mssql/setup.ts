@@ -1,16 +1,14 @@
-import { MSSQLServerContainer } from '@testcontainers/mssqlserver';
-import { createClient } from 'zod-dbs-mssql';
-
-import type { TestDbContext } from '../utils/types.js';
-
-import { seedTestData } from '../utils/db.js';
+import { MSSQLServerContainer } from "@testcontainers/mssqlserver";
+import { createClient } from "zod-dbs-mssql";
+import { seedTestData } from "../utils/db.js";
+import type { TestDbContext } from "../utils/types.js";
 
 export async function setupTestDb(): Promise<TestDbContext> {
   const container = await new MSSQLServerContainer(
-    'mcr.microsoft.com/mssql/server:2022-latest'
+    "mcr.microsoft.com/mssql/server:2022-latest",
   )
-    .withDatabase('master')
-    .withPassword('YourStrong!Passw0rd')
+    .withDatabase("master")
+    .withPassword("YourStrong!Passw0rd")
     .acceptLicense()
     .start();
 
@@ -25,7 +23,7 @@ export async function setupTestDb(): Promise<TestDbContext> {
   const client = await createClient(config);
 
   await client.connect();
-  await seedTestData('mssql', client);
+  await seedTestData("mssql", client);
 
   return {
     config,

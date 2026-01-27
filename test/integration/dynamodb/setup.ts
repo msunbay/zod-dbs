@@ -1,17 +1,15 @@
-import { GenericContainer } from 'testcontainers';
-import { createClient } from 'zod-dbs-dynamodb';
+import { GenericContainer } from "testcontainers";
+import { createClient } from "zod-dbs-dynamodb";
+import { getProviderOutputDir } from "../utils/cli.js";
+import type { TestDbContext } from "../utils/types.js";
+import { seedTestData } from "./data.js";
 
-import type { TestDbContext } from '../utils/types.js';
-
-import { getProviderOutputDir } from '../utils/cli.js';
-import { seedTestData } from './data.js';
-
-export const getOutputDir = (testSuite: string, subPath = ''): string =>
-  getProviderOutputDir('dynamodb', testSuite, subPath);
+export const getOutputDir = (testSuite: string, subPath = ""): string =>
+  getProviderOutputDir("dynamodb", testSuite, subPath);
 
 export async function setupTestDb(): Promise<TestDbContext> {
   // Use amazon/dynamodb-local image
-  const container = await new GenericContainer('amazon/dynamodb-local:latest')
+  const container = await new GenericContainer("amazon/dynamodb-local:latest")
     .withExposedPorts(8000)
     .start();
 
@@ -21,9 +19,9 @@ export async function setupTestDb(): Promise<TestDbContext> {
 
   const config = {
     endpoint,
-    region: 'us-east-1',
-    accessKeyId: 'test',
-    secretAccessKey: 'test',
+    region: "us-east-1",
+    accessKeyId: "test",
+    secretAccessKey: "test",
   };
 
   const client = await createClient(config);

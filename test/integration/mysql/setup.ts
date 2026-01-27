@@ -1,21 +1,19 @@
-import { MySqlContainer } from '@testcontainers/mysql';
-import { createClient } from 'zod-dbs-mysql';
+import { MySqlContainer } from "@testcontainers/mysql";
+import { createClient } from "zod-dbs-mysql";
+import { getProviderOutputDir } from "../utils/cli.js";
+import { seedTestData } from "../utils/db.js";
+import type { TestDbContext } from "../utils/types.js";
 
-import type { TestDbContext } from '../utils/types.js';
+const PROVIDER_NAME = "mysql";
 
-import { getProviderOutputDir } from '../utils/cli.js';
-import { seedTestData } from '../utils/db.js';
-
-const PROVIDER_NAME = 'mysql';
-
-export const getOutputDir = (testSuite: string, subPath = ''): string =>
+export const getOutputDir = (testSuite: string, subPath = ""): string =>
   getProviderOutputDir(PROVIDER_NAME, testSuite, subPath);
 
 export async function setupTestDb(): Promise<TestDbContext> {
-  const container = await new MySqlContainer('mysql')
-    .withDatabase('test')
-    .withUsername('test')
-    .withRootPassword('test')
+  const container = await new MySqlContainer("mysql")
+    .withDatabase("test")
+    .withUsername("test")
+    .withRootPassword("test")
     .start();
 
   const config = {

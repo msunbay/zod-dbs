@@ -1,5 +1,13 @@
 # zod-dbs-oracle
 
+## 1.0.4
+
+### Patch Changes
+
+- Patches known vulnerabilities
+- Updated dependencies
+  - zod-dbs-core@2.0.4
+
 ## 1.0.3
 
 ### Patch Changes

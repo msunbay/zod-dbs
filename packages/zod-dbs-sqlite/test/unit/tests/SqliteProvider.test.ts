@@ -1,13 +1,13 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from "vitest";
 
-import { createClient } from '../../../src/client.js';
-import { SqliteProvider } from '../../../src/SqliteProvider.js';
+import { createClient } from "../../../src/client.js";
+import { SqliteProvider } from "../../../src/SqliteProvider.js";
 
-vi.mock('../../../src/client', () => ({
+vi.mock("../../../src/client", () => ({
   createClient: vi.fn(),
 }));
 
-describe('SqliteProvider', () => {
+describe("SqliteProvider", () => {
   let provider: SqliteProvider;
   let mockClient: any;
 
@@ -23,19 +23,19 @@ describe('SqliteProvider', () => {
     (createClient as any).mockReturnValue(mockClient);
   });
 
-  it('constructs', () => {
+  it("constructs", () => {
     provider = new SqliteProvider();
-    expect(provider.name).toBe('sqlite');
+    expect(provider.name).toBe("sqlite");
   });
 
-  it('calls progress hooks and client in order', async () => {
+  it("calls progress hooks and client in order", async () => {
     const onProgress = vi.fn();
     provider = new SqliteProvider();
 
-    await provider.getSchemaInformation({ database: ':memory:', onProgress });
+    await provider.getSchemaInformation({ database: ":memory:", onProgress });
 
-    expect(onProgress).toHaveBeenNthCalledWith(1, 'connecting');
-    expect(onProgress).toHaveBeenNthCalledWith(2, 'fetchingSchema');
+    expect(onProgress).toHaveBeenNthCalledWith(1, "connecting");
+    expect(onProgress).toHaveBeenNthCalledWith(2, "fetchingSchema");
     expect(mockClient.connect).toHaveBeenCalled();
     expect(mockClient.query).toHaveBeenCalled();
     expect(mockClient.end).toHaveBeenCalled();

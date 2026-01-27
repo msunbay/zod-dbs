@@ -1,15 +1,15 @@
-import { exec } from 'node:child_process';
-import { existsSync } from 'node:fs';
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import { promisify } from 'node:util';
+import { exec } from "node:child_process";
+import { existsSync } from "node:fs";
+import fs from "node:fs/promises";
+import path from "node:path";
+import { promisify } from "node:util";
 
 const execAsync = promisify(exec);
 
 export const getCliPath = (): string => {
   return path.resolve(
     import.meta.dirname,
-    '../../../packages/zod-dbs-cli/index.js'
+    "../../../packages/zod-dbs-cli/index.js",
   );
 };
 
@@ -22,10 +22,10 @@ export class CliExecutionError extends Error {
     message: string,
     status?: number | string,
     stdout?: string,
-    stderr?: string
+    stderr?: string,
   ) {
     super(message);
-    this.name = 'CliExecutionError';
+    this.name = "CliExecutionError";
     this.status = status;
     this.stdout = stdout;
     this.stderr = stderr;
@@ -34,20 +34,20 @@ export class CliExecutionError extends Error {
 
 export const executeCli = async (
   args?: string,
-  { logErrors = true }: { logErrors?: boolean } = {}
+  { logErrors = true }: { logErrors?: boolean } = {},
 ): Promise<string> => {
   const cliPath = getCliPath();
 
   try {
-    const { stdout } = await execAsync(`node ${cliPath} ${args ?? ''}`, {
+    const { stdout } = await execAsync(`node ${cliPath} ${args ?? ""}`, {
       maxBuffer: 10 * 1024 * 1024,
-      shell: 'bash',
+      shell: "bash",
     });
 
-    return (stdout ?? '').toString();
+    return (stdout ?? "").toString();
   } catch (err: any) {
-    const stdout = err?.stdout?.toString?.() ?? '';
-    const stderr = err?.stderr?.toString?.() ?? '';
+    const stdout = err?.stdout?.toString?.() ?? "";
+    const stderr = err?.stderr?.toString?.() ?? "";
 
     if (stdout && logErrors) {
       console.log(`\n[CLI stdout]\n${stdout}`);
@@ -58,29 +58,29 @@ export const executeCli = async (
     }
 
     const status =
-      typeof err?.code !== 'undefined' ? ` (status ${err.code})` : '';
+      typeof err?.code !== "undefined" ? ` (status ${err.code})` : "";
 
     throw new CliExecutionError(
-      `CLI execution failed${status}. ${err?.message ?? ''}\n${stdout}\n${stderr}`.trim(),
+      `CLI execution failed${status}. ${err?.message ?? ""}\n${stdout}\n${stderr}`.trim(),
       err?.code,
       stdout,
-      stderr
+      stderr,
     );
   }
 };
 
 export const getProviderOutputDir = (
   provider: string,
-  testSuite = '',
-  subPath = ''
+  testSuite = "",
+  subPath = "",
 ): string =>
   path.resolve(
     import.meta.dirname,
-    '../',
+    "../",
     provider,
     `./output/`,
     testSuite,
-    subPath
+    subPath,
   );
 
 export async function getOutputFiles(dir: string): Promise<string[]> {

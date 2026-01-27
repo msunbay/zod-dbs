@@ -1,13 +1,12 @@
-import { logDebug, sql, ZodDbsBaseProvider } from 'zod-dbs-core';
-
 import type {
   ZodDbsColumnInfo,
   ZodDbsColumnType,
   ZodDbsProviderConfig,
   ZodDbsTableType,
-} from 'zod-dbs-core';
+} from "zod-dbs-core";
+import { logDebug, sql, ZodDbsBaseProvider } from "zod-dbs-core";
 
-import { createClient } from './client.js';
+import { createClient } from "./client.js";
 
 interface RawColumnRow {
   TABLE_NAME: string;
@@ -25,58 +24,58 @@ interface RawColumnRow {
 export class SnowflakeProvider extends ZodDbsBaseProvider {
   constructor() {
     super({
-      name: 'snowflake',
-      displayName: 'Snowflake',
+      name: "snowflake",
+      displayName: "Snowflake",
       options: [
         {
-          name: 'host',
-          type: 'string',
+          name: "host",
+          type: "string",
           description:
-            'Snowflake account URL host (e.g., xy12345.snowflakecomputing.com)',
+            "Snowflake account URL host (e.g., xy12345.snowflakecomputing.com)",
         },
         {
-          name: 'account',
-          type: 'string',
+          name: "account",
+          type: "string",
           description:
-            'Snowflake account identifier (e.g., xy12345.eu-central-1)',
+            "Snowflake account identifier (e.g., xy12345.eu-central-1)",
           required: true,
         },
         {
-          name: 'user',
-          type: 'string',
-          description: 'Username for authentication',
+          name: "user",
+          type: "string",
+          description: "Username for authentication",
         },
         {
-          name: 'password',
-          type: 'string',
-          description: 'Password for authentication',
+          name: "password",
+          type: "string",
+          description: "Password for authentication",
         },
         {
-          name: 'database',
-          type: 'string',
-          description: 'Database name to connect to',
+          name: "database",
+          type: "string",
+          description: "Database name to connect to",
           required: true,
         },
         {
-          name: 'schemaName',
-          type: 'string',
-          description: 'Schema name to introspect',
+          name: "schemaName",
+          type: "string",
+          description: "Schema name to introspect",
           required: true,
         },
         {
-          name: 'token',
-          type: 'string',
-          description: 'JWT token for authentication',
+          name: "token",
+          type: "string",
+          description: "JWT token for authentication",
         },
         {
-          name: 'role',
-          type: 'string',
-          description: 'Role to assume after connecting',
+          name: "role",
+          type: "string",
+          description: "Role to assume after connecting",
         },
         {
-          name: 'warehouse',
-          type: 'string',
-          description: 'Virtual warehouse to use for the session',
+          name: "warehouse",
+          type: "string",
+          description: "Virtual warehouse to use for the session",
         },
       ],
     });
@@ -88,16 +87,16 @@ export class SnowflakeProvider extends ZodDbsBaseProvider {
 
   protected createColumnInfo(
     row: RawColumnRow,
-    schemaName?: string
+    schemaName?: string,
   ): ZodDbsColumnInfo {
-    const tableType: ZodDbsTableType = row.TABLE_TYPE ?? 'table';
+    const tableType: ZodDbsTableType = row.TABLE_TYPE ?? "table";
 
     return {
       name: row.COLUMN_NAME,
       tableName: row.TABLE_NAME,
       schemaName,
       tableType,
-      isNullable: row.IS_NULLABLE === 'YES',
+      isNullable: row.IS_NULLABLE === "YES",
       dataType: row.DATA_TYPE,
       maxLen: row.CHARACTER_MAXIMUM_LENGTH ?? undefined,
       defaultValue: row.COLUMN_DEFAULT ?? undefined,
@@ -112,27 +111,27 @@ export class SnowflakeProvider extends ZodDbsBaseProvider {
     const normalizedType = dataType.toLowerCase();
 
     switch (normalizedType) {
-      case 'variant':
-        return 'json';
+      case "variant":
+        return "json";
       default:
         return super.getZodType(dataType);
     }
   }
 
   public async fetchSchemaInfo(
-    config: ZodDbsProviderConfig
+    config: ZodDbsProviderConfig,
   ): Promise<ZodDbsColumnInfo[]> {
     const { schemaName, database } = config;
-    if (!database) throw new Error('Snowflake: database is required');
-    if (!schemaName) throw new Error('Snowflake: schemaName is required');
+    if (!database) throw new Error("Snowflake: database is required");
+    if (!schemaName) throw new Error("Snowflake: schemaName is required");
 
-    config.onProgress?.('Creating client');
+    config.onProgress?.("Creating client");
     const client = await this.createClient(config);
 
-    config.onProgress?.('Connecting');
+    config.onProgress?.("Connecting");
     await client.connect();
 
-    config.onProgress?.('Retrieving schema information');
+    config.onProgress?.("Retrieving schema information");
     logDebug(`Retrieving schema information for ${database}.${schemaName}`);
 
     try {
@@ -157,10 +156,10 @@ export class SnowflakeProvider extends ZodDbsBaseProvider {
             AND c.TABLE_CATALOG = ?
           ORDER BY c.TABLE_NAME, c.ORDINAL_POSITION
         `,
-        [schemaName, database]
+        [schemaName, database],
       );
 
-      config.onProgress?.('Processing schema information');
+      config.onProgress?.("Processing schema information");
 
       return rows.map((r) => this.createColumnInfo(r, schemaName));
     } finally {

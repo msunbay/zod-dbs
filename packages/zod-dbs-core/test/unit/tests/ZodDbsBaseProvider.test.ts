@@ -1,20 +1,21 @@
-import type { ZodDbsColumnInfo, ZodDbsTableType } from '../../../src/types.js';
+/** biome-ignore-all lint/complexity/noBannedTypes: Uses Function for ease of mocking */
+import type { ZodDbsColumnInfo, ZodDbsTableType } from "../../../src/types.js";
 
-import { ZodDbsBaseProvider } from '../../../src/ZodDbsBaseProvider.js';
+import { ZodDbsBaseProvider } from "../../../src/ZodDbsBaseProvider.js";
 
 // Helpers
 const createRaw = (
-  overrides: Partial<ZodDbsColumnInfo> = {}
+  overrides: Partial<ZodDbsColumnInfo> = {},
 ): ZodDbsColumnInfo => ({
-  tableName: 'users',
-  name: 'id',
+  tableName: "users",
+  name: "id",
   defaultValue: undefined,
-  dataType: 'int4',
+  dataType: "int4",
   isNullable: false,
   maxLen: undefined,
   description: undefined,
-  tableType: 'table' as ZodDbsTableType,
-  schemaName: 'public',
+  tableType: "table" as ZodDbsTableType,
+  schemaName: "public",
   isEnum: false,
   isArray: false,
   isSerial: false,
@@ -22,16 +23,16 @@ const createRaw = (
 });
 
 interface MockClient {
-  connect: ReturnType<typeof vi.fn>;
-  query: ReturnType<typeof vi.fn>;
-  end: ReturnType<typeof vi.fn>;
+  connect: Function;
+  query: Function;
+  end: Function;
 }
 
 class TestProvider extends ZodDbsBaseProvider {
   mockClient: MockClient;
 
   constructor(options: { mockClient: MockClient }) {
-    super({ name: 'test', displayName: 'Test Provider' });
+    super({ name: "test", displayName: "Test Provider" });
     this.mockClient = options.mockClient;
   }
 
@@ -45,107 +46,107 @@ const buildProvider = (rows: ZodDbsColumnInfo[]) => {
     connect: vi.fn().mockResolvedValue(undefined),
     query: vi.fn().mockResolvedValue(rows),
     end: vi.fn().mockResolvedValue(undefined),
-  } as any;
+  };
 
   return new TestProvider({ mockClient });
 };
 
-describe('ZodDbsBaseProvider', () => {
+describe("ZodDbsBaseProvider", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('retrieves and groups columns into tables', async () => {
+  it("retrieves and groups columns into tables", async () => {
     const rows = [
-      createRaw({ tableName: 'users', name: 'id' }),
-      createRaw({ tableName: 'users', name: 'email' }),
-      createRaw({ tableName: 'posts', name: 'id' }),
+      createRaw({ tableName: "users", name: "id" }),
+      createRaw({ tableName: "users", name: "email" }),
+      createRaw({ tableName: "posts", name: "id" }),
     ];
 
     const provider = buildProvider(rows);
     const schema = await provider.getSchemaInformation({});
 
     expect(schema.tables).toHaveLength(2);
-    const users = schema.tables.find((t) => t.name === 'users');
-    const posts = schema.tables.find((t) => t.name === 'posts');
+    const users = schema.tables.find((t) => t.name === "users");
+    const posts = schema.tables.find((t) => t.name === "posts");
 
     expect(users?.columns).toHaveLength(2);
     expect(posts?.columns).toHaveLength(1);
     expect(provider.mockClient.query).toHaveBeenCalled();
   });
 
-  it('applies include regex filtering', async () => {
+  it("applies include regex filtering", async () => {
     const rows = [
-      createRaw({ tableName: 'users' }),
-      createRaw({ tableName: 'posts' }),
+      createRaw({ tableName: "users" }),
+      createRaw({ tableName: "posts" }),
     ];
     const provider = buildProvider(rows);
     const schema = await provider.getSchemaInformation({
-      include: '^use',
+      include: "^use",
     });
 
-    expect(schema.tables.map((t) => t.name)).toEqual(['users']);
+    expect(schema.tables.map((t) => t.name)).toEqual(["users"]);
   });
 
-  it('applies include array filtering', async () => {
+  it("applies include array filtering", async () => {
     const rows = [
-      createRaw({ tableName: 'users' }),
-      createRaw({ tableName: 'posts' }),
-      createRaw({ tableName: 'comments' }),
+      createRaw({ tableName: "users" }),
+      createRaw({ tableName: "posts" }),
+      createRaw({ tableName: "comments" }),
     ];
     const provider = buildProvider(rows);
     const schema = await provider.getSchemaInformation({
-      include: ['users', 'comments'],
+      include: ["users", "comments"],
     });
 
     expect(schema.tables.map((t) => t.name).sort()).toEqual([
-      'comments',
-      'users',
+      "comments",
+      "users",
     ]);
   });
 
-  it('applies exclude regex filtering', async () => {
+  it("applies exclude regex filtering", async () => {
     const rows = [
-      createRaw({ tableName: 'users' }),
-      createRaw({ tableName: 'posts' }),
+      createRaw({ tableName: "users" }),
+      createRaw({ tableName: "posts" }),
     ];
     const provider = buildProvider(rows);
     const schema = await provider.getSchemaInformation({
-      exclude: 'user',
+      exclude: "user",
     });
 
-    expect(schema.tables.map((t) => t.name)).toEqual(['posts']);
+    expect(schema.tables.map((t) => t.name)).toEqual(["posts"]);
   });
 
-  it('applies combined include then exclude', async () => {
+  it("applies combined include then exclude", async () => {
     const rows = [
-      createRaw({ tableName: 'user_profiles' }),
-      createRaw({ tableName: 'user_settings' }),
-      createRaw({ tableName: 'posts' }),
+      createRaw({ tableName: "user_profiles" }),
+      createRaw({ tableName: "user_settings" }),
+      createRaw({ tableName: "posts" }),
     ];
     const provider = buildProvider(rows);
     const schema = await provider.getSchemaInformation({
-      include: '^user_',
-      exclude: 'settings',
+      include: "^user_",
+      exclude: "settings",
     });
 
-    expect(schema.tables.map((t) => t.name)).toEqual(['user_profiles']);
+    expect(schema.tables.map((t) => t.name)).toEqual(["user_profiles"]);
   });
 
-  it('applies onColumnModelCreated hook (async) before grouping', async () => {
-    const rows = [createRaw({ name: 'id' })];
+  it("applies onColumnModelCreated hook (async) before grouping", async () => {
+    const rows = [createRaw({ name: "id" })];
     const provider = buildProvider(rows);
     const schema = await provider.getSchemaInformation({
       onColumnModelCreated: async (c) => ({
         ...c,
-        zodType: 'int',
+        zodType: "int",
       }),
     });
-    expect(schema.tables[0].columns[0].zodType).toBe('int');
+    expect(schema.tables[0].columns[0].zodType).toBe("int");
   });
 
-  it('applies onTableModelCreated hook (async) after grouping', async () => {
-    const rows = [createRaw({ tableName: 'users' })];
+  it("applies onTableModelCreated hook (async) after grouping", async () => {
+    const rows = [createRaw({ tableName: "users" })];
     const provider = buildProvider(rows);
     const schema = await provider.getSchemaInformation({
       onTableModelCreated: async (t) => ({
@@ -153,16 +154,16 @@ describe('ZodDbsBaseProvider', () => {
         name: `${t.name}_x`,
       }),
     });
-    expect(schema.tables[0].name).toBe('users_x');
+    expect(schema.tables[0].name).toBe("users_x");
   });
 
-  it('returns empty tables list when no columns', async () => {
+  it("returns empty tables list when no columns", async () => {
     const provider = buildProvider([]);
     const schema = await provider.getSchemaInformation({});
     expect(schema.tables).toEqual([]);
   });
 
-  it('ensures maxLen undefined normalization', async () => {
+  it("ensures maxLen undefined normalization", async () => {
     const provider = buildProvider([createRaw({ maxLen: undefined })]);
     const schema = await provider.getSchemaInformation({});
     expect(schema.tables[0].columns[0].maxLen).toBeUndefined();

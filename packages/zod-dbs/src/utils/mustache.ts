@@ -1,7 +1,7 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import mustache from 'mustache';
-import { toError } from 'zod-dbs-core';
+import fs from "node:fs/promises";
+import path from "node:path";
+import mustache from "mustache";
+import { toError } from "zod-dbs-core";
 
 // In-memory cache for template source and parsed tokens
 const templateCache = new Map<string, string>();
@@ -11,7 +11,7 @@ const templateCache = new Map<string, string>();
  * Pre-parsing (mustache.parse) can speed up repeated renders for the same template.
  */
 export const loadMustacheTemplate = async (
-  templateName: string
+  templateName: string,
 ): Promise<string> => {
   if (templateCache.has(templateName)) {
     const template = templateCache.get(templateName);
@@ -25,12 +25,12 @@ export const loadMustacheTemplate = async (
 
   const templatePath = path.join(
     import.meta.dirname,
-    '../../templates',
-    `${templateName}.mustache`
+    "../../templates",
+    `${templateName}.mustache`,
   );
 
   try {
-    const content = await fs.readFile(templatePath, 'utf-8');
+    const content = await fs.readFile(templatePath, "utf-8");
 
     // cache the raw template content
     templateCache.set(templateName, content);
@@ -47,7 +47,7 @@ export const loadMustacheTemplate = async (
     return content;
   } catch (error) {
     throw new Error(
-      `Failed to load template: ${templatePath}. ${toError(error).message}`
+      `Failed to load template: ${templatePath}. ${toError(error).message}`,
     );
   }
 };
@@ -55,7 +55,7 @@ export const loadMustacheTemplate = async (
 export const renderMustacheTemplate = async (
   templateName: string,
   data: object,
-  partials: Record<string, string> = {}
+  partials: Record<string, string> = {},
 ): Promise<string> => {
   const templateContent = await loadMustacheTemplate(templateName);
   return mustache.render(templateContent, data, partials);

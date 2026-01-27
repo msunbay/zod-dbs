@@ -1,14 +1,14 @@
-import { parseAnyArrayConstraint } from './checks/anyArrayConstraint.js';
-import { parseArrayContainsConstraint } from './checks/arrayContainsConstraint.js';
-import { parseInConstraint } from './checks/inConstraint.js';
-import { parseOrConstraint } from './checks/orConstraint.js';
+import { parseAnyArrayConstraint } from "./checks/anyArrayConstraint.js";
+import { parseArrayContainsConstraint } from "./checks/arrayContainsConstraint.js";
+import { parseInConstraint } from "./checks/inConstraint.js";
+import { parseOrConstraint } from "./checks/orConstraint.js";
 
 /**
  * Returns column allowed values for enum-like constraints.
  */
 export function parseEnumValues(
   columnName: string,
-  constraints: string[]
+  constraints: string[],
 ): string[] {
   let enumValues: string[] = [];
 

@@ -1,9 +1,9 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { enableDebug, logDebug } from '../../../../src/utils/debug.js';
+import { enableDebug, logDebug } from "../../../../src/utils/debug.js";
 
 // Mock the debug package
-vi.mock('debug', () => {
+vi.mock("debug", () => {
   const mockDebugFn = vi.fn();
   const mockEnable = vi.fn();
   const mockDebug = vi.fn(() => mockDebugFn);
@@ -14,23 +14,23 @@ vi.mock('debug', () => {
   };
 });
 
-describe('debug utilities', () => {
+describe("debug utilities", () => {
   beforeEach(() => {
     vi.resetAllMocks();
     delete process.env.DEBUG;
   });
 
-  describe('logDebug', () => {
-    it('should call debug function with message', () => {
-      logDebug('Test debug message');
+  describe("logDebug", () => {
+    it("should call debug function with message", () => {
+      logDebug("Test debug message");
 
       // Since debug is mocked, we can't easily test the exact calls
       // but we can test that the function runs without error
       expect(true).toBe(true);
     });
 
-    it('should handle object messages', () => {
-      const testObject = { key: 'value' };
+    it("should handle object messages", () => {
+      const testObject = { key: "value" };
 
       logDebug(testObject);
 
@@ -38,11 +38,11 @@ describe('debug utilities', () => {
     });
   });
 
-  describe('enableDebug', () => {
-    it('should set DEBUG environment variable', () => {
+  describe("enableDebug", () => {
+    it("should set DEBUG environment variable", () => {
       enableDebug();
 
-      expect(process.env.DEBUG).toBe('zod-dbs:*');
+      expect(process.env.DEBUG).toBe("zod-dbs:*");
     });
   });
 });

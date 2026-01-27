@@ -1,12 +1,12 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from "vitest";
 
-import type { ZodDbsColumn, ZodDbsConfig, ZodDbsTable } from 'zod-dbs-core';
+import type { ZodDbsColumn, ZodDbsConfig, ZodDbsTable } from "zod-dbs-core";
 
-import { Zod4Renderer } from '../../../../src/renderers/Zod4Renderer.js';
+import { Zod4Renderer } from "../../../../src/renderers/Zod4Renderer.js";
 
 const column = (overrides: Partial<ZodDbsColumn>): ZodDbsColumn => ({
-  name: 'col',
-  dataType: 'text',
+  name: "col",
+  dataType: "text",
   isEnum: false,
   isSerial: false,
   isArray: false,
@@ -14,22 +14,22 @@ const column = (overrides: Partial<ZodDbsColumn>): ZodDbsColumn => ({
   isWritable: true,
   isReadOptional: false,
   isWriteOptional: false,
-  tableName: 'users',
-  schemaName: 'public',
-  tableType: 'table',
-  zodType: 'string',
+  tableName: "users",
+  schemaName: "public",
+  tableType: "table",
+  zodType: "string",
   ...overrides,
 });
 const table = (cols: ZodDbsColumn[]): ZodDbsTable => ({
-  type: 'table',
-  name: 'users',
-  schemaName: 'public',
+  type: "table",
+  name: "users",
+  schemaName: "public",
   columns: cols,
 });
 const config: ZodDbsConfig = {
-  outputDir: '/tmp/ignore',
-  fieldNameCasing: 'camelCase',
-  objectNameCasing: 'PascalCase',
+  outputDir: "/tmp/ignore",
+  fieldNameCasing: "camelCase",
+  objectNameCasing: "PascalCase",
   nullsToUndefined: true,
   stringifyJson: true,
   singularization: true,
@@ -37,46 +37,46 @@ const config: ZodDbsConfig = {
   caseTransform: true,
 };
 
-describe('Zod4Renderer', () => {
-  it('overrides email/url/int/uuid/json types with zod 4 primitives', async () => {
+describe("Zod4Renderer", () => {
+  it("overrides email/url/int/uuid/json types with zod 4 primitives", async () => {
     const tbl = table([
-      column({ name: 'email', zodType: 'email' }),
-      column({ name: 'homepage', zodType: 'url' }),
-      column({ name: 'age', zodType: 'int' }),
-      column({ name: 'guid', zodType: 'uuid' }),
-      column({ name: 'payload', zodType: 'json', dataType: 'jsonb' }),
+      column({ name: "email", zodType: "email" }),
+      column({ name: "homepage", zodType: "url" }),
+      column({ name: "age", zodType: "int" }),
+      column({ name: "guid", zodType: "uuid" }),
+      column({ name: "payload", zodType: "json", dataType: "jsonb" }),
     ]);
     const out = await new Zod4Renderer().renderSchemaFile(tbl, config);
-    expect(out).toContain('email: z.email()');
-    expect(out).toContain('homepage: z.url()');
-    expect(out).toContain('age: z.int()');
-    expect(out).toContain('guid: z.uuid()');
-    expect(out).toContain('payload: z.json()');
+    expect(out).toContain("email: z.email()");
+    expect(out).toContain("homepage: z.url()");
+    expect(out).toContain("age: z.int()");
+    expect(out).toContain("guid: z.uuid()");
+    expect(out).toContain("payload: z.json()");
   });
 
-  it('uses z.date when coerceDates is false', async () => {
+  it("uses z.date when coerceDates is false", async () => {
     const tbl = table([
-      column({ name: 'created_at', zodType: 'date', dataType: 'timestamptz' }),
+      column({ name: "created_at", zodType: "date", dataType: "timestamptz" }),
     ]);
     const out = await new Zod4Renderer().renderSchemaFile(tbl, {
       ...config,
       coerceDates: false,
     });
-    expect(out).toContain('created_at: z.date()');
+    expect(out).toContain("created_at: z.date()");
   });
 
-  it('renders date arrays with stringifyDates (non-nullable & nullable)', async () => {
+  it("renders date arrays with stringifyDates (non-nullable & nullable)", async () => {
     const tbl = table([
       column({
-        name: 'dates',
-        zodType: 'date',
-        dataType: 'timestamptz',
+        name: "dates",
+        zodType: "date",
+        dataType: "timestamptz",
         isArray: true,
       }),
       column({
-        name: 'dates_nullable',
-        zodType: 'date',
-        dataType: 'timestamptz',
+        name: "dates_nullable",
+        zodType: "date",
+        dataType: "timestamptz",
         isArray: true,
         isNullable: true,
         isReadOptional: true,
@@ -89,28 +89,28 @@ describe('Zod4Renderer', () => {
     });
     expect(out).toMatch(/dates: z\.array\(z\.coerce\.date\(\)\)/);
     expect(out).toMatch(
-      /dates_nullable: z\.array\(z\.coerce\.date\(\)\)\.nullable\(\)\.transform\(\(value\) => value \?\? undefined\)\.optional\(\)/
+      /dates_nullable: z\.array\(z\.coerce\.date\(\)\)\.nullable\(\)\.transform\(\(value\) => value \?\? undefined\)\.optional\(\)/,
     );
     expect(out).toMatch(
-      /dates: z\.array\(z\.date\(\)\)\.transform\(\(value\) => value\.map\(date => date\.toISOString\(\)\)\)/
+      /dates: z\.array\(z\.date\(\)\)\.transform\(\(value\) => value\.map\(date => date\.toISOString\(\)\)\)/,
     );
     expect(out).toMatch(
-      /datesNullable: z\.array\(z\.date\(\)\)\.nullable\(\)\.transform\(\(value\) => value \? value\.map\(date => date\.toISOString\(\)\) : value\)\.optional\(\)/
+      /datesNullable: z\.array\(z\.date\(\)\)\.nullable\(\)\.transform\(\(value\) => value \? value\.map\(date => date\.toISOString\(\)\) : value\)\.optional\(\)/,
     );
   });
 
-  it('handles optional only (not nullable) field with proper transform', async () => {
+  it("handles optional only (not nullable) field with proper transform", async () => {
     const tbl = table([
       column({
-        name: 'nickname',
-        zodType: 'string',
+        name: "nickname",
+        zodType: "string",
         isReadOptional: true,
         isNullable: false,
       }),
     ]);
     const out = await new Zod4Renderer().renderSchemaFile(tbl, config);
     expect(out).toMatch(
-      /nickname: z\.string\(\)\.transform\(\(value\) => value \?\? undefined\)\.optional\(\)/
+      /nickname: z\.string\(\)\.transform\(\(value\) => value \?\? undefined\)\.optional\(\)/,
     );
   });
 });

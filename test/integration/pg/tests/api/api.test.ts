@@ -1,32 +1,31 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import {
-  formatTableRecordName,
-  generateZodSchemas,
-  Zod4Renderer,
-} from 'zod-dbs';
-import { createProvider } from 'zod-dbs-pg';
-
+import fs from "node:fs";
+import path from "node:path";
 import type {
   ZodDbsConfig,
   ZodDbsTable,
   ZodDbsTableRenderModel,
-} from 'zod-dbs';
+} from "zod-dbs";
+import {
+  formatTableRecordName,
+  generateZodSchemas,
+  Zod4Renderer,
+} from "zod-dbs";
+import { createProvider } from "zod-dbs-pg";
 
-import { getOutputFiles } from '../../../utils/cli.js';
-import { getProviderConfig } from '../../../utils/context.js';
-import { getOutputDir } from '../../setup.js';
+import { getOutputFiles } from "../../../utils/cli.js";
+import { getProviderConfig } from "../../../utils/context.js";
+import { getOutputDir } from "../../setup.js";
 
-it('Api generates correct zod schemas with basic options', async () => {
+it("Api generates correct zod schemas with basic options", async () => {
   const config = getProviderConfig();
-  const outputDir = getOutputDir('api', 'basic');
+  const outputDir = getOutputDir("api", "basic");
   const provider = createProvider();
 
   const result = await generateZodSchemas({
     provider,
     config: {
       outputDir,
-      moduleResolution: 'esm',
+      moduleResolution: "esm",
       ...config,
     },
   });
@@ -36,14 +35,14 @@ it('Api generates correct zod schemas with basic options', async () => {
   const outputFiles = await getOutputFiles(outputDir);
 
   for (const file of outputFiles) {
-    const content = fs.readFileSync(file, 'utf8');
+    const content = fs.readFileSync(file, "utf8");
     expect(content).toMatchSnapshot(path.relative(outputDir, file));
   }
 });
 
-it('Api generates correct zod schemas with hooks', async () => {
+it("Api generates correct zod schemas with hooks", async () => {
   const config = getProviderConfig();
-  const outputDir = getOutputDir('api', 'hooks');
+  const outputDir = getOutputDir("api", "hooks");
   const provider = createProvider();
 
   await generateZodSchemas({
@@ -52,26 +51,26 @@ it('Api generates correct zod schemas with hooks', async () => {
       outputDir,
       ...config,
 
-      include: ['users'],
-      zodVersion: '4',
-      moduleResolution: 'esm',
+      include: ["users"],
+      zodVersion: "4",
+      moduleResolution: "esm",
 
       onColumnModelCreated(column) {
         // Add custom validation to email columns
-        if (column.name === 'email') {
+        if (column.name === "email") {
           return {
             ...column,
-            zodType: 'email',
-            writeTransforms: ['trim', 'lowercase'],
+            zodType: "email",
+            writeTransforms: ["trim", "lowercase"],
           };
         }
 
         // Mark column as deprecated
-        if (column.name === 'name') {
+        if (column.name === "name") {
           return {
             ...column,
             isDeprecated: true,
-            isDeprecatedReason: 'Use first_name and last_name instead',
+            isDeprecatedReason: "Use first_name and last_name instead",
           };
         }
 
@@ -80,7 +79,7 @@ it('Api generates correct zod schemas with hooks', async () => {
 
       onTableModelCreated(table) {
         table.columns = table.columns.filter(
-          (column) => column.name !== 'dates'
+          (column) => column.name !== "dates",
         );
 
         return table;
@@ -91,35 +90,35 @@ it('Api generates correct zod schemas with hooks', async () => {
   const outputFiles = await getOutputFiles(outputDir);
 
   for (const file of outputFiles) {
-    const content = fs.readFileSync(file, 'utf8');
+    const content = fs.readFileSync(file, "utf8");
     expect(content).toMatchSnapshot(path.relative(outputDir, file));
   }
 });
 
-it('Api generates correct zod schemas with custom renderer', async () => {
+it("Api generates correct zod schemas with custom renderer", async () => {
   const config = getProviderConfig();
-  const outputDir = getOutputDir('api', 'renderer');
+  const outputDir = getOutputDir("api", "renderer");
   const provider = createProvider();
 
   class CustomRenderer extends Zod4Renderer {
     protected override async createTableModel(
       table: ZodDbsTable,
-      config: ZodDbsConfig
+      config: ZodDbsConfig,
     ): Promise<ZodDbsTableRenderModel> {
       const model = await super.createTableModel(table, config);
 
       model.tableReadRecordName = formatTableRecordName({
         table,
-        casing: 'PascalCase',
-        operation: 'read',
-        suffix: 'Dto',
+        casing: "PascalCase",
+        operation: "read",
+        suffix: "Dto",
       });
 
       model.tableInsertRecordName = formatTableRecordName({
         table,
-        casing: 'PascalCase',
-        operation: 'insert',
-        suffix: 'Dto',
+        casing: "PascalCase",
+        operation: "insert",
+        suffix: "Dto",
       });
 
       return model;
@@ -133,8 +132,8 @@ it('Api generates correct zod schemas with custom renderer', async () => {
     renderer,
     config: {
       outputDir,
-      include: ['users'],
-      moduleResolution: 'esm',
+      include: ["users"],
+      moduleResolution: "esm",
       ...config,
     },
   });
@@ -142,7 +141,7 @@ it('Api generates correct zod schemas with custom renderer', async () => {
   const outputFiles = await getOutputFiles(outputDir);
 
   for (const file of outputFiles) {
-    const content = fs.readFileSync(file, 'utf8');
+    const content = fs.readFileSync(file, "utf8");
     expect(content).toMatchSnapshot(path.relative(outputDir, file));
   }
 });

@@ -1,12 +1,11 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import dotenv from 'dotenv';
-import { createClient } from 'zod-dbs-snowflake';
-
-import type { ZodDbsProviderConfig } from 'zod-dbs-core';
+import fs from "node:fs/promises";
+import path from "node:path";
+import dotenv from "dotenv";
+import type { ZodDbsProviderConfig } from "zod-dbs-core";
+import { createClient } from "zod-dbs-snowflake";
 
 dotenv.config({
-  path: path.resolve(import.meta.dirname, './.env'),
+  path: path.resolve(import.meta.dirname, "./.env"),
   quiet: true,
 });
 
@@ -21,7 +20,7 @@ const SNOWFLAKE_CONFIG = {
   role: process.env.SNOWFLAKE_ROLE,
 } as ZodDbsProviderConfig;
 
-export const getOutputDir = (testSuite: string, subPath = ''): string =>
+export const getOutputDir = (testSuite: string, subPath = ""): string =>
   path.resolve(import.meta.dirname, `./output/`, testSuite, subPath);
 
 export async function setupTestDb() {
@@ -35,9 +34,9 @@ export async function setupTestDb() {
   await client.connect();
 
   // Optionally apply schema if requested
-  if (process.env.SNOWFLAKE_APPLY_SCHEMA === 'true') {
-    const schemaPath = path.resolve(import.meta.dirname, './schema.sql');
-    const sql = await fs.readFile(schemaPath, 'utf8');
+  if (process.env.SNOWFLAKE_APPLY_SCHEMA === "true") {
+    const schemaPath = path.resolve(import.meta.dirname, "./schema.sql");
+    const sql = await fs.readFile(schemaPath, "utf8");
 
     for (const stmt of sql
       .split(/;\s*\n/g)

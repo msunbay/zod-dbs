@@ -1,9 +1,9 @@
-import type { ZodDbsRenderZodTypeParams } from './ZodBaseRenderer.js';
+import type { ZodDbsRenderZodTypeParams } from "./ZodBaseRenderer.js";
 
-import { ZodBaseRenderer } from './ZodBaseRenderer.js';
+import { ZodBaseRenderer } from "./ZodBaseRenderer.js";
 
 export class Zod3Renderer extends ZodBaseRenderer {
-  public name = 'Zod3Renderer';
+  public name = "Zod3Renderer";
 
   protected override renderZodType(params: ZodDbsRenderZodTypeParams): string {
     const renderedType = super.renderZodType(params);
@@ -12,14 +12,14 @@ export class Zod3Renderer extends ZodBaseRenderer {
     if (params.isReadField) return renderedType;
 
     switch (params.zodType) {
-      case 'email':
-        return 'z.string().email()';
-      case 'url':
-        return 'z.string().url()';
-      case 'int':
-        return 'z.number().int()';
-      case 'uuid':
-        return 'z.string().uuid()';
+      case "email":
+        return "z.string().email()";
+      case "url":
+        return "z.string().url()";
+      case "int":
+        return "z.number().int()";
+      case "uuid":
+        return "z.string().uuid()";
       default:
         return renderedType;
     }

@@ -1,10 +1,10 @@
-import type { ZodDbsDatabaseClient } from 'zod-dbs-core';
+import type { ZodDbsDatabaseClient } from "zod-dbs-core";
 
 export interface ZodDbsMongoDbClient extends ZodDbsDatabaseClient {
   driver: any; // MongoClient
 }
 
-declare module 'zod-dbs-core' {
+declare module "zod-dbs-core" {
   interface ZodDbsProviderConfig {
     /**
      * Optional full MongoDB connection string. If provided, this takes precedence over other connection parameters.

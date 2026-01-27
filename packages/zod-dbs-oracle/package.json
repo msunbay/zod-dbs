@@ -1,6 +1,6 @@
 {
   "name": "zod-dbs-oracle",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Oracle provider for zod-dbs",
   "keywords": [
     "zod",

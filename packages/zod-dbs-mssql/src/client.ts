@@ -1,12 +1,11 @@
-import mssql from 'mssql';
-import { logDebug } from 'zod-dbs-core';
-
-import type { ZodDbsDatabaseClient, ZodDbsProviderConfig } from 'zod-dbs-core';
+import mssql from "mssql";
+import type { ZodDbsDatabaseClient, ZodDbsProviderConfig } from "zod-dbs-core";
+import { logDebug } from "zod-dbs-core";
 
 export const createClient = async (
-  config: ZodDbsProviderConfig
+  config: ZodDbsProviderConfig,
 ): Promise<ZodDbsDatabaseClient> => {
-  logDebug('Creating MSSQL client', config);
+  logDebug("Creating MSSQL client", config);
 
   let pool: mssql.ConnectionPool;
 
@@ -18,7 +17,7 @@ export const createClient = async (
         pool = await mssql.connect(config.connectionString);
       } else
         pool = await mssql.connect({
-          server: config.host || 'localhost',
+          server: config.host || "localhost",
           port: config.port,
           user: config.user,
           password: config.password,
@@ -27,7 +26,7 @@ export const createClient = async (
         });
     },
     query: async <T>(query: string) => {
-      if (!pool) throw new Error('MSSQL client not connected');
+      if (!pool) throw new Error("MSSQL client not connected");
 
       const result = await pool.query<T>(query);
       return result.recordset as T;

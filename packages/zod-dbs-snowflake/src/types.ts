@@ -1,4 +1,4 @@
-declare module 'zod-dbs-core' {
+declare module "zod-dbs-core" {
   interface ZodDbsProviderConfig {
     /**
      * Snowflake account URL host (e.g., xy12345.snowflakecomputing.com)

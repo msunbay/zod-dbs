@@ -1,22 +1,21 @@
-import { promises } from 'node:fs';
-import { logDebug } from 'zod-dbs-core';
+import { promises } from "node:fs";
+import type { ZodDbsConfig, ZodDbsSchemaInfo } from "zod-dbs-core";
+import { logDebug } from "zod-dbs-core";
 
-import type { ZodDbsConfig, ZodDbsSchemaInfo } from 'zod-dbs-core';
-
-import { ensureFolder } from '../utils/fs.js';
-import { renderMustacheTemplate } from '../utils/mustache.js';
+import { ensureFolder } from "../utils/fs.js";
+import { renderMustacheTemplate } from "../utils/mustache.js";
 
 export const generateTypesFile = async (
   schema: ZodDbsSchemaInfo,
-  { outputDir }: Pick<ZodDbsConfig, 'outputDir'>
+  { outputDir }: Pick<ZodDbsConfig, "outputDir">,
 ) => {
-  const tables = schema.tables.filter((table) => table.type === 'table');
-  const views = schema.tables.filter((table) => table.type === 'view');
+  const tables = schema.tables.filter((table) => table.type === "table");
+  const views = schema.tables.filter((table) => table.type === "view");
   const materializedViews = schema.tables.filter(
-    (table) => table.type === 'materialized_view'
+    (table) => table.type === "materialized_view",
   );
   const foreignTables = schema.tables.filter(
-    (table) => table.type === 'foreign_table'
+    (table) => table.type === "foreign_table",
   );
 
   const hasTables = tables.length > 0;
@@ -25,15 +24,15 @@ export const generateTypesFile = async (
   const hasForeignTables = foreignTables.length > 0;
 
   if (!hasTables && !hasViews && !hasMaterializedViews && !hasForeignTables) {
-    logDebug('No tables or views found, skipping types file generation');
+    logDebug("No tables or views found, skipping types file generation");
     return;
   }
 
   if (!outputDir) {
-    throw new Error('Output directory is not defined in config');
+    throw new Error("Output directory is not defined in config");
   }
 
-  const content = await renderMustacheTemplate('types', {
+  const content = await renderMustacheTemplate("types", {
     tables,
     views,
     materializedViews,
@@ -48,7 +47,7 @@ export const generateTypesFile = async (
 
   await ensureFolder(outputDir);
 
-  await promises.writeFile(filePath, content, 'utf8');
+  await promises.writeFile(filePath, content, "utf8");
 
   logDebug(`Generated "${filePath}" file`);
 };

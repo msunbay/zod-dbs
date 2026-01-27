@@ -1,9 +1,9 @@
-import path from 'node:path';
+import path from "node:path";
 
-const pkgRoot = path.resolve(__dirname, '../../../');
-const programPath = path.resolve(pkgRoot, 'src', 'program.ts');
+const pkgRoot = path.resolve(__dirname, "../../../");
+const programPath = path.resolve(pkgRoot, "src", "program.ts");
 
-describe('runCommander', () => {
+describe("runCommander", () => {
   let originalArgv: string[];
 
   beforeEach(() => {
@@ -16,51 +16,51 @@ describe('runCommander', () => {
     vi.resetModules();
   });
 
-  it('parses basic CLI flags (output-dir, zod-version)', async () => {
+  it("parses basic CLI flags (output-dir, zod-version)", async () => {
     process.argv = [
-      'node',
-      'zod-dbs',
-      '--output-dir',
-      './out',
-      '--zod-version',
-      '4',
+      "node",
+      "zod-dbs",
+      "--output-dir",
+      "./out",
+      "--zod-version",
+      "4",
     ];
 
-    const provider = { name: 'test', displayName: 'Test', options: [] } as any;
+    const provider = { name: "test", displayName: "Test", options: [] } as any;
 
     const { runCommander } = await import(programPath);
 
     const cfg = runCommander({
       provider,
-      appName: 'test',
-      appVersion: '0.0.0',
+      appName: "test",
+      appVersion: "0.0.0",
       includeProviderOption: false,
     });
 
     expect(cfg).toStrictEqual({
-      outputDir: './out',
-      zodVersion: '4',
+      outputDir: "./out",
+      zodVersion: "4",
     });
   });
 
-  it('adds provider-specific options and parses number/choice types', async () => {
+  it("adds provider-specific options and parses number/choice types", async () => {
     process.argv = [
-      'node',
-      'zod-dbs',
-      '--limit',
-      '10',
-      '--mode',
-      'b',
-      '--flag',
+      "node",
+      "zod-dbs",
+      "--limit",
+      "10",
+      "--mode",
+      "b",
+      "--flag",
     ];
 
     const provider = {
-      name: 'prov',
-      displayName: 'Prov',
+      name: "prov",
+      displayName: "Prov",
       options: [
-        { name: 'limit', type: 'number' },
-        { name: 'mode', type: 'string', allowedValues: ['a', 'b'] },
-        { name: 'flag', type: 'boolean' },
+        { name: "limit", type: "number" },
+        { name: "mode", type: "string", allowedValues: ["a", "b"] },
+        { name: "flag", type: "boolean" },
       ],
     } as any;
 
@@ -68,29 +68,29 @@ describe('runCommander', () => {
 
     const cfg = runCommander({
       provider,
-      appName: 'test',
-      appVersion: '0.0.0',
+      appName: "test",
+      appVersion: "0.0.0",
       includeProviderOption: false,
     });
 
     expect(cfg).toStrictEqual({
       limit: 10,
-      mode: 'b',
+      mode: "b",
       flag: true,
     });
   });
 
-  it('returns negated options (e.g., --no-case-transform results in false)', async () => {
-    process.argv = ['node', 'zod-dbs', '--no-coerce-dates'];
+  it("returns negated options (e.g., --no-case-transform results in false)", async () => {
+    process.argv = ["node", "zod-dbs", "--no-coerce-dates"];
 
-    const provider = { name: 'p', displayName: 'P', options: [] } as any;
+    const provider = { name: "p", displayName: "P", options: [] } as any;
 
     const { runCommander } = await import(programPath);
 
     const cfg = runCommander({
       provider,
-      appName: 'test',
-      appVersion: '0.0.0',
+      appName: "test",
+      appVersion: "0.0.0",
       includeProviderOption: false,
     });
 

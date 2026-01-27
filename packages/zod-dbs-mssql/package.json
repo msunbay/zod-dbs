@@ -1,6 +1,6 @@
 {
   "name": "zod-dbs-mssql",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Microsoft SQL Server provider for zod-dbs",
   "keywords": [
     "zod",
@@ -42,8 +42,8 @@
     "zod-dbs-core": "workspace:*"
   },
   "devDependencies": {
-    "@types/mssql": "^9.1.7",
-    "mssql": "^11.0.1"
+    "@types/mssql": "^9.1.9",
+    "mssql": "^12.2.0"
   },
   "peerDependencies": {
     "mssql": ">=11"

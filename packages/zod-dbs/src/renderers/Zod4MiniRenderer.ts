@@ -1,26 +1,26 @@
-import type { ZodDbsConfig } from 'zod-dbs-core';
+import type { ZodDbsConfig } from "zod-dbs-core";
 import type {
   ZodDbsColumnBaseRenderModel,
   ZodDbsTableRenderModel,
-} from './types.js';
+} from "./types.js";
 
-import { Zod4Renderer } from './Zod4Renderer.js';
+import { Zod4Renderer } from "./Zod4Renderer.js";
 
 export class Zod4MiniRenderer extends Zod4Renderer {
-  public name = 'Zod4MiniRenderer';
+  public name = "Zod4MiniRenderer";
 
   protected override getSchemaTemplateName(
     model: ZodDbsTableRenderModel,
-    config: ZodDbsConfig
+    config: ZodDbsConfig,
   ): string {
     const template = super.getSchemaTemplateName(model, config);
-    if (template === 'schema.simple') return 'schema.4mini.simple';
-    return 'schema.4mini';
+    if (template === "schema.simple") return "schema.4mini.simple";
+    return "schema.4mini";
   }
 
   protected override renderReadField(
     column: ZodDbsColumnBaseRenderModel,
-    config: ZodDbsConfig
+    config: ZodDbsConfig,
   ): string {
     let zodType = this.renderZodType({
       zodType: column.zodType,
@@ -37,7 +37,7 @@ export class Zod4MiniRenderer extends Zod4Renderer {
     }
 
     if (
-      column.zodType === 'json' &&
+      column.zodType === "json" &&
       config.jsonSchemaImportLocation &&
       column.jsonSchemaName
     ) {
@@ -64,7 +64,7 @@ export class Zod4MiniRenderer extends Zod4Renderer {
 
   protected override renderWriteField(
     column: ZodDbsColumnBaseRenderModel,
-    config: ZodDbsConfig
+    config: ZodDbsConfig,
   ): string {
     let zodType = this.renderZodType({
       zodType: column.zodType,
@@ -74,26 +74,26 @@ export class Zod4MiniRenderer extends Zod4Renderer {
 
     const baseType = this.getBaseType(column.zodType);
 
-    if (baseType === 'string' && !column.isEnum) {
-      if (column.writeTransforms?.includes('trim')) {
+    if (baseType === "string" && !column.isEnum) {
+      if (column.writeTransforms?.includes("trim")) {
         zodType = `${zodType}.check(z.trim())`;
       }
 
-      if (column.writeTransforms?.includes('lowercase')) {
+      if (column.writeTransforms?.includes("lowercase")) {
         zodType = `${zodType}.check(z.lowercase())`;
       }
 
-      if (column.writeTransforms?.includes('uppercase')) {
+      if (column.writeTransforms?.includes("uppercase")) {
         zodType = `${zodType}.check(z.uppercase())`;
       }
 
-      if (column.writeTransforms?.includes('normalize')) {
+      if (column.writeTransforms?.includes("normalize")) {
         zodType = `${zodType}.check(z.normalize())`;
       }
     }
 
-    if (baseType === 'number' && !column.isEnum) {
-      if (column.writeTransforms?.includes('nonnegative')) {
+    if (baseType === "number" && !column.isEnum) {
+      if (column.writeTransforms?.includes("nonnegative")) {
         zodType = `${zodType}.check(z.nonnegative())`;
       }
     }
@@ -107,7 +107,7 @@ export class Zod4MiniRenderer extends Zod4Renderer {
     }
 
     if (
-      column.zodType === 'json' &&
+      column.zodType === "json" &&
       config.jsonSchemaImportLocation &&
       column.jsonSchemaName
     ) {
@@ -119,9 +119,9 @@ export class Zod4MiniRenderer extends Zod4Renderer {
       column.minLen !== null &&
       !column.isEnum
     ) {
-      if (baseType === 'string')
+      if (baseType === "string")
         zodType = `${zodType}.check(z.minLength(${column.minLen}))`;
-      else if (baseType === 'number')
+      else if (baseType === "number")
         zodType = `${zodType}.check(z.minimum(${column.minLen}))`;
     }
 
@@ -130,9 +130,9 @@ export class Zod4MiniRenderer extends Zod4Renderer {
       column.maxLen !== null &&
       !column.isEnum
     ) {
-      if (baseType === 'string')
+      if (baseType === "string")
         zodType = `${zodType}.check(z.maxLength(${column.maxLen}))`;
-      else if (baseType === 'number')
+      else if (baseType === "number")
         zodType = `${zodType}.check(z.maximum(${column.maxLen}))`;
     }
 
@@ -144,14 +144,14 @@ export class Zod4MiniRenderer extends Zod4Renderer {
       zodType = `z.optional(${zodType})`;
     }
 
-    if (column.zodType === 'json' && config.stringifyJson) {
+    if (column.zodType === "json" && config.stringifyJson) {
       if (!column.isNullable)
         zodType = `z.pipe(${zodType}, z.transform((value) => JSON.stringify(value)))`;
       else
         zodType = `z.pipe(${zodType}, z.transform((value) => value ? JSON.stringify(value) : value))`;
     }
 
-    if (column.zodType === 'date' && config.stringifyDates) {
+    if (column.zodType === "date" && config.stringifyDates) {
       if (column.isArray) {
         if (!column.isNullable)
           zodType = `z.pipe(${zodType}, z.transform((value) => value.map(date => date.toISOString())))`;

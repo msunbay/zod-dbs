@@ -1,14 +1,13 @@
-import { sql, ZodDbsBaseProvider } from 'zod-dbs-core';
-
 import type {
   ZodDbsColumnInfo,
   ZodDbsColumnType,
   ZodDbsProviderConfig,
   ZodDbsTableType,
-} from 'zod-dbs-core';
+} from "zod-dbs-core";
+import { sql, ZodDbsBaseProvider } from "zod-dbs-core";
 
-import { createClient } from './client.js';
-import { parseEnumValues } from './enums/enumConstraints.js';
+import { createClient } from "./client.js";
+import { parseEnumValues } from "./enums/enumConstraints.js";
 
 interface RawColumnRow {
   TABLE_NAME: string;
@@ -18,11 +17,11 @@ interface RawColumnRow {
   DATA_LENGTH: number | null;
   DATA_DEFAULT: string | null;
   COMMENTS: string | null;
-  TABLE_TYPE: 'table' | 'view' | 'unknown';
+  TABLE_TYPE: "table" | "view" | "unknown";
   CHECK_CONSTRAINTS_VC: string;
 }
 
-const CHECK_CONSTRAINT_SEPARATOR = ' ||| ';
+const CHECK_CONSTRAINT_SEPARATOR = " ||| ";
 
 function parseCheckConstraints(raw: string): string[] {
   return raw
@@ -39,49 +38,49 @@ function isSerialColumn(defaultValue: string | null): boolean {
 export class OracleProvider extends ZodDbsBaseProvider {
   constructor() {
     super({
-      name: 'oracle',
-      displayName: 'Oracle',
+      name: "oracle",
+      displayName: "Oracle",
       configurationDefaults: {
         port: 1521,
-        host: 'localhost',
+        host: "localhost",
       },
       options: [
         {
-          name: 'connection-string',
-          type: 'string',
+          name: "connection-string",
+          type: "string",
           description:
-            'Full database connection string (overrides other connection options)',
+            "Full database connection string (overrides other connection options)",
         },
         {
-          name: 'host',
-          type: 'string',
-          description: 'Database host',
+          name: "host",
+          type: "string",
+          description: "Database host",
         },
         {
-          name: 'port',
-          type: 'number',
-          description: 'Database port',
+          name: "port",
+          type: "number",
+          description: "Database port",
         },
         {
-          name: 'user',
-          type: 'string',
-          description: 'Database user',
+          name: "user",
+          type: "string",
+          description: "Database user",
         },
         {
-          name: 'password',
-          type: 'string',
-          description: 'Database password',
+          name: "password",
+          type: "string",
+          description: "Database password",
         },
         {
-          name: 'database',
-          type: 'string',
-          description: 'Database service name (e.g., ORCLPDB1)',
+          name: "database",
+          type: "string",
+          description: "Database service name (e.g., ORCLPDB1)",
         },
         {
-          name: 'schema-name',
-          type: 'string',
+          name: "schema-name",
+          type: "string",
           description:
-            'Schema name to introspect (defaults to the user name if not provided)',
+            "Schema name to introspect (defaults to the user name if not provided)",
         },
       ],
     });
@@ -94,12 +93,12 @@ export class OracleProvider extends ZodDbsBaseProvider {
   protected override getZodType(dataType: string): ZodDbsColumnType {
     const normalizedType = dataType.toLowerCase();
 
-    if (normalizedType.startsWith('timestamp')) {
-      return 'date';
+    if (normalizedType.startsWith("timestamp")) {
+      return "date";
     }
 
-    if (normalizedType.startsWith('varchar')) {
-      return 'string';
+    if (normalizedType.startsWith("varchar")) {
+      return "string";
     }
 
     return super.getZodType(dataType);
@@ -107,14 +106,14 @@ export class OracleProvider extends ZodDbsBaseProvider {
 
   protected createColumnInfo(
     column: RawColumnRow,
-    schemaName: string
+    schemaName: string,
   ): ZodDbsColumnInfo {
-    const tableType: ZodDbsTableType = column.TABLE_TYPE ?? 'unknown';
+    const tableType: ZodDbsTableType = column.TABLE_TYPE ?? "unknown";
 
     const enumValues = column.CHECK_CONSTRAINTS_VC
       ? parseEnumValues(
           column.COLUMN_NAME,
-          parseCheckConstraints(column.CHECK_CONSTRAINTS_VC)
+          parseCheckConstraints(column.CHECK_CONSTRAINTS_VC),
         )
       : undefined;
 
@@ -123,7 +122,7 @@ export class OracleProvider extends ZodDbsBaseProvider {
       schemaName,
       tableName: column.TABLE_NAME.toLowerCase(),
       tableType,
-      isNullable: column.NULLABLE === 'Y',
+      isNullable: column.NULLABLE === "Y",
       dataType: column.DATA_TYPE.toLowerCase(),
       maxLen: column.DATA_LENGTH ?? undefined,
       defaultValue: column.DATA_DEFAULT ?? undefined,
@@ -136,9 +135,9 @@ export class OracleProvider extends ZodDbsBaseProvider {
   }
 
   public async fetchSchemaInfo(
-    config: ZodDbsProviderConfig
+    config: ZodDbsProviderConfig,
   ): Promise<ZodDbsColumnInfo[]> {
-    const schemaName = (config.schemaName ?? config.user ?? '').toUpperCase();
+    const schemaName = (config.schemaName ?? config.user ?? "").toUpperCase();
 
     const client = await this.createClient(config);
     await client.connect();
@@ -179,7 +178,7 @@ export class OracleProvider extends ZodDbsBaseProvider {
           ) checks
             ON checks.TABLE_NAME = utc.TABLE_NAME AND checks.COLUMN_NAME = utc.COLUMN_NAME
           ORDER BY utc.TABLE_NAME, utc.COLUMN_ID
-        `
+        `,
       );
 
       return rows.map((row) => this.createColumnInfo(row, schemaName));

@@ -1,6 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { createProgressHandler } from '../../../../src/utils/progress.js';
+import { createProgressHandler } from "../../../../src/utils/progress.js";
 
 // Mock ora spinner
 const mockStart = vi.fn();
@@ -16,37 +16,37 @@ const mockSpinner = {
   isSpinning: false,
 };
 
-vi.mock('ora', () => ({
+vi.mock("ora", () => ({
   default: vi.fn(() => mockSpinner),
 }));
 
 // Mock mustache
-vi.mock('mustache', () => ({
+vi.mock("mustache", () => ({
   default: {
     render: vi.fn((template: string, args: any) =>
-      template.replace('{{total}}', args?.total || '')
+      template.replace("{{total}}", args?.total || ""),
     ),
   },
 }));
 
-describe('progress utilities', () => {
+describe("progress utilities", () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
 
-  describe('createProgressHandler', () => {
-    it('should create progress handler with onProgress, done, and fail methods', () => {
+  describe("createProgressHandler", () => {
+    it("should create progress handler with onProgress, done, and fail methods", () => {
       const handler = createProgressHandler();
 
-      expect(handler).toHaveProperty('onProgress');
-      expect(handler).toHaveProperty('done');
-      expect(handler).toHaveProperty('fail');
+      expect(handler).toHaveProperty("onProgress");
+      expect(handler).toHaveProperty("done");
+      expect(handler).toHaveProperty("fail");
     });
 
-    it('should return silent handler when silent flag is true', () => {
+    it("should return silent handler when silent flag is true", () => {
       const handler = createProgressHandler(true);
 
-      handler.onProgress('connecting');
+      handler.onProgress("connecting");
       handler.done();
       handler.fail();
 
@@ -56,23 +56,23 @@ describe('progress utilities', () => {
       expect(mockFail).not.toHaveBeenCalled();
     });
 
-    it('should start spinner with connecting status', () => {
+    it("should start spinner with connecting status", () => {
       const handler = createProgressHandler();
 
-      handler.onProgress('connecting');
+      handler.onProgress("connecting");
 
-      expect(mockStart).toHaveBeenCalledWith('Connecting to database...');
+      expect(mockStart).toHaveBeenCalledWith("Connecting to database...");
     });
 
-    it('should start spinner with generating status and template args', () => {
+    it("should start spinner with generating status and template args", () => {
       const handler = createProgressHandler();
 
-      handler.onProgress('generating', { total: 5 });
+      handler.onProgress("generating", { total: 5 });
 
-      expect(mockStart).toHaveBeenCalledWith('Generating 5 Zod schemas...');
+      expect(mockStart).toHaveBeenCalledWith("Generating 5 Zod schemas...");
     });
 
-    it('should call succeed when done', () => {
+    it("should call succeed when done", () => {
       const handler = createProgressHandler();
 
       handler.done();
@@ -80,7 +80,7 @@ describe('progress utilities', () => {
       expect(mockSucceed).toHaveBeenCalled();
     });
 
-    it('should call fail when failed', () => {
+    it("should call fail when failed", () => {
       const handler = createProgressHandler();
 
       handler.fail();

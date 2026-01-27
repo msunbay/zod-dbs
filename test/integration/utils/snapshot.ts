@@ -1,5 +1,5 @@
 export const removeUndefinedValues = <T extends Record<string, any>>(
-  obj: T[]
+  obj: T[],
 ): T[] => {
   return obj.map((item) => {
     const newItem: Record<string, any> = {};
