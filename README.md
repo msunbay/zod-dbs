@@ -24,7 +24,6 @@ If you are looking for a PostgreSQL solution only, then you can also use simpler
   - [Exclude / Include Tables](#exclude--include-tables)
   - [CLI Options](#cli-options)
   - [Configuration File](#configuration-file)
-  - [SSL Support](#ssl-support)
 - [Programmatic usage](#programmatic-usage)
 - [Output File Structure](#output-file-structure)
 - [Schema Output](#schema-output)
