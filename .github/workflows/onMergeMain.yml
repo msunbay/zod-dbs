@@ -25,3 +25,6 @@ jobs:
 
       - name: Run tests
         run: pnpm test
+
+      - name: Publish packages
+        run: pnpm run publish-packages

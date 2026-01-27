@@ -30,7 +30,8 @@
     "test:lint": "biome ci --diagnostic-level error",
     "test:lint:fix": "biome check --write",
     "format": "prettier --write .",
-    "new-version": "changeset && changeset version && pnpm fix && pnpm i"
+    "new-version": "changeset && changeset version && pnpm fix && pnpm i",
+    "publish-packages": "pnpm run build && pnpm publish -r"
   },
   "repository": {
     "type": "git",
