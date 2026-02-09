@@ -1,5 +1,16 @@
 ## v2.0.0
 
+## 2.1.0
+
+### Minor Changes
+
+- Add option to disable index.ts (barrel file) generation.
+
+### Patch Changes
+
+- Updated dependencies
+  - zod-dbs-core@2.1.0
+
 ## 2.0.5
 
 ### Patch Changes

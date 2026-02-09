@@ -61,5 +61,8 @@ export async function generateSchemaFiles(
   config: ZodDbsConfig,
 ): Promise<void> {
   await generateSchemaFile(table, renderer, config);
-  await generateSchemaIndexFile(table, config);
+
+  if (config.barrelFiles) {
+    await generateSchemaIndexFile(table, config);
+  }
 }

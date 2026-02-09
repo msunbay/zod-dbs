@@ -55,6 +55,7 @@ export const generateZodSchemas = async ({
     cleanOutput,
     onProgress,
     zodVersion,
+    barrelFiles,
   } = generateConfig;
 
   if (cleanOutput) {
@@ -77,7 +78,9 @@ export const generateZodSchemas = async ({
     await generateSchemaFiles(table, schemaRenderer, generateConfig);
   }
 
-  await generateIndexFiles(schema, generateConfig);
+  if (barrelFiles) {
+    await generateIndexFiles(schema, generateConfig);
+  }
   await generateConstantsFile(schema, generateConfig);
   await generateTypesFile(schema, generateConfig);
 

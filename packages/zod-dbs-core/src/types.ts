@@ -335,6 +335,8 @@ export interface ZodDbsConfig extends ZodDbsProviderConfig {
   silent?: boolean;
   /** Module resolution strategy (affects import statements) */
   moduleResolution?: "esm" | "commonjs";
+  /** Whether to generate barrel files (index.ts) in each output folder. */
+  barrelFiles?: boolean;
   /** Output directory for generated files */
   outputDir?: string;
 }

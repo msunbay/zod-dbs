@@ -40,6 +40,8 @@ Output options:
   --json-schema-import-location <path>  Path to import JSON schemas
   --zod-version <value>                 Zod version to use. (defaults to 3)
                                         (choices: "3", "4", "4-mini")
+  --no-barrel-files                     Disable generating barrel files
+                                        (index.ts) in output folders
   --no-case-transform                   Disable case transformations /
                                         conversions for generated schemas
   --no-singularization                  Disable singularization of type and enum

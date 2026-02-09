@@ -44,6 +44,7 @@ const handleNegatedOptions = (options: ZodDbsConfig) => {
   if (options.coerceDates) delete cleaned.coerceDates;
   if (options.stringifyJson) delete cleaned.stringifyJson;
   if (options.nullsToUndefined) delete cleaned.nullsToUndefined;
+  if (options.barrelFiles) delete cleaned.barrelFiles;
 
   return cleaned;
 };
@@ -112,6 +113,12 @@ export const runCommander = ({
       "--zod-version <value>",
       "Zod version to use. (defaults to 3)",
     ).choices(["3", "4", "4-mini"]),
+  );
+  outputOptions.addOption(
+    new Option(
+      "--no-barrel-files",
+      "Disable generating barrel files (index.ts) in output folders",
+    ),
   );
   outputOptions.addOption(
     new Option(

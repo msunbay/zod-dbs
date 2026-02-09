@@ -1,5 +1,12 @@
 # zod-dbs-mssql
 
+## 1.0.5
+
+### Patch Changes
+
+- Updated dependencies
+  - zod-dbs-core@2.1.0
+
 ## 1.0.4
 
 ### Patch Changes

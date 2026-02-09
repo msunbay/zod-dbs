@@ -16,4 +16,5 @@ export const DEFAULT_CONFIGURATION: ZodDbsConfig = {
   coerceDates: true,
   nullsToUndefined: true,
   stringifyJson: true,
+  barrelFiles: true,
 };
