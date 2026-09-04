@@ -40,7 +40,7 @@ export class SnowflakeProvider extends ZodDbsBaseProvider {
             "Snowflake account identifier (e.g., xy12345.eu-central-1)",
         },
         {
-          name: "user",
+          name: "username",
           type: "string",
           description: "Username for authentication",
         },

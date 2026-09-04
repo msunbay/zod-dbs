@@ -7,7 +7,7 @@ declare module "zod-dbs-core" {
     /**
      * Username for authentication
      */
-    user?: string;
+    username?: string;
     /**
      * Password for authentication
      */

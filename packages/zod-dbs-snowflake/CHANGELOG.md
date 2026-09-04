@@ -1,5 +1,11 @@
 # zod-dbs-snowflake
 
+## 2.0.3
+
+### Patch Changes
+
+- Fixed username param
+
 ## 2.0.2
 
 ### Patch Changes
