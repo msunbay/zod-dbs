@@ -19,7 +19,7 @@ export async function createClient(
   const connection = sdk.createConnection({
     host: config.host,
     account: config.account,
-    username: config.user,
+    username: config.username,
     password: config.password,
     database: config.database,
     schema: config.schemaName,
