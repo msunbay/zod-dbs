@@ -1,5 +1,12 @@
 # zod-dbs-snowflake
 
+## 2.0.0
+
+### Major Changes
+
+- Updated peer dependency on snowflake-sdk > v3
+- Added missing connection properties.
+
 ## 1.0.5
 
 ### Patch Changes

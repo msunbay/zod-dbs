@@ -5,7 +5,7 @@ import { getConfiguration } from "../../../src/config.js";
 // Mock cosmiconfig
 vi.mock("cosmiconfig");
 
-describe.sequential("getConfiguration", () => {
+describe("getConfiguration", () => {
   let mockExplorer: { search: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {

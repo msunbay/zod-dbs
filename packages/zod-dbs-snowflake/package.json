@@ -1,6 +1,6 @@
 {
   "name": "zod-dbs-snowflake",
-  "version": "1.0.5",
+  "version": "2.0.0",
   "description": "Snowflake provider for zod-dbs",
   "keywords": [
     "zod",
@@ -38,13 +38,12 @@
     "dist"
   ],
   "devDependencies": {
-    "dotenv": "^17.2.1",
-    "snowflake-sdk": "^2.2.0"
+    "snowflake-sdk": "^3.3.0"
   },
   "dependencies": {
     "zod-dbs-core": "workspace:*"
   },
   "peerDependencies": {
-    "snowflake-sdk": ">=1.7.0"
+    "snowflake-sdk": ">=3.0.0"
   }
 }

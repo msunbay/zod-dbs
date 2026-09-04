@@ -24,6 +24,10 @@ export async function createClient(
     database: config.database,
     schema: config.schemaName,
     token: config.token,
+    privateKey: config.privateKey,
+    privateKeyPass: config.privateKeyPass,
+    authenticator: config.authenticator,
+    application: config.application,
     warehouse: config.warehouse,
     role: config.role,
   });

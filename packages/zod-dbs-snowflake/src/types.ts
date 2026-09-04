@@ -29,6 +29,22 @@ declare module "zod-dbs-core" {
      */
     token?: string;
     /**
+     * Private key for key pair authentication
+     */
+    privateKey?: string;
+    /**
+     * Passphrase for the private key, if applicable
+     */
+    privateKeyPass?: string;
+    /**
+     * Authenticator to use (e.g., "externalbrowser", "oauth", etc.)
+     */
+    authenticator?: string;
+    /**
+     * Application name for logging and tracking
+     */
+    application?: string;
+    /**
      * Role to assume
      */
     role?: string;

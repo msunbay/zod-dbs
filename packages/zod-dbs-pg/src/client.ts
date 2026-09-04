@@ -20,7 +20,7 @@ export const createClient = async (
 
   return {
     connect: async () => {
-      return await client.connect();
+      await client.connect();
     },
     query: async <T>(query: string, params: any) => {
       const result = await client.query(query, params);

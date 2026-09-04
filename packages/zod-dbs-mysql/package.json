@@ -41,7 +41,7 @@
     "zod-dbs-core": "workspace:*"
   },
   "devDependencies": {
-    "mysql2": "^3.14.3"
+    "mysql2": "^3.24.3"
   },
   "peerDependencies": {
     "mysql2": ">=2"
