@@ -21,7 +21,7 @@ Snowflake options:
                                         xy12345.snowflakecomputing.com)
   --account <value>                     Snowflake account identifier (e.g.,
                                         xy12345.eu-central-1)
-  --user <value>                        Username for authentication
+  --username <value>                    Username for authentication
   --password <value>                    Password for authentication
   --database <value>                    Database name to connect to
   --schemaName <value>                  Schema name to introspect
