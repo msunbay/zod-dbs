@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "rootDir": ".",
     "outDir": "./dist",
     "target": "es2020",
     "module": "nodenext",
