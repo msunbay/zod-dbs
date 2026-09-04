@@ -1,5 +1,11 @@
 # zod-dbs-cli
 
+## 2.2.0
+
+### Minor Changes
+
+- Bumped cosmiconfig to v10
+
 ## 2.1.1
 
 ### Patch Changes
