@@ -1,3 +1,4 @@
+import debug from "debug";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { enableDebug, logDebug } from "../../../../src/utils/debug.js";
@@ -35,6 +36,22 @@ describe("debug utilities", () => {
       logDebug(testObject);
 
       expect(true).toBe(true);
+    });
+
+    it("redacts credentials from object messages and arguments", () => {
+      logDebug("Configuration", {
+        account: "account",
+        privateKey: "private-key",
+        nested: { privateKeyPass: "passphrase", role: "analyst" },
+      });
+
+      const logger = vi.mocked(debug)("zod-dbs");
+
+      expect(logger).toHaveBeenLastCalledWith("Configuration", {
+        account: "account",
+        privateKey: "****",
+        nested: { privateKeyPass: "****", role: "analyst" },
+      });
     });
   });
 

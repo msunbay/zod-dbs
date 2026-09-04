@@ -7,6 +7,16 @@ describe("maskSensitiveValue", () => {
     expect(maskSensitiveValue("token", "abc")).toBe("****");
     expect(maskSensitiveValue("sessionToken", "abc")).toBe("****");
     expect(maskSensitiveValue("clientSecret", "abc")).toBe("****");
+    expect(
+      maskSensitiveValue("privateKey", "-----BEGIN PRIVATE KEY-----"),
+    ).toBe("****");
+    expect(maskSensitiveValue("privateKeyPass", "key-passphrase")).toBe("****");
+    expect(
+      maskSensitiveValue("private-key", "-----BEGIN PRIVATE KEY-----"),
+    ).toBe("****");
+    expect(maskSensitiveValue("private-key-pass", "key-passphrase")).toBe(
+      "****",
+    );
   });
 
   it("returns empty string for undefined/empty values", () => {

@@ -1,5 +1,14 @@
 # zod-dbs-snowflake
 
+## 2.0.1
+
+### Patch Changes
+
+- Adds missing cli params
+- Support base64 private key
+- Updated dependencies
+  - zod-dbs-core@2.1.1
+
 ## 2.0.0
 
 ### Major Changes

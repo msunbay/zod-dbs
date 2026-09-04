@@ -1,5 +1,14 @@
 # zod-dbs-cli
 
+## 2.2.1
+
+### Patch Changes
+
+- Prevents secrets from being written in debug logs
+- Updated dependencies
+  - zod-dbs-core@2.1.1
+  - zod-dbs@2.1.1
+
 ## 2.2.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # zod-dbs-core
 
+## 2.1.1
+
+### Patch Changes
+
+- Prevents secrets from being written in debug logs
+
 ## 2.1.0
 
 ### Minor Changes

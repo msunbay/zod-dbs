@@ -72,7 +72,10 @@ export const maskSensitiveValue = (
   if (
     lowerName.includes("password") ||
     lowerName.includes("secret") ||
-    lowerName.includes("token")
+    lowerName.includes("token") ||
+    lowerName.includes("key") ||
+    lowerName.includes("auth") ||
+    lowerName.includes("credential")
   ) {
     return "****";
   }

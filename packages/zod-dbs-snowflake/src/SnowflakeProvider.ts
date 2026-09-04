@@ -68,6 +68,27 @@ export class SnowflakeProvider extends ZodDbsBaseProvider {
           description: "JWT token for authentication",
         },
         {
+          name: "private-key",
+          type: "string",
+          description: "Private key for key pair authentication",
+        },
+        {
+          name: "private-key-pass",
+          type: "string",
+          description: "Passphrase for the private key, if applicable",
+        },
+        {
+          name: "authenticator",
+          type: "string",
+          description:
+            'Authenticator to use (e.g., "externalbrowser", "oauth")',
+        },
+        {
+          name: "application",
+          type: "string",
+          description: "Application name for logging and tracking",
+        },
+        {
           name: "role",
           type: "string",
           description: "Role to assume after connecting",
@@ -81,8 +102,19 @@ export class SnowflakeProvider extends ZodDbsBaseProvider {
     });
   }
 
+  private getPrivateKey(options: ZodDbsProviderConfig): string | undefined {
+    const privateKey = options.privateKey;
+    if (!privateKey) return undefined;
+
+    return privateKey.includes("-----BEGIN")
+      ? privateKey
+      : Buffer.from(privateKey, "base64").toString("utf-8");
+  }
+
   protected async createClient(options: ZodDbsProviderConfig) {
-    return await createClient(options);
+    const privateKey = this.getPrivateKey(options);
+
+    return await createClient({ ...options, privateKey });
   }
 
   protected createColumnInfo(
