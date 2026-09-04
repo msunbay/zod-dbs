@@ -38,7 +38,6 @@ export class SnowflakeProvider extends ZodDbsBaseProvider {
           type: "string",
           description:
             "Snowflake account identifier (e.g., xy12345.eu-central-1)",
-          required: true,
         },
         {
           name: "user",
@@ -54,13 +53,11 @@ export class SnowflakeProvider extends ZodDbsBaseProvider {
           name: "database",
           type: "string",
           description: "Database name to connect to",
-          required: true,
         },
         {
           name: "schemaName",
           type: "string",
           description: "Schema name to introspect",
-          required: true,
         },
         {
           name: "token",

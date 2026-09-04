@@ -1,5 +1,11 @@
 # zod-dbs-snowflake
 
+## 2.0.2
+
+### Patch Changes
+
+- Removed required cli params
+
 ## 2.0.1
 
 ### Patch Changes
