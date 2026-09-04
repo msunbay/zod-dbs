@@ -26,6 +26,13 @@ Snowflake options:
   --database <value>                    Database name to connect to
   --schemaName <value>                  Schema name to introspect
   --token <value>                       JWT token for authentication
+  --private-key <value>                 Private key for key pair authentication
+  --private-key-pass <value>            Passphrase for the private key, if
+                                        applicable
+  --authenticator <value>               Authenticator to use (e.g.,
+                                        "externalbrowser", "oauth")
+  --application <value>                 Application name for logging and
+                                        tracking
   --role <value>                        Role to assume after connecting
   --warehouse <value>                   Virtual warehouse to use for the session
 
