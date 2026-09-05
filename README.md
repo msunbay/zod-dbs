@@ -51,7 +51,7 @@ If you are looking for a PostgreSQL solution only, then you can also use simpler
 
 ## Requirements
 
-- **Node.js 20+**
+- **Node.js 22+**
 - **TypeScript 4+**
 
 Verified to work with latest versions of Bun and Deno (as of 2025-09-09)
