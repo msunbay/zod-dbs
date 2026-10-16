@@ -42,8 +42,8 @@
     "zod-dbs-core": "workspace:*"
   },
   "devDependencies": {
-    "oracledb": "^6.2.0",
-    "@types/oracledb": "^5.1.0"
+    "@types/oracledb": "^5.3.1",
+    "oracledb": "^6.10.0"
   },
   "peerDependencies": {
     "oracledb": ">=6"

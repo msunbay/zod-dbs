@@ -42,8 +42,8 @@
     "zod-dbs-core": "workspace:*"
   },
   "devDependencies": {
-    "@types/mssql": "^9.1.9",
-    "mssql": "^12.2.0"
+    "@types/mssql": "^9.1.11",
+    "mssql": "^12.7.0"
   },
   "peerDependencies": {
     "mssql": ">=11"

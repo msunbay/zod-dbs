@@ -40,8 +40,8 @@
     "zod-dbs-core": "workspace:*"
   },
   "devDependencies": {
-    "pg": "^8.17.2",
-    "@types/pg": "^8.16.0"
+    "@types/pg": "^8.23.1",
+    "pg": "^8.23.0"
   },
   "peerDependencies": {
     "pg": ">=8.12.0"
