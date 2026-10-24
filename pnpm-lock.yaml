@@ -17,7 +17,7 @@ importers:
         specifier: ^3.1152.0
         version: 3.1156.0
       '@biomejs/biome':
-        specifier: ^2.5.15
+        specifier: ^2.6.2
         version: 2.6.2
       '@changesets/cli':
         specifier: ^3.0.3

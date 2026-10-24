@@ -40,7 +40,7 @@
   "license": "ISC",
   "devDependencies": {
     "@aws-sdk/client-dynamodb": "^3.1152.0",
-    "@biomejs/biome": "^2.5.15",
+    "@biomejs/biome": "^2.6.2",
     "@changesets/cli": "^3.0.3",
     "@testcontainers/mongodb": "^12.2.1",
     "@testcontainers/mssqlserver": "^12.2.1",
