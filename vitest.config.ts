@@ -52,6 +52,12 @@ export default defineConfig({
           include: ["./test/integration/mongodb/tests/**/*.test.ts"],
           globalSetup: ["./test/integration/mongodb/bootstrap.ts"],
           globals: true,
+          server: {
+            deps: {
+              // Avoid Vite's stack mapper for MongoDB monitor errors during teardown.
+              external: ["mongodb"],
+            },
+          },
           hookTimeout: 60000,
           testTimeout: 20000,
         },
